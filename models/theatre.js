@@ -5,10 +5,13 @@ var theatreSchema = new mongoose.Schema({
     icon: String,
     desc: String,
     location: String,
-    availableMovie: [{
-           type: mongoose.Schema.Types.ObjectId,
-           ref: 'movie'
-    }]
+    addedby: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        },
+        username: String
+    },
 });
 
 module.exports = mongoose.model('Theatre', theatreSchema);

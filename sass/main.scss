@@ -1,0 +1,34 @@
+$primary: #80deea;
+$secondary: #234e52;
+$success: #66bb6a;
+$danger: #ff4136;
+
+//
+@import "../node_modules/bootstrap/scss/bootstrap";
+//
+
+body {
+	background: linear-gradient(-45deg, $cyan-100, $cyan-100, #fff, $cyan-100);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+$main-bg: (
+  "main-bg": #900
+);
+
+$active-heart: (
+  "color": $red-400
+);

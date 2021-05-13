@@ -1,0 +1,15 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="row p-4 p-md-3 mb-0 mx-2 text-white rounded bg-dark justify-content-lg-center">
+    <div class="col-lg-10">
+        <% if (movie.trailer == undefined || movie.trailer === '') { %> 
+            <h1 class="No trailer text-center">No trailer available for this movie</h1>
+        <% } else { %> 
+            <div class="ratio ratio-16x9">
+                <iframe class="px-4 py-6" src="<%= movie.trailer %> " title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>        </div>
+            </div>
+        <% } %> 
+        
+</div>
+
+<%- include('../partials/footer.ejs') %>

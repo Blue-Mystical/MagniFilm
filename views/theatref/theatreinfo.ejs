@@ -1,8 +1,18 @@
 <%- include('../partials/header.ejs') %>
 
-<h1><%= theatre.theatrename %></h1>
-<img src="<%= theatre.icon %>" alt="AAAAAAAA" height="600px">
-<p><%= theatre.desc %></p>
-<p><%= theatre.location %></p>
+<div class="row p-4 p-md-3 mb-0 mx-2 text-white rounded bg-dark">
+    <div class="col-lg-6 px-4">
+      <h1 class="display-4 fst-italic text-center"><%= theatre.theatrename %></h1>
+      <p class="my-0">
+        Location: <%= theatre.location %>
+      </p>
+     <p class="lead mb-0"><%= theatre.desc %></p>
+     <p class="mt-4">Added by: <%= theatre.addedby.username %></p>
+    </div>
+
+    <div class="col-lg-6 px-0 d-flex justify-content-center">
+        <img src="<%= theatre.icon %>" alt="AAAAAAAA" height="600px">
+    </div>
+</div>
 
 <%- include('../partials/footer.ejs') %>

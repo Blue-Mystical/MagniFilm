@@ -1,5 +1,6 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
+    helper = require('../helper'),
     Theatre = require('../models/theatre');
 
 router.get('/', function(req,res) {
@@ -7,7 +8,7 @@ router.get('/', function(req,res) {
         if (err){
             console.log(err);
         } else {
-            res.render('theatref/theatres.ejs', {theatrelist : Theatreall})
+            res.render('theatref/theatres.ejs', {theatrelist : Theatreall, helper : helper})
         }
     });
 });
@@ -21,7 +22,7 @@ router.get('/:id', function(req,res) {
         if (err) {
             console.log(err);
         } else {
-            res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre});
+            res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
         }
     });
 });
