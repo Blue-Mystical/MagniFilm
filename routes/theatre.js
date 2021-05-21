@@ -1,12 +1,14 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
+    middleware = require('../middleware'),
     helper = require('../helper'),
     Theatre = require('../models/theatre');
 
 router.get('/', function(req,res) {
     Theatre.find({}, function(err,Theatreall) {
         if (err){
-            console.log(err);
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
         } else {
             res.render('theatref/theatres.ejs', {theatrelist : Theatreall, helper : helper})
         }
@@ -20,7 +22,8 @@ router.get('/add', function(req,res) {
 router.get('/:id', function(req,res) {
     Theatre.findById(req.params.id, function(err, foundTheatre) {
         if (err) {
-            console.log(err);
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
         } else {
             res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
         }
@@ -35,7 +38,8 @@ router.post('/', function(req,res) {
     var newTheatre = {theatrename:theatrename, desc:desc, location:location, icon:icon};
     Theatre.create(newTheatre, function(err, newtheatre) {
         if(err){
-            console.log(err);
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
         } else {
             res.redirect('theatres.ejs');
         }

@@ -1,9 +1,11 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
+    middleware = require('../middleware'),
     User = require('../models/user'),
     helper = require('../helper'),
     passport = require('passport');
 
+// Register
 router.get('/register', function(req,res) {
     res.render('register.ejs');
 });
@@ -12,7 +14,7 @@ router.post('/register', function(req, res) {
     var newUser = new User({
         username: req.body.username,
         email: req.body.email, 
-        isAdmin: false
+        role: 'member'
     });
     var pw = req.body.password;
     var cfpw = req.body.confirmpassword;
@@ -22,8 +24,7 @@ router.post('/register', function(req, res) {
     }
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
-            console.log(err);
-            req.flash('error', 'Cannot register. Username already exists')
+            req.flash('error', 'Cannot register. Username maybe already exists')
             return res.render('register');
         } 
         passport.authenticate('local')(req, res, function() {

@@ -1,0 +1,147 @@
+<%- include('../partials/header.ejs') %>
+<div class="container py-4 mt-4 bg-secondary">
+  <h1 class="display-4 fw-bold text-center text-white">Editing <%= movie.moviename %></h1>
+  <form action='/movies/<%= movie._id %>?_method=PUT' method="POST" enctype="multipart/form-data" class="text-white">
+    <input type="hidden" name="action" value="editmovie">
+    <div class="form-group mb-3">
+      <label class="form-label">Movie name</label>
+      <input type="text" class="form-control" name="movie[moviename]" placeholder="<%= movie.moviename %>" value="<%= movie.moviename %>" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Film Date</label>
+        <input type="date" class="form-control" name="movie[airdate]" placeholder="<%= helper.changeDateFormat(movie.airdate) %>" value="<%= helper.changeDateFormat(movie.airdate) %>">
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="5" name="movie[desc]" placeholder="<%= movie.desc %>" required><%= movie.desc %></textarea>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Length</label>
+      <input type="number" class="form-control" name="movie[length]" placeholder="<%= movie.length %>" value="<%= movie.length %>" required>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Genres</label>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="action" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('action')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Action
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="adventure" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('adventure')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Adventure
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="animation" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('animation')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Animation
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="comedy" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('comedy')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Comedy
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="drama" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('drama')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Drama
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="fantasy" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('fantasy')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Fantasy
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="horror" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('horror')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Horror
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="musical" id="flexCheckDefault"name="movie[genre]"
+        <% if (movie.genre.includes('musical')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Musical
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="mystery" id="flexCheckDefault"name="movie[genre]"
+        <% if (movie.genre.includes('mystery')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Mystery
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="romance" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('romance')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Romance
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="scifi" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('scifi')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Sci-fi
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="thriller" id="flexCheckDefault"name="movie[genre]"
+        <% if (movie.genre.includes('thriller')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Thriller
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="western" id="flexCheckDefault" name="movie[genre]"
+        <% if (movie.genre.includes('western')) { %> checked <% } %> >
+        <label class="form-check-label" for="flexCheckDefault">
+          Western
+        </label>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="movierating" class="form-label">Rating</label>
+        <div class="row">
+          <div class="col-sm-12">
+            <select class="form-select" aria-label="Rating" name="movie[movierating]" required>
+              <option value="g" <% if(movie.movierating=='g') {%> selected <% } %> >G</option>
+              <option value="pg" <% if(movie.movierating=='pg') {%> selected <% } %> >PG</option>
+              <option value="pg13" <% if(movie.movierating=='pg13') {%> selected <% } %> >PG-13</option>
+              <option value="r" <% if(movie.movierating=='r') {%> selected <% } %> >R</option>
+              <option value="nc17" <% if(movie.movierating=='nc17') {%> selected <% } %> >NC-17</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+    <div class="form-group mb-3">
+      <label class="form-label">Poster Image</label>
+      <div class='row bg-dark mx-1 my-2 border border-white'>
+        <img src='<%= movie.image %>' class="img-responsive col-6 offset-3 col-md-4 offset-md-4">
+      </div>
+      <input type="file" class="form-control" name="image" accept="image/*">
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Trailer URL</label>
+      <input type="text" class="form-control" name="movie[trailer]"  placeholder="<%= movie.trailer %>" value="<%= movie.trailer %>">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+</div>
+<%- include('../partials/footer.ejs') %>

@@ -1,80 +1,83 @@
 <%- include('../partials/header.ejs') %>
 
 <div class="row p-4 p-md-3 mb-0 mx-2 text-white rounded bg-dark">
-    <div class="col-lg-6 px-4">
-      <h1 class="display-4 fst-italic text-center"><%= movie.moviename %></h1>
-      <h3 class="my-2">Release date: <%= helper.getLongDate(movie.airdate) %></h3>
-      <p class="my-0">
-        Genres: <%= helper.CapAndJoin(movie.genre) %>
+      <div class="col-lg-6 px-4">
+        <h1 class="display-4 fst-italic text-center"><%= movie.moviename %></h1>
+        <h3 class="my-2">Release date: <%= helper.getLongDate(movie.airdate) %></h3>
+        <p class="my-0">
+          Genres: <%= helper.CapAndJoin(movie.genre) %>
+        </p>
+        <p class="mt-0">Length: <%= movie.length %> minutes</p>
+        <p class="lead mt-2">Rating: 
+          <i class="fas fa-star"></i>
+          <% if (movie.avgrating == -1) { %> 
+            -/10
+          <% } else { %>  
+            <%= (movie.avgrating).toFixed(1) %>/10
+          <% } %> 
+        </p>
+      <p class="lead mb-0"><%= movie.desc %></p>
+      <p class="mt-4">
+        <% if (movie.addedby.username) { %> 
+          Added by: <%= movie.addedby.username %>
+        <% } else { %>
+          Added by: unknown
+        <% } %>
       </p>
-      <p class="mt-0">Length: <%= movie.length %> minutes</p>
-      <p class="lead mt-2">Rating: 
-        <i class="fas fa-star"></i>
-        <% if (movie.avgrating == -1) { %> 
-          -/10
-        <% } else { %>  
-          <%= (movie.avgrating).toFixed(1) %>/10
-        <% } %> 
-      </p>
-     <p class="lead mb-0"><%= movie.desc %></p>
-     <p class="mt-4">
-       <% if (movie.addedby.username) { %> 
-        Added by: <%= movie.addedby.username %>
-       <% } else { %>
-        Added by: unknown
-       <% } %>
-     </p>
 
-     <div class="d-flex flex-row <%= helper.getRatingColor(movie.movierating, 't') %>">
-      <p class="lead px-2 py-1 rounded border <%= helper.getRatingColor(movie.movierating, 'b') %>"><%= helper.capRating(movie.movierating) %></p>
-    </div>
-    </div>
+        <div class="d-flex flex-row <%= helper.getRatingColor(movie.movierating, 't') %>">
+          <p class="lead px-2 py-1 rounded border <%= helper.getRatingColor(movie.movierating, 'b') %>"><%= helper.capRating(movie.movierating) %></p>
+        </div>
 
-    <div class="col-lg-6 px-0 d-flex justify-content-center mt-3 mb-5 mb-lg-3">
-        <img src="<%= movie.image %>" alt="AAAAAAAA" height="600px">
-    </div>
-</div>
-<div class="row p-2 text-white rounded bg-primary fixed-bottom">
-    <div class="col-12 px-4">
+        <!-- Edit and delete -->
+        <% if (currentUser && helper.canManage(currentUser)) { %> 
+          <div class='d-flex flex-row'>
+            <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/movies/<%= movie._id %>/edit'>EDIT</a> 
 
-          <% if(!currentUser) {%>
-            <form action='/movies/<%= movie._id %> ' style="display: inline;" method="POST">
-              <input type="hidden" name="action" value="like">
-              <button type="submit" class="btn btn-lg bg-white">
-                <i class="far fa-heart mf-auto"></i>
-                <%= movie.likecount %>
-              </button>
+            <form action='/movies/<%= movie._id %>?_method=DELETE' method='POST' class=''>
+              <button class="btn btn-danger btn-lg btn-outline-secondary text-white py-1">DELETE</button> 
             </form>
-          <% } else { %>
-            
-            <% if (helper.findLiked(currentUser.likedMovie, movie._id)) { %>
+          </div>
+        <% } %>
+          
+        </div>
+
+      <div class="col-lg-6 px-0 d-flex justify-content-center mt-3 mb-5 mb-lg-3">
+          <img src="<%= movie.image %>" alt="AAAAAAAA" height="600px">
+      </div>  
+  </div>
+  <div class="row p-2 text-white rounded bg-primary fixed-bottom">
+      <div class="col-12 px-4">
+
+            <% if(currentUser && helper.findLiked(currentUser.likedMovie, movie._id)) {%>
               <form action='/movies/<%= movie._id %> ' style="display: inline;" method="POST">
                 <input type="hidden" name="action" value="unlike">
-                <button type="submit" class="btn btn-lg bg-white">
+                <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
                   <span style="color: hotpink;"><i class="fas fa-heart mf-auto"></i></span>
                   <%= movie.likecount %>
                 </button>
               </form>
-              <% } else { %> 
-                <form action='/movies/<%= movie._id %> ' style="display: inline;" method="POST">
-                  <input type="hidden" name="action" value="like">
-                  <button type="submit" class="btn btn-lg bg-white">
-                    <i class="far fa-heart mf-auto"></i>
-                    <%= movie.likecount %>
-                  </button>
-                </form>
-              <% } %>
-          <% } %>
+            <% } else { %>
+              <form action='/movies/<%= movie._id %> ' style="display: inline;" method="POST">
+                <input type="hidden" name="action" value="like">
+                <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
+                  <i class="far fa-heart mf-auto"></i>
+                  <%= movie.likecount %>
+                </button>
+              </form>
+            <% } %>
 
-        <a class="btn btn-light btn-lg" href='/movies/<%= movie._id %>/reviews/list'>Reviews (<%= movie.reviewcount %>)</a> 
-        <a class="btn btn-light btn-lg" href='/movies/<%= movie._id %>/reviews/new'>+</a> 
-      
-        <% if (movie.trailer == undefined || movie.trailer === '') { %>   
-          <a class="btn btn-light btn-lg ms-2 disabled" href='/movies/<%= movie._id %>/trailer'>Trailer</a> 
-        <% } else { %> 
-          <a class="btn btn-light btn-lg ms-2" href='/movies/<%= movie._id %>/trailer'>Trailer</a> 
-        <% } %> 
-    </div>
+            <div class="btn-group" role="group" aria-label="review group">
+              <a class="btn btn-light btn-lg btn-outline-secondary" href='/movies/<%= movie._id %>/reviews/list'>Reviews (<%= movie.reviewcount %>)</a> 
+            </div>
+        
+          <% if (movie.trailer == undefined || movie.trailer === '') { %>   
+            <a class="btn btn-light btn-lg ms-2 disabled" href='/movies/<%= movie._id %>/trailer'>Trailer</a> 
+          <% } else { %> 
+            <a class="btn btn-light btn-lg ms-2 btn-outline-secondary" href='/movies/<%= movie._id %>/trailer'>Trailer</a> 
+          <% } %> 
+      </div>
+    
 </div>
 
 <%- include('../partials/footer.ejs') %>

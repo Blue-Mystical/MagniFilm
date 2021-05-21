@@ -1,101 +1,101 @@
 <%- include('../partials/header.ejs') %>
 <div class="container py-4 mt-4 bg-secondary">
   <h1 class="display-4 fw-bold text-center text-white">Adding new movie</h1>
-  <form action='/movies' method="POST" class="text-white">
+  <form action='/movies' method="POST" enctype="multipart/form-data" class="text-white">
     <input type="hidden" name="action" value="addmovie">
     <div class="form-group mb-3">
       <label class="form-label">Movie name</label>
-      <input type="text" class="form-control" name="name" placeholder="Name" required>
+      <input type="text" class="form-control" name="movie[moviename]" placeholder="Name" required>
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Film Date</label>
-        <input type="date" class="form-control" name="airdate" placeholder="Date" value="2021-04-20">
+        <input type="date" class="form-control" name="movie[airdate]" placeholder="Date" value="2021-04-20">
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Description</label>
-      <textarea class="form-control" rows="5" name="desc" placeholder="Description of the movie" required></textarea>
+      <textarea class="form-control" rows="5" name="movie[desc]" placeholder="Description of the movie" required></textarea>
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Length</label>
-      <input type="number" class="form-control" name="length" placeholder="Length of the movie (must be in minutes)" required>
+      <input type="number" class="form-control" name="movie[length]" placeholder="Length of the movie (must be in minutes)" required>
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Genres</label>
 
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="action" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="action" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Action
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="adventure" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="adventure" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Adventure
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="animation" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="animation" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Animation
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="comedy" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="comedy" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Comedy
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="drama" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="drama" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Drama
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="fantasy" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="fantasy" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Fantasy
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="horror" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="horror" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Horror
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="musical" id="flexCheckDefault"name="genre">
+        <input class="form-check-input" type="checkbox" value="musical" id="flexCheckDefault"name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Musical
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="mystery" id="flexCheckDefault"name="genre">
+        <input class="form-check-input" type="checkbox" value="mystery" id="flexCheckDefault"name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Mystery
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="romance" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="romance" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Romance
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="scifi" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="scifi" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Sci-fi
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="thriller" id="flexCheckDefault"name="genre">
+        <input class="form-check-input" type="checkbox" value="thriller" id="flexCheckDefault"name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Thriller
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="western" id="flexCheckDefault" name="genre">
+        <input class="form-check-input" type="checkbox" value="western" id="flexCheckDefault" name="movie[genre]">
         <label class="form-check-label" for="flexCheckDefault">
           Western
         </label>
@@ -105,8 +105,7 @@
         <label for="movierating" class="form-label">Rating</label>
         <div class="row">
           <div class="col-sm-12">
-            <select class="form-select" aria-label="Rating" name="movierating" required>
-              <option selected>Select the rating of this movie</option>
+            <select class="form-select" aria-label="Rating" name="movie[movierating]" required>
               <option value="g">G</option>
               <option value="pg">PG</option>
               <option value="pg13">PG-13</option>
@@ -118,12 +117,12 @@
       </div>
   
     <div class="form-group mb-3">
-      <label class="form-label">Poster URL</label>
-      <input type="text" class="form-control" name="image" placeholder="URL" required>
+      <label class="form-label">Poster Image</label>
+      <input type="file" class="form-control" name="image" accept="image/*">
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Trailer URL</label>
-      <input type="text" class="form-control" name="trailer" placeholder="https://www.youtube.com/embed/VIDEOID">
+      <input type="text" class="form-control" name="movie[trailer]" placeholder="https://www.youtube.com/embed/VIDEOID">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 

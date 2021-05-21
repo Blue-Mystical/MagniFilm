@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
 var Review = require('./models/review');
+var Promotion = require('./models/promotion');
 
 var catsscore = 10 / 3;
 
@@ -60,6 +61,17 @@ var movielist = [
     }
 ];
 
+var promolist = [
+    {
+        title: 'Doge hahaha',
+        caption: 'Can\'t find better bg',
+        image: 'https://wallpaper.dog/large/20475179.jpg',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        type: 'promo', // promo or news
+        featured: true
+    }
+];
+
 function seedDB() {
     Review.remove({}, function(err) {
         if (err) {
@@ -84,6 +96,24 @@ function seedDB() {
             });
         }
     });
+
+    Promotion.remove({}, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('remove promo/news list completed');
+            promolist.forEach(function(seed) {
+                Promotion.create(seed, function(err,promo) {
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log('New promo added');
+                    }
+                });
+            });
+        }
+    });
+    
 }
 
 module.exports = seedDB;

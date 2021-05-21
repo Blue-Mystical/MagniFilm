@@ -6,33 +6,36 @@ var express          = require('express'),
     mongoose         = require('mongoose'),
     passport         = require('passport'),
     LocalStrategy    = require('passport-local'),
-    flash             = require('express-flash'),
+    flash            = require('express-flash'),
     sass             = require('node-sass-middleware'),
+    methodOverride   = require('method-override'),
 
     User             = require('./models/user');
 
 var movieRoutes      = require('./routes/movie'),
-    homeRoutes      = require('./routes/home'),
-    reviewRoutes      = require('./routes/review'),
-    theatreRoutes      = require('./routes/theatre'),
-    userRoutes      = require('./routes/user');
+    homeRoutes       = require('./routes/home'),
+    reviewRoutes     = require('./routes/review'),
+    theatreRoutes    = require('./routes/theatre'),
+    userRoutes       = require('./routes/user');
 
 app.use(sass({
     src: __dirname + '/sass',
     dest:__dirname + '/public/stylesheet',
     outputStyle: 'compressed',
     prefix: '/stylesheet',
-    debug: true
+    debug: false
 }));
 
 mongoose.connect('mongodb://localhost/MagniFilm');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine','ejs');
+app.use(methodOverride('_method'));
 app.use(express.static('public'));
-app.use(express.static(__dirname + 'public'));
+//app.use(express.static(__dirname + 'public'));
+app.use(express.static('./public'));
 app.use(flash())
 
-seedDB();
+// seedDB();
 
 app.use(require('express-session')({
     secret: 'a secret.',

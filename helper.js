@@ -2,29 +2,61 @@ const monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun' ,'Jul', 'Aug' ,'Sep
 const monthFull = ['January', 'February', 'March', 'April', 'May', 'June' ,
                     'July', 'August' ,'September', 'October', 'November', 'December'];
 
-function getShortDate(date) {
+var helperFunctions = {};
+
+helperFunctions.getShortDate = function(date) {
     return date.getDate() + " " + monthShort[date.getMonth()] + " " + date.getFullYear();
-}
+};
 
-function getLongDate(date) {
+helperFunctions.getLongDate = function(date) {
     return date.getDate() + " " + monthFull[date.getMonth()] + " " + date.getFullYear();
-}
+};
 
-function CapAndJoin(array) {
+helperFunctions.changeDateFormat = function(date) {
+
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    var formattedDate = [year, month, day].join('-');
+    return formattedDate;
+};
+
+helperFunctions.CapAndJoin = function(array) {
     var newarray = [];
     array.forEach(element => {
         var newelement = element.charAt(0).toUpperCase() + element.slice(1);
         newarray.push(newelement);
     });
     return newarray.join(', ');
-}
+};
 
-function findLiked(array, movieid) {
+helperFunctions.findLiked = function(array, movieid) {
     const result = array.includes(movieid);
     return result; 
-}
+};
 
-function getRatingColor(rating, type) {
+helperFunctions.userReviewExists = function(userid, reviewlist) {
+    var flag = false;
+    reviewlist.forEach(review => {
+        if (review.user.id.equals(userid)) {
+            flag = true;
+        }
+    });
+    return flag;
+};
+
+helperFunctions.canManage = function(user) {
+    return user.role === 'admin';
+};
+
+helperFunctions.getRatingColor = function(rating, type) {
     if (type === 't'){ // text
         if (rating === 'g') return 'text-primary';
         else if (rating === 'pg') return 'text-success';
@@ -43,7 +75,7 @@ function getRatingColor(rating, type) {
     }
 }
 
-function capRating(rating) {
+helperFunctions.capRating = function(rating) {
     if (rating === 'g') return 'G';
     else if (rating === 'pg') return 'PG';
     else if (rating === 'pg13') return 'PG-13';
@@ -52,11 +84,4 @@ function capRating(rating) {
     else return 'no rating';
 }
 
-module.exports = {
-    getShortDate : getShortDate,
-    getLongDate : getLongDate,
-    findLiked : findLiked,
-    CapAndJoin : CapAndJoin,
-    capRating : capRating,
-    getRatingColor : getRatingColor
-}
+module.exports = helperFunctions;

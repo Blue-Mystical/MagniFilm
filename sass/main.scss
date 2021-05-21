@@ -25,10 +25,31 @@ body {
 	}
 }
 
-$main-bg: (
-  "main-bg": #900
-);
+.carousel-item img,
+.carousel-item-active img {
+	width: 50%;
+	max-width: 80rem;
+	object-fit: cover;
+	height: 20rem;
+}
 
-$active-heart: (
-  "color": $red-400
-);
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  height: 40px;
+  width: 40px;
+  border: white;
+  border-width: 5px;
+  background-size: 100%, 100%;
+  background-color:black;
+}
+
+.carousel-control-next-icon:after
+{
+  font-size: 30px;
+  color: white;
+}
+
+.carousel-control-prev-icon:after {
+  font-size: 30px;
+  color: white;
+}

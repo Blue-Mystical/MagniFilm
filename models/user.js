@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
+var mongoosepaginate = require('mongoose-paginate-v2');
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
-    isAdmin: Boolean,
+    role: String, // available: member, admin
     likedMovie: [{
            type: mongoose.Schema.Types.ObjectId,
            ref: 'movie'
@@ -20,5 +21,6 @@ var userSchema = new mongoose.Schema({
     }]
 });
 userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(mongoosepaginate);
 
 module.exports = mongoose.model('User', userSchema);

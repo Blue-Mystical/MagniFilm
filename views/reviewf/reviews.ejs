@@ -2,8 +2,36 @@
 
 <div class="container py-4 mt-4 bg-secondary">
     <div class="form-group mb-3 bg-primary border border-secondary">
-        <h1 class="display-5 fw-bold text-center py-3">Reviews for <%= movie.moviename %></h1>
+        <h1 class="display-5 fw-bold text-center py-1">Reviews for <%= movie.moviename %></h1>
+        <h5 class="h-5 fw-light text-center py-1">
+            <% if (movie.reviewcount === 1) { %> 
+                <%= movie.reviewcount %> review found
+            <% } else { %> 
+                <%= movie.reviewcount %> reviews found
+            <% } %> 
+        </h5>
+        
+        <div class='text-center d-flex flex-row justify-content-center'>
 
+            <a class="btn btn-light btn-lg mb-2 btn-lg btn-outline-secondary me-2" href='/movies/<%= movie._id %>'><i class="fas fa-arrow-left"></i></a> 
+
+            <% movie.review.forEach(function(review){ %>
+                <% if(currentUser && review.user.id.equals(currentUser._id)){ %>
+                    <div class='d-flex flex-row justify-content-center pb-2'>
+                        <a class="btn btn-light btn-lg btn-outline-secondary me-2" href='/movies/<%= movie._id %>/reviews/<%= review._id %>/edit'>Edit your review</a> 
+                        <form action='/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE' method='POST' class=''>
+                          <button class="btn btn-danger btn-lg btn-outline-secondary text-white">DELETE</button> 
+                        </form>
+                    </div>
+                 <% } %>   
+            <% }); %>
+
+            <% if (!currentUser || !helper.userReviewExists(currentUser._id, movie.review)) { %>
+                <a class="btn btn-light btn-lg mb-2 btn-outline-secondary" href='/movies/<%= movie._id %>/reviews/new'>Add your own</a> 
+            <% } %> 
+
+        </div>
+        
         <table class="table table-striped bg-light">
             <tbody>
 
@@ -14,16 +42,13 @@
                         </p>
                     </tr></td>
                 <% } else { %> 
+                    <!-- Show your own review first before the rest -->
                     <% movie.review.forEach(function(review) { %>
                         <tr><td>
-                            <p class="fw-bold mx-4">
-                                <%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %>
-                            </p>
-                            <p class="fw-light mx-4">
-                                <%= review.text %>
-                            </p>
+                            <div class='px-2 pb-2 fw-bold'><%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %></div>
+                            <div class='px-2 pb fw-light'><%= review.text %></div>
                         </tr></td>
-                      <% }); %>
+                    <% }); %>
                 <% } %> 
             </tbody>
         </table>
