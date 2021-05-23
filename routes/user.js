@@ -12,7 +12,11 @@ router.get('/user', middleware.isLoggedIn, function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('userf/user.ejs', {user: foundUser, helper : helper});
+            if (foundUser) {
+                res.render('userf/user.ejs', {user: foundUser, helper : helper});
+            } else {
+                res.render("notfound.ejs"); // Somehow
+            }
         }
     });
 });
@@ -23,7 +27,11 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('userf/history.ejs', {user: foundUser, helper : helper});
+            if (foundUser) {
+                res.render('userf/history.ejs', {user: foundUser, helper : helper});
+            } else {
+                res.render("notfound.ejs"); // also somehow
+            }
         }
     });
 });

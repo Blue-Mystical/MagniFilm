@@ -21,5 +21,10 @@ var reviewSchema = new mongoose.Schema({
     reviewdate: Date
 });
 
+reviewSchema.pre('findOneAndDelete', function(next) { // Cascade delete review history
+    
+});
+
+
 reviewSchema.plugin(mongoosepaginate);
 module.exports = mongoose.model('review', reviewSchema);

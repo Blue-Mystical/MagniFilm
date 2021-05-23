@@ -14,14 +14,18 @@ router.get('/list', function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            if(req.isAuthenticated()){
-                foundMovie.review.forEach(invreview => {
-                    if (invreview.user.id.equals(req.user._id) ) {     
-                        foundReviewId = invreview._id;
-                    }
-                });
+            if (foundMovie) {
+                if(req.isAuthenticated()){
+                    foundMovie.review.forEach(invreview => {
+                        if (invreview.user.id.equals(req.user._id) ) {     
+                            foundReviewId = invreview._id;
+                        }
+                    });
+                }
+                res.render("reviewf/reviews.ejs", {movie: foundMovie, helper : helper, reviewid : foundReviewId});
+            } else {
+                res.render("notfound.ejs");
             }
-            res.render("reviewf/reviews.ejs", {movie: foundMovie, helper : helper, reviewid : foundReviewId});
         }
     });
 });
@@ -33,7 +37,11 @@ router.get('/:reviewid/edit', middleware.checkReviewOwner, function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render("reviewf/editreview.ejs", {review: foundReview, movie_id: req.params.id, helper : helper});
+            if (foundReview) {
+                res.render("reviewf/editreview.ejs", {review: foundReview, movie_id: req.params.id, helper : helper});
+            } else {
+                res.render("notfound.ejs");
+            }
         }
     });
 });
@@ -51,11 +59,16 @@ router.put('/:reviewid', middleware.checkReviewOwner, function(req,res) {
                     res.redirect('back');
                 } else {
                     // Modify rating on the movie and add review count
-                    var newsumrating = foundMovie.sumrating - updatedReview.rating + parseInt(req.body.review.rating, 10);
-                    var newaverage = newsumrating / foundMovie.reviewcount;
-                    foundMovie.update({ $set: { avgrating: newaverage, sumrating : newsumrating }}).exec();
+                    if (foundMovie) {
+                        var newsumrating = foundMovie.sumrating - updatedReview.rating + parseInt(req.body.review.rating, 10);
+                        var newaverage = newsumrating / foundMovie.reviewcount;
+                        foundMovie.update({ $set: { avgrating: newaverage, sumrating : newsumrating }}).exec();
 
-                    res.redirect('/movies/' + foundMovie._id + '/reviews/list');
+                        res.redirect('/movies/' + foundMovie._id + '/reviews/list');
+                    } else {
+                        middleware.displayDeletedMovieError(req, err);
+                        res.redirect('back');
+                    }
                 }
             });
         }
@@ -82,16 +95,21 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
                             res.redirect('back');
                         } else {
                             // Modify rating on the movie and reduce review count
-                            var newsumrating = foundMovie.sumrating - oldrating;
-                            var newreviewcount = foundMovie.reviewcount - 1;
-                            if (foundMovie.reviewcount == 1) {
-                                var newaverage = -1;
+                            if (foundMovie) {
+                                var newsumrating = foundMovie.sumrating - oldrating;
+                                var newreviewcount = foundMovie.reviewcount - 1;
+                                if (foundMovie.reviewcount == 1) {
+                                    var newaverage = -1;
+                                } else {
+                                    var newaverage = newsumrating / newreviewcount;
+                                }
+                                foundMovie.update({ $set: { avgrating: newaverage, reviewcount: newreviewcount, sumrating : newsumrating }}).exec();
+            
+                                res.redirect('/movies/' + foundMovie._id + '/reviews/list');
                             } else {
-                                var newaverage = newsumrating / newreviewcount;
+                                middleware.displayDeletedMovieError(req, err);
+                                res.redirect('back');
                             }
-                            foundMovie.update({ $set: { avgrating: newaverage, reviewcount: newreviewcount, sumrating : newsumrating }}).exec();
-        
-                            res.redirect('/movies/' + foundMovie._id + '/reviews/list');
                         }
                     });
                 }
@@ -107,7 +125,11 @@ router.get('/new', middleware.checkExistingReview, function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('reviewf/newreview.ejs', {movie: foundMovie, helper : helper});
+            if (foundMovie) {
+                res.render('reviewf/newreview.ejs', {movie: foundMovie, helper : helper});
+            } else {
+                res.render("notfound.ejs");
+            }
         }
     });
 });
@@ -118,43 +140,48 @@ router.post('/', middleware.checkExistingReview, function(req, res) {
             middleware.displayGenericError(req, err);
             res.redirect('/movies' + foundMovie._id + '/reviews/add');
         } else {
-            req.body.review.user = req.body.user;
-            req.body.review.reviewdate = new Date();
-            Review.create(req.body.review, function(err, newreview) {
-                if (err) {
-                    middleware.displayGenericError(req, err);
-                    res.redirect('back');
-                } else {
-                    // Add review for both review and movie schemas
-                    newreview.user.id = req.user._id;
-                    newreview.user.username = req.user.username;
-                    newreview.formovie.id = foundMovie._id;
-                    newreview.formovie.moviename = foundMovie.moviename;
-                    newreview.save();
-                    foundMovie.review.push(newreview);
-                    foundMovie.save();
+            if (foundMovie) {
+                req.body.review.user = req.body.user;
+                req.body.review.reviewdate = new Date();
+                Review.create(req.body.review, function(err, newreview) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        // Add review for both review and movie schemas
+                        newreview.user.id = req.user._id;
+                        newreview.user.username = req.user.username;
+                        newreview.formovie.id = foundMovie._id;
+                        newreview.formovie.moviename = foundMovie.moviename;
+                        newreview.save();
+                        foundMovie.review.push(newreview);
+                        foundMovie.save();
 
-                    // Modify rating on the movie and add review count
-                    var newsumrating = foundMovie.sumrating + parseInt(newreview.rating, 10);
-                    var newreviewcount = foundMovie.reviewcount + 1;
-                    var newaverage = newsumrating / newreviewcount;
-                    foundMovie.update({ $set: { avgrating: newaverage, reviewcount: newreviewcount, sumrating : newsumrating }}).exec();
+                        // Modify rating on the movie and add review count
+                        var newsumrating = foundMovie.sumrating + parseInt(newreview.rating, 10);
+                        var newreviewcount = foundMovie.reviewcount + 1;
+                        var newaverage = newsumrating / newreviewcount;
+                        foundMovie.update({ $set: { avgrating: newaverage, reviewcount: newreviewcount, sumrating : newsumrating }}).exec();
 
-                    // Add review history for the user (todo) and redirect
-                    User.findById(req.user._id, function(err, foundUser) {
-                        if (err) {
-                            middleware.displayGenericError(req, err);
-                            res.redirect('back');
-                        } else {
-                            var refReview = newreview._id;
-                            foundUser.reviewHistory.push(refReview);
-                            foundUser.save();
-                        res.redirect('/movies/' + foundMovie._id + '/reviews/list');
-                        }
-                    });
+                        // Add review history for the user (todo) and redirect
+                        User.findById(req.user._id, function(err, foundUser) {
+                            if (err) {
+                                middleware.displayGenericError(req, err);
+                                res.redirect('back');
+                            } else {
+                                var refReview = newreview._id;
+                                foundUser.reviewHistory.push(refReview);
+                                foundUser.save();
+                            res.redirect('/movies/' + foundMovie._id + '/reviews/list');
+                            }
+                        });
 
-                }
-            });
+                    }
+                });
+            } else {
+                middleware.displayDeletedMovieError(req, err);
+                res.redirect('back');
+            }
         }
     });
 });

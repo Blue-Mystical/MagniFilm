@@ -16,31 +16,12 @@ var userSchema = new mongoose.Schema({
         ref: 'review'
     }],
     movieHistory: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'movie'
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'movie'
+        },
+        date: Date
     }]
-
-    // likedMovie: [{
-    //     id: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'movie'
-    //     },
-    //     date: Date
-    // }],
-    // reviewHistory: [{
-    //     id: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'review'
-    //     },
-    //     date: Date
-    // }],
-    // movieHistory: [{
-    //     id: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'movie'
-    //     },
-    //     date: Date
-    // }]
 
 });
 userSchema.plugin(passportLocalMongoose);

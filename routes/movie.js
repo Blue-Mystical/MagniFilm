@@ -50,11 +50,32 @@ router.get('/:id', function(req,res) {
                 middleware.displayGenericError(req, err);
                 res.redirect('back');
             } else {
-                if( req.isAuthenticated() ){ // Add to history of user or change date
-                    req.user.movieHistory.push(foundMovie._id);
-                    req.user.save();
+                if (foundMovie) {
+                    if( req.isAuthenticated() ){ // Add to history of user or change date
+                        var currentDate = new Date();
+                        var foundflag = false;
+
+                        req.user.movieHistory.forEach(movieelement => {
+                            
+                            if ( movieelement.id.equals(foundMovie._id) ) {
+                                movieelement.date = currentDate;
+                                foundflag = true;
+                                //console.log('found existed movie history');
+                            }
+                            
+                        });
+                        
+                        if (foundflag === false) {
+                            //console.log('adding a history');
+                            var newElement = {id: foundMovie._id, date: currentDate};
+                            req.user.movieHistory.push(newElement);
+                        }
+                        req.user.save();
+                    }
+                    res.render("movief/movieinfo.ejs", {movie: foundMovie, helper : helper});
+                } else {
+                    res.render("notfound.ejs");
                 }
-                res.render("movief/movieinfo.ejs", {movie: foundMovie, helper : helper});
             }
         });
     }
@@ -67,7 +88,11 @@ router.get('/:id/trailer', function(req,res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('movief/trailer.ejs', {movie: foundMovie, helper : helper});
+            if (foundMovie) {
+                res.render('movief/trailer.ejs', {movie: foundMovie, helper : helper});
+            } else {
+                res.render("notfound.ejs");
+            }
         }
     });
 });
@@ -107,7 +132,12 @@ router.get('/:id/edit', middleware.checkManager, function(req, res) {
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('movief/editmovie.ejs', {movie: foundMovie, helper : helper});
+            if (foundMovie) {
+                res.render('movief/editmovie.ejs', {movie: foundMovie, helper : helper});
+            } else {
+                middleware.displayDeletedMovieError(req, err);
+                res.redirect('back');
+            }
         }
     });
 });
@@ -121,7 +151,12 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
             middleware.displayGenericError(req, err);
             res.redirect('/movies');
         } else {
-            res.redirect('/movies/' + req.params.id);
+            if (updatedMovie) {
+                res.redirect('/movies/' + req.params.id);
+            } else {
+                middleware.displayDeletedMovieError(req, err);
+                res.redirect('back');
+            }
         }
     });
 });
@@ -154,15 +189,20 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                         middleware.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
-                        var newcount = foundMovie.likecount + 1;
-                        Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
-                            if (err) {
-                                middleware.displayGenericError(req, err);
-                                res.redirect('back');
-                            } else {
-                                res.redirect('/movies/' + req.params.id);    
-                            }
-                        });
+                        if (foundMovie) {
+                            var newcount = foundMovie.likecount + 1;
+                            Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
+                                if (err) {
+                                    middleware.displayGenericError(req, err);
+                                    res.redirect('back');
+                                } else {
+                                    res.redirect('/movies/' + req.params.id);    
+                                }
+                            });
+                        } else {
+                            middleware.displayDeletedMovieError(req, err);
+                            res.redirect('back');
+                        }
                     }
                 });
             }
@@ -180,19 +220,24 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                         middleware.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
-                        var refMovie = req.params.id;
-                        foundUser.likedMovie.pull(refMovie); // DELETE
-                        foundUser.save();
-                        var newcount = foundMovie.likecount - 1;
-                        Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
-                            if (err) {
-                                middleware.displayGenericError(req, err);
-                                res.redirect('back');
-                            } else {
-                            //  console.log("Updated User : ", foundmovie2);
-                                res.redirect('/movies/' + req.params.id);    
-                            }
-                        });
+                        if (foundMovie) {
+                            var refMovie = req.params.id;
+                            foundUser.likedMovie.pull(refMovie); // DELETE
+                            foundUser.save();
+                            var newcount = foundMovie.likecount - 1;
+                            Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
+                                if (err) {
+                                    middleware.displayGenericError(req, err);
+                                    res.redirect('back');
+                                } else {
+                                //  console.log("Updated User : ", foundmovie2);
+                                    res.redirect('/movies/' + req.params.id);    
+                                }
+                            });
+                        } else {
+                            middleware.displayDeletedMovieError(req, err);
+                            res.redirect('back');
+                        }
                     }
                 });
             }
