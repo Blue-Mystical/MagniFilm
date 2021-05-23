@@ -53,3 +53,7 @@ body {
   font-size: 30px;
   color: white;
 }
+// Remove underlines in a search result function
+td a {
+	text-decoration: none; 
+}

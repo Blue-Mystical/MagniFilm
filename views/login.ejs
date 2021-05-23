@@ -5,7 +5,7 @@
     <div class="container">
       <div class="row">
           <div class="col-lg-4 offset-lg-4 col-md-6 offset-md-3">
-              <div class="login-form bg-light mt-4 p-4">
+              <div class="login-form bg-dark text-white mt-4 p-4 rounded-3">
                   <form action="/login" method="POST" class="row g-3">
                       <h4>Sign in</h4>
 
@@ -16,7 +16,7 @@
                       <% } %>
                       <% if(messages.loginrequired){ %>
                         <div class='col-12'>
-                          <p class="py-1 px-2 rounded border bg-warning"><%= messages.loginrequired %></p>
+                          <p class="py-1 px-2 rounded border bg-warning text-black"><%= messages.loginrequired %></p>
                         </div>
                       <% } %>
 
@@ -31,7 +31,7 @@
                         min=8 max=100 required>
                       </div>
                       <div class="col-12">
-                          <button type="submit" class="btn btn-dark float-end" value='register'>Login</button>
+                          <button type="submit" class="btn btn-primary float-end" value='register'>Login</button>
                       </div>
                   </form>
                   <hr class="mt-4">

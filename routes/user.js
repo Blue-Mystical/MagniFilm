@@ -5,6 +5,29 @@ var express = require('express'),
     helper = require('../helper'),
     passport = require('passport');
 
+// User pages
+router.get('/user', middleware.isLoggedIn, function(req,res) {
+    User.findById(req.user._id, function(err, foundUser) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            res.render('userf/user.ejs', {user: foundUser, helper : helper});
+        }
+    });
+});
+
+router.get('/user/history', middleware.isLoggedIn, function(req,res) {
+    User.findById(req.user._id, function(err, foundUser) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            res.render('userf/history.ejs', {user: foundUser, helper : helper});
+        }
+    });
+});
+
 // Register
 router.get('/register', function(req,res) {
     res.render('register.ejs');
@@ -33,6 +56,7 @@ router.post('/register', function(req, res) {
     });
 });
 
+// Login
 router.get('/login', function(req,res) {
     res.render('login.ejs');
 });

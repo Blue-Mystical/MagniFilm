@@ -1,6 +1,6 @@
 <%- include('../partials/header.ejs') %>
-<div class="container py-4 mt-4 bg-secondary">
-  <h1 class="display-5 fw-bold text-center py-3 bg-dark text-white">Editing review</h1>
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+  <h1 class="display-5 fw-bold text-center bg-secondary text-white rounded-3">Editing review</h1>
   <form class='text-white' action='/movies/<%= movie_id %>/reviews/<%= review._id %>?_method=PUT' method="POST">
     <div class="form-group mb-3">
         <label class="form-label">Review</label>

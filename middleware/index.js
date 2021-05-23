@@ -64,7 +64,7 @@ midwareFunctions.checkExistingReview = function(req, res, next){ // Used to prev
 
 midwareFunctions.checkManager = function(req, res, next){
     if(req.isAuthenticated()){
-        if (req.user.role === 'admin') {
+        if (req.user.role === 'admin' || req.user.role === 'manager') {
             next();
         } else {
             midwareFunctions.displayAccessDenied(req, 'You do not have permission to do that.');

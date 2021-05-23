@@ -1,7 +1,30 @@
 <%- include('../partials/header.ejs') %>
 
-<div class="container py-4 mt-4 bg-secondary">
-    <div class="form-group mb-3 bg-primary border border-secondary">
+<!-- Confirm to delete modal -->
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmLabel">DANGER</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+          <div class="modal-body">
+            Do you want to delete the review?
+          </div>
+        <div class="modal-footer">
+            <% if(reviewid){ %>
+                <form action='/movies/<%= movie._id %>/reviews/<%= reviewid %>?_method=DELETE' method='POST' class=''>
+                    <button type="submit" class="btn btn-danger text-white">Yes</button>
+                </form>
+            <% } %> 
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
         <h1 class="display-5 fw-bold text-center py-1">Reviews for <%= movie.moviename %></h1>
         <h5 class="h-5 fw-light text-center py-1">
             <% if (movie.reviewcount === 1) { %> 
@@ -15,18 +38,12 @@
 
             <a class="btn btn-light btn-lg mb-2 btn-lg btn-outline-secondary me-2" href='/movies/<%= movie._id %>'><i class="fas fa-arrow-left"></i></a> 
 
-            <% movie.review.forEach(function(review){ %>
-                <% if(currentUser && review.user.id.equals(currentUser._id)){ %>
-                    <div class='d-flex flex-row justify-content-center pb-2'>
-                        <a class="btn btn-light btn-lg btn-outline-secondary me-2" href='/movies/<%= movie._id %>/reviews/<%= review._id %>/edit'>Edit your review</a> 
-                        <form action='/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE' method='POST' class=''>
-                          <button class="btn btn-danger btn-lg btn-outline-secondary text-white">DELETE</button> 
-                        </form>
-                    </div>
-                 <% } %>   
-            <% }); %>
-
-            <% if (!currentUser || !helper.userReviewExists(currentUser._id, movie.review)) { %>
+            <% if(reviewid){ %>
+                <div class='d-flex flex-row justify-content-center pb-2'>
+                    <a class="btn btn-light btn-lg btn-outline-secondary me-2" href='/movies/<%= movie._id %>/reviews/<%= reviewid %>/edit'>Edit your review</a> 
+                    <button class="btn btn-danger btn-lg btn-outline-secondary text-white" data-bs-toggle="modal" data-bs-target="#deleteConfirm">DELETE</button> 
+                </div>
+            <% } else { %>   
                 <a class="btn btn-light btn-lg mb-2 btn-outline-secondary" href='/movies/<%= movie._id %>/reviews/new'>Add your own</a> 
             <% } %> 
 
@@ -42,7 +59,6 @@
                         </p>
                     </tr></td>
                 <% } else { %> 
-                    <!-- Show your own review first before the rest -->
                     <% movie.review.forEach(function(review) { %>
                         <tr><td>
                             <div class='px-2 pb-2 fw-bold'><%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %></div>

@@ -35,7 +35,7 @@ app.use(express.static('public'));
 app.use(express.static('./public'));
 app.use(flash())
 
-// seedDB();
+seedDB();
 
 app.use(require('express-session')({
     secret: 'a secret.',

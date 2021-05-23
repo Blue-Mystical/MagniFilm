@@ -19,6 +19,29 @@ var userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'movie'
     }]
+
+    // likedMovie: [{
+    //     id: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'movie'
+    //     },
+    //     date: Date
+    // }],
+    // reviewHistory: [{
+    //     id: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'review'
+    //     },
+    //     date: Date
+    // }],
+    // movieHistory: [{
+    //     id: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'movie'
+    //     },
+    //     date: Date
+    // }]
+
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(mongoosepaginate);

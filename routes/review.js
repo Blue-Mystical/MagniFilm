@@ -8,12 +8,20 @@ var express = require('express'),
 
 // Review list
 router.get('/list', function(req,res) {
+    var foundReviewId = undefined;
     Movie.findById(req.params.id).populate('review').exec(function(err, foundMovie) {
         if(err){
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render("reviewf/reviews.ejs", {movie: foundMovie, helper : helper});
+            if(req.isAuthenticated()){
+                foundMovie.review.forEach(invreview => {
+                    if (invreview.user.id.equals(req.user._id) ) {     
+                        foundReviewId = invreview._id;
+                    }
+                });
+            }
+            res.render("reviewf/reviews.ejs", {movie: foundMovie, helper : helper, reviewid : foundReviewId});
         }
     });
 });

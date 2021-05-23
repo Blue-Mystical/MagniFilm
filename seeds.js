@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
+var helper = require('./helper');
 var Movie = require('./models/movie');
 var Review = require('./models/review');
 var Promotion = require('./models/promotion');
+var User = require('./models/user');
 
 var catsscore = 10 / 3;
 
@@ -80,6 +82,32 @@ function seedDB() {
             console.log('remove reviews completed');
         }
     });
+
+    // Clean data before seeding here
+    User.find({}, function(err, userarray) {
+        if (err) {
+            console.log(err);
+        } else {
+            userarray.forEach(user => {
+                console.log('------------------------ \ntrying to clear a user history \n------------------------');
+                if (user.likedMovie) {
+                    helper.clearArray(user.likedMovie);
+                    console.log('remove liked movie list');
+                }
+                if (user.reviewHistory) {
+                    helper.clearArray(user.reviewHistory);
+                    console.log('remove review history');
+                }
+                if (user.movieHistory) {
+                    helper.clearArray(user.movieHistory);
+                    console.log('remove movie history');
+                }
+                user.save();
+            });
+        }
+    });
+    //
+
     Movie.remove({}, function(err) {
         if (err) {
             console.log(err);
@@ -90,7 +118,7 @@ function seedDB() {
                     if(err) {
                         console.log(err);
                     } else {
-                        console.log('New data added');
+                        console.log('New movie added');
                     }
                 });
             });

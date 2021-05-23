@@ -42,18 +42,8 @@ helperFunctions.findLiked = function(array, movieid) {
     return result; 
 };
 
-helperFunctions.userReviewExists = function(userid, reviewlist) {
-    var flag = false;
-    reviewlist.forEach(review => {
-        if (review.user.id.equals(userid)) {
-            flag = true;
-        }
-    });
-    return flag;
-};
-
 helperFunctions.canManage = function(user) {
-    return user.role === 'admin';
+    return (user.role === 'admin' || user.role === 'manager');
 };
 
 helperFunctions.getRatingColor = function(rating, type) {
@@ -82,6 +72,11 @@ helperFunctions.capRating = function(rating) {
     else if (rating === 'r') return 'R';
     else if (rating === 'nc17') return 'NC-17';
     else return 'no rating';
+}
+
+helperFunctions.clearArray = function(array) {
+    array.splice(0, array.length);
+    return array;
 }
 
 module.exports = helperFunctions;

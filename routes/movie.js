@@ -50,6 +50,10 @@ router.get('/:id', function(req,res) {
                 middleware.displayGenericError(req, err);
                 res.redirect('back');
             } else {
+                if( req.isAuthenticated() ){ // Add to history of user or change date
+                    req.user.movieHistory.push(foundMovie._id);
+                    req.user.save();
+                }
                 res.render("movief/movieinfo.ejs", {movie: foundMovie, helper : helper});
             }
         });
@@ -171,7 +175,6 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                 middleware.displayGenericError(req, err);
                 res.redirect('back');
             } else {
-                foundUser.pull
                 Movie.findById(req.params.id, function(err, foundMovie) {
                     if (err) {
                         middleware.displayGenericError(req, err);
