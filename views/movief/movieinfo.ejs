@@ -26,10 +26,14 @@
         <h1 class="display-4 fst-italic text-center"><%= movie.moviename %></h1>
         <h3 class="my-2">Release date: <%= helper.getLongDate(movie.airdate) %></h3>
         <p class="my-0">
-          Genres: <%= helper.CapAndJoin(movie.genre) %>
+          <% if (movie.genre.length > 0) { %>
+            <span class='fw-bold'>Genres: </span><%= helper.CapAndJoin(movie.genre) %>
+          <% } else { %>
+            <span class='fw-bold'>No Genres</span>
+          <% } %>
         </p>
-        <p class="mt-0">Length: <%= movie.length %> minutes</p>
-        <p class="lead mt-2">Rating: 
+        <p class="mt-0"><span class='fw-bold'>Length: </span><%= movie.length %> minutes</p>
+        <p class="lead mt-2"><span class='fw-bold'>Rating: </span>
           <i class="fas fa-star"></i>
           <% if (movie.avgrating == -1) { %> 
             -/10

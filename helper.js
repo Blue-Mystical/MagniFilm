@@ -46,6 +46,22 @@ helperFunctions.canManage = function(user) {
     return (user.role === 'admin' || user.role === 'manager');
 };
 
+helperFunctions.getAirDateColor = function(airDate) {
+    airDate = Date.parse(airDate);
+    var currentDate = new Date();
+    currentDate = Date.parse(currentDate);
+    var unairDate = currentDate - 1000 * 60 * 60 * 24 * 30; // 30 days
+    var upperDate = currentDate + 1000 * 60 * 60 * 24 * 30;
+
+    if (airDate < unairDate) {
+        return 0;
+    } else if (airDate >= unairDate && airDate <= currentDate) {
+        return 1;
+    } else if (airDate > currentDate) {
+        return 2;
+    } else return 0;
+};
+
 helperFunctions.getRatingColor = function(rating, type) {
     if (type === 't'){ // text
         if (rating === 'g') return 'text-primary';
@@ -77,6 +93,10 @@ helperFunctions.capRating = function(rating) {
 helperFunctions.clearArray = function(array) {
     array.splice(0, array.length);
     return array;
+}
+
+helperFunctions.queryLimit = function() {
+    return 18;
 }
 
 module.exports = helperFunctions;

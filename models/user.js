@@ -7,6 +7,7 @@ var userSchema = new mongoose.Schema({
     email: String,
     password: String,
     role: String, // available: member, admin
+    avatar: String,
     likedMovie: [{
            type: mongoose.Schema.Types.ObjectId,
            ref: 'movie'

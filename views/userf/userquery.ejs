@@ -1,0 +1,107 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
+        <h1 class="display-5 fw-bold text-center py-1"><%= title %> </h1>
+        <% if (doc.totalDocs > 0) { %> 
+            <h5 class="h-5 fw-light text-center py-1">
+                <% if (doc.hasPrevPage) { %> 
+                    <a href='?page=<%= doc.prevPage %>'>
+                        <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
+                    </a>
+                <% } else { %> 
+                    <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
+                <% } %> 
+                Page <%= doc.page %> of <%= doc.totalPages %> 
+                <% if (doc.hasNextPage) { %> 
+                    <a href='?page=<%= doc.nextPage %>'>
+                        <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
+                    </a>
+                <% } else { %> 
+                    <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
+                <% } %> 
+            </h5>
+        <% } %>
+
+        <table class="table table-striped bg-light">
+            <tbody>
+                
+                <% if (movielist.length == 0) { %> 
+                    <tr><td>
+                        <p class="fw-bold mx-4 my-2 text-center">
+                            <%= noresult %>
+                        </p>
+                    </tr></td>
+                <% } else { %> 
+                    <% movielist.forEach(function(movie) { %>
+                    <tr><td>
+
+                        <a href="/movies/<%= movie._id %> " class='text-dark'>
+                            <div class='row'>
+                                <div class='col-3 col-md-2'>
+                                    <div class='d-flex justify-content-center'>
+                                        <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                                    </div>
+                                </div>
+                                <div class='col-6 col-md-8'>
+                                    <div class='fw-bold fs-2'><%= movie.moviename %></div>
+                                    <div>
+                                        <% if(helper.getAirDateColor(movie.airdate) == 0) { %> 
+                                            <span style="color: black;"><i class="fas fa-film mf-auto me-1"></span></i>
+                                        <% } else if (helper.getAirDateColor(movie.airdate) == 1) { %> 
+                                            <span style="color: #dc3545;"><i class="fas fa-film mf-auto me-1"></span></i>
+                                        <% } else { %> 
+                                            <span style="color: #ffc107;"><i class="fas fa-film mf-auto me-1"></span></i>
+                                        <% } %> 
+                                        <%= helper.getShortDate(movie.airdate) %>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-flex justify-content-start">
+                                        <p class="fw-light">
+                                          <% if(!currentUser) {%>
+                                            <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+                                          <% } else { %>
+                                            
+                                            <% if (helper.findLiked(currentUser.likedMovie, movie._id))  { %>
+                                                <span style="color: hotpink;"><i class="fas fa-heart mf-auto me-2 "></i></span><%= movie.likecount %>
+                                              <% } else { %> 
+                                                <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+                                              <% } %>
+                                          <% } %>
+                                        </p>
+                    
+                                        <p class="fw-light">
+                                            <i class="fas fa-star"></i>
+                                            <% if (movie.avgrating == -1) { %> 
+                                              -/10
+                                            <% } else { %>  
+                                              <%= (movie.avgrating).toFixed(1) %>/10
+                                            <% } %> 
+                                          </p>
+                                      </div>
+
+                                </div>
+                                <div class='col-3 col-md-2'>
+                                    <% if (movie.genre.length > 0) { %>
+                                        <span class='fw-bold'>Genres: </span><%= helper.CapAndJoin(movie.genre) %>
+                                      <% } else { %>
+                                        <span class='fw-bold'>No Genres</span>
+                                    <% } %>
+                                    <div>
+                                        <span class='fw-bold'>Length: </span><%= movie.length %> 
+                                    </div>
+                                </div> 
+                            </div>
+                        </a>
+
+                    </tr></td>
+                    <% }); %> 
+                <% } %> 
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<%- include('../partials/footer.ejs') %>
+

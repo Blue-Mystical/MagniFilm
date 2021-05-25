@@ -3,9 +3,16 @@ var mongoosepaginate = require('mongoose-paginate-v2');
 
 var theatreSchema = new mongoose.Schema({
     theatrename: String,
-    icon: String,
+    icon: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'logo'
+        },
+        image: String
+    },
     desc: String,
     location: String,
+    priority: Number,
     addedby: {
         id: {
             type: mongoose.Schema.Types.ObjectId,

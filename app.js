@@ -33,9 +33,7 @@ app.use(methodOverride('_method'));
 app.use(express.static('public'));
 //app.use(express.static(__dirname + 'public'));
 app.use(express.static('./public'));
-app.use(flash())
-
-seedDB();
+app.use(flash());
 
 app.use(require('express-session')({
     secret: 'a secret.',
@@ -47,6 +45,8 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// seedDB();
 
 app.use(function(req,res,next) {
     res.locals.currentUser = req.user;

@@ -27,8 +27,31 @@ var express = require('express'),
 
     Movie = require('../models/movie');
 
+
+router.get('/add', middleware.checkManager, function(req,res) {
+    res.render('movief/addmovie.ejs');
+});
+
+// Movie List
 router.get('/', function(req,res) {
-    Movie.find({}, function(err,Movall) {
+    var currentDate = new Date();
+    currentDate = Date.parse(currentDate);
+    var unairDate = currentDate - 1000 * 60 * 60 * 24 * 30; // assuming 30 days is how much a movie stopped airing
+    var dateRange;
+
+    if (req.query.type == 'cs') {
+        dateRange = {
+            $gt: currentDate,
+        };
+    } else {
+        dateRange = {
+            $gte: unairDate,
+            $lte: currentDate
+        };
+    }
+    Movie.find({ 
+        airdate: dateRange
+        }, function(err,Movall) {
         if (err){
             middleware.displayGenericError(req, err);
             res.redirect('back');
@@ -38,40 +61,32 @@ router.get('/', function(req,res) {
     });
 });
 
-router.get('/add', middleware.checkManager, function(req,res) {
-    res.render('movief/addmovie.ejs');
-});
-
 // Movie Page
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
-        Movie.findById(req.params.id).populate('review').exec(function(err, foundMovie) {
+        Movie.findById(req.params.id, function(err, foundMovie) {
             if(err){
                 middleware.displayGenericError(req, err);
                 res.redirect('back');
             } else {
                 if (foundMovie) {
-                    if( req.isAuthenticated() ){ // Add to history of user or change date
+                    // Add to history of user or change date
+                    if( req.isAuthenticated() ){ 
                         var currentDate = new Date();
                         var foundflag = false;
-
-                        req.user.movieHistory.forEach(movieelement => {
-                            
+                        req.user.movieHistory.forEach(movieelement => {                
                             if ( movieelement.id.equals(foundMovie._id) ) {
                                 movieelement.date = currentDate;
                                 foundflag = true;
-                                //console.log('found existed movie history');
-                            }
-                            
-                        });
-                        
+                            }     
+                        });  
                         if (foundflag === false) {
-                            //console.log('adding a history');
                             var newElement = {id: foundMovie._id, date: currentDate};
                             req.user.movieHistory.push(newElement);
                         }
                         req.user.save();
                     }
+
                     res.render("movief/movieinfo.ejs", {movie: foundMovie, helper : helper});
                 } else {
                     res.render("notfound.ejs");
@@ -97,32 +112,28 @@ router.get('/:id/trailer', function(req,res) {
     });
 });
 
-// Add Movie
 router.post('/', middleware.checkManager, upload.single('image'), function(req,res) {
-    if (req.body.action === 'addmovie') {
-        if (req.file) {
-            req.body.movie.image = '/uploads/' + req.file.filename;
-        }
-
-        req.body.movie.addedby = {
-            id: req.user._id,
-            username: req.user.username
-        };
-
-        req.body.movie.reviewcount = 0;
-        req.body.movie.sumrating = 0;
-        req.body.movie.avgrating = -1; // No one rated yet
-        req.body.movie.likecount = 0;
-        
-        Movie.create(req.body.movie, function(err, newMovie) {
-            if(err){
-                middleware.displayGenericError(req, err);
-                res.redirect('back');
-            } else {
-                res.redirect('/movies');
-            }
-        });
+    if (req.file) {
+        req.body.movie.image = '/uploads/' + req.file.filename;
     }
+    req.body.movie.addedby = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    req.body.movie.reviewcount = 0;
+    req.body.movie.sumrating = 0;
+    req.body.movie.avgrating = -1; // No one rated yet
+    req.body.movie.likecount = 0;
+    
+    Movie.create(req.body.movie, function(err, newMovie) {
+        if(err){
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            middleware.displaySuccessMovie(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
+            res.redirect('/movies');
+        }
+    });
 });
 
 // Edit movie
@@ -152,6 +163,7 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
             res.redirect('/movies');
         } else {
             if (updatedMovie) {
+                middleware.displaySuccessMovie(req, 'Edited ' + req.body.movie.moviename + ' page.');
                 res.redirect('/movies/' + req.params.id);
             } else {
                 middleware.displayDeletedMovieError(req, err);
@@ -168,6 +180,7 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
             middleware.displayGenericError(req, err);
             res.redirect('/movies');
         } else {
+            middleware.displaySuccessMovie(req, 'Removed a movie.');
             res.redirect('/movies');
         }
     });
@@ -181,6 +194,12 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                 middleware.displayGenericError(req, err);
                 res.redirect('/movies');
             } else {
+                // foundUser.likedMovie.forEach(function(likedid) {
+                //     if (req.params.id == likedid) {
+                //         console.log('already liked');
+                //     }
+                // });
+
                 var refMovie = req.params.id;
                 foundUser.likedMovie.push(refMovie);
                 foundUser.save();

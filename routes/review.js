@@ -9,6 +9,20 @@ var express = require('express'),
 // Review list
 router.get('/list', function(req,res) {
     var foundReviewId = undefined;
+
+    // var pagenumber = 1;
+    // if (req.query.page && !isNaN(req.query.page)) {
+    //     pagenumber = req.query.page;
+    // }
+    // const queryOptions = {
+    //     page: pagenumber,
+    //     sort: { date: 1 },
+    //     limit: helper.queryLimit(),
+    //     collation: {
+    //       locale: 'en',
+    //     },
+    // };
+
     Movie.findById(req.params.id).populate('review').exec(function(err, foundMovie) {
         if(err){
             middleware.displayGenericError(req, err);

@@ -6,7 +6,7 @@
             <h1 class="No trailer text-center">No trailer available for this movie</h1>
         <% } else { %> 
             <div class="ratio ratio-16x9">
-                <iframe class="px-4 py-6" src="<%= movie.trailer %> " title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe class="px-4 py-6" src="https://www.youtube.com/embed/<%= movie.trailer %> " title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         <% } %> 
     </div>

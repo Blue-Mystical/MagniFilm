@@ -25,6 +25,20 @@ body {
 	}
 }
 
+img.card-img-top {
+	object-fit: cover;
+}
+
+div.card.theatre {
+	min-height: 5rem;
+	max-height: 5rem;
+}
+
+img.card-img-top.theatre {
+	height:auto;
+	width:3rem;
+}
+
 .carousel-item img,
 .carousel-item-active img {
 	width: 50%;

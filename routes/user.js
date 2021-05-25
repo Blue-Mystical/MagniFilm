@@ -2,6 +2,8 @@ var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
     User = require('../models/user'),
+    Review = require('../models/review'),
+    Movie = require('../models/movie'),
     helper = require('../helper'),
     passport = require('passport');
 
@@ -15,7 +17,7 @@ router.get('/user', middleware.isLoggedIn, function(req,res) {
             if (foundUser) {
                 res.render('userf/user.ejs', {user: foundUser, helper : helper});
             } else {
-                res.render("notfound.ejs"); // Somehow
+                res.render("notfound.ejs");
             }
         }
     });
@@ -28,9 +30,148 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
             res.redirect('back');
         } else {
             if (foundUser) {
-                res.render('userf/history.ejs', {user: foundUser, helper : helper});
+
+                var pagenumber = 1;
+                if (req.query.page && !isNaN(req.query.page)) {
+                    pagenumber = req.query.page;
+                }
+                const queryOptions = {
+                    page: pagenumber,
+                    sort: { date: 1 },
+                    limit: helper.queryLimit(),
+                    collation: {
+                      locale: 'en',
+                    },
+                };
+                var matchingArray = [];
+                foundUser.movieHistory.forEach(movie => {
+                    matchingArray.push(movie.id)
+                });
+
+                Movie.paginate({ 
+                    _id: { "$in": matchingArray } 
+                }, queryOptions, function (err, movieDoc) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        var movielist = movieDoc.docs;
+                        movieDoc.docs = [];
+                        res.render('userf/userquery.ejs', {user: foundUser, helper : helper, doc : movieDoc, 
+                         movielist : movielist, title : 'Your visited movies', noresult : 'No movies found'});
+                    }
+                });
+ 
             } else {
-                res.render("notfound.ejs"); // also somehow
+                res.render("notfound.ejs");
+            }
+        }
+    });
+});
+
+router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
+    User.findById(req.user._id, function(err, foundUser) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundUser) {
+
+                var pagenumber = 1;
+                if (req.query.page && !isNaN(req.query.page)) {
+                    pagenumber = req.query.page;
+                }
+                const queryOptions = {
+                    page: pagenumber,
+                    sort: { date: 1 },
+                    limit: helper.queryLimit(),
+                    collation: {
+                      locale: 'en',
+                    },
+                };
+                var matchingArray = [];
+                foundUser.likedMovie.forEach(movie => {
+                    matchingArray.push(movie)
+                });
+
+                Movie.paginate({ 
+                    _id: { "$in": matchingArray } 
+                }, queryOptions, function (err, movieDoc) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        var movielist = movieDoc.docs;
+                        movieDoc.docs = [];
+                        res.render('userf/userquery.ejs', {user: foundUser, helper : helper, doc : movieDoc, 
+                         movielist : movielist, title : 'Your liked movies', noresult : 'No movies found'});
+                    }
+                });
+ 
+            } else {
+                res.render("notfound.ejs");
+            }
+        }
+    });
+});
+
+router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
+    User.findById(req.user._id, function(err, foundUser) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundUser) {
+
+                var pagenumber = 1;
+                if (req.query.page && !isNaN(req.query.page)) {
+                    pagenumber = req.query.page;
+                }
+                const queryOptions = {
+                    page: pagenumber,
+                    sort: { date: 1 },
+                    limit: helper.queryLimit(),
+                    collation: {
+                      locale: 'en',
+                    },
+                };
+                var matchingArray = [];
+                foundUser.reviewHistory.forEach(review => {
+                    matchingArray.push(review)
+                });
+
+                Review.paginate({ 
+                    _id: { "$in": matchingArray } 
+                }, queryOptions, function (err, reviewDoc) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        var reviewlist = reviewDoc.docs;
+                        reviewlist.docs = [];
+                        reviewlist.forEach(review => {
+                            Movie.findById(review.formovie.id, function(err, foundMovie) {
+                                if (err) {
+                                    middleware.displayGenericError(req, err);
+                                    res.redirect('/movies');
+                                } else {
+                                    if (foundMovie) {
+                                        review.formovie.moviename = foundMovie.moviename;
+                                        review.save();
+                                    } else {
+                                        review.formovie.moviename = '[DELETED MOVIE]';
+                                        review.save();
+                                    }
+                                }
+                            });
+                        });
+                        res.render('userf/userreview.ejs', {user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
+                        title : 'Your reviews', noresult : 'No reviews found'});
+                    }
+                });
+ 
+            } else {
+                res.render("notfound.ejs");
             }
         }
     });
@@ -59,6 +200,7 @@ router.post('/register', function(req, res) {
             return res.render('register');
         } 
         passport.authenticate('local')(req, res, function() {
+            middleware.displaySuccessRegister(req);
             res.redirect('/');
         });
     });
@@ -72,12 +214,14 @@ router.get('/login', function(req,res) {
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
-    failureFlash: true
+    failureFlash: true,
 }), function(req, res) {
-});
+    console.log('run');
+}); 
 
 router.get('/logout', function(req, res){
     req.logout();
+    middleware.displaySuccessLogout(req);
     res.redirect('/movies');
 });
 

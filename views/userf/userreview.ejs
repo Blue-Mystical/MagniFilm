@@ -1,0 +1,58 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
+        <h1 class="display-5 fw-bold text-center py-1"><%= title %> </h1>
+        <% if (doc.totalDocs > 0) { %> 
+            <h5 class="h-5 fw-light text-center py-1">
+                <% if (doc.hasPrevPage) { %> 
+                    <a href='?page=<%= doc.prevPage %>'>
+                        <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
+                    </a>
+                <% } else { %> 
+                    <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
+                <% } %> 
+                Page <%= doc.page %> of <%= doc.totalPages %> 
+                <% if (doc.hasNextPage) { %> 
+                    <a href='?page=<%= doc.nextPage %>'>
+                        <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
+                    </a>
+                <% } else { %> 
+                    <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
+                <% } %> 
+            </h5>
+        <% } %>
+
+        <table class="table table-striped bg-light">
+            <tbody>
+                
+                <% if (reviewlist.length == 0) { %> 
+                    <tr><td>
+                        <p class="fw-bold mx-4 my-2 text-center">
+                            <%= noresult %>
+                        </p>
+                    </tr></td>
+                <% } else { %> 
+                    <% reviewlist.forEach(function(review) { %>
+                    <tr><td>
+
+                        <a href="/movies/<%= review.formovie.id %> " class='text-dark'>
+                            <div class='row'>
+                                <div class='col-12'>
+                                    <div class='fw-bold fs-3 px-2'><%= review.formovie.moviename %> (Rated <%= review.rating %><i class="fas fa-star"></i> on <%= helper.getShortDate(review.reviewdate) %>)</div> 
+                                    <div class='px-2 pt-2'><%= review.text %></div>
+                                </div>
+                            </div>
+                        </a>
+
+                    </tr></td>
+                    <% }); %> 
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<%- include('../partials/footer.ejs') %>
+
