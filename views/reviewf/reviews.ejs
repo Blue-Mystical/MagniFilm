@@ -12,11 +12,11 @@
             Do you want to delete the review?
           </div>
         <div class="modal-footer">
-            <% if(reviewid){ %>
-                <form action='/movies/<%= movie._id %>/reviews/<%= reviewid %>?_method=DELETE' method='POST' class=''>
-                    <button type="submit" class="btn btn-danger text-white">Yes</button>
-                </form>
-            <% } %> 
+          <% if(reviewid){ %>
+            <form action='/movies/<%= movie._id %>/reviews/<%= reviewid %>?_method=DELETE' method='POST' class=''>
+              <button type="submit" class="btn btn-danger text-white">Yes</button>
+            </form>
+          <% } %> 
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
       </div>

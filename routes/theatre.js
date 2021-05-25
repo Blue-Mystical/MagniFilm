@@ -36,13 +36,30 @@ router.get('/', function(req,res) {
     });
 });
 
+
+router.get('/:id', function(req,res) {
+    if (req.params.id != 'add') { // suppress error when accessing the add page
+        Theatre.findById(req.params.id, function(err, foundTheatre) {
+            if (err) {
+                middleware.displayGenericError(req, err);
+                res.redirect('back');
+            } else {
+                if (foundTheatre) {
+                    res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
+                } else {
+                    res.render("notfound.ejs");
+                }
+            }
+        });
+    }
+});
+
 router.get('/add', middleware.checkManager, function(req,res) {
     Logo.find({}, function(err,logos) {
         if (err){
             middleware.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            console.log(logos);
             res.render('theatref/addtheatre.ejs', {logos : logos});
         }
     });
@@ -101,21 +118,76 @@ router.post('/logo', middleware.checkManager, upload.single('image'), function(r
     });
 });
 
-router.get('/:id', function(req,res) {
-    if (req.params.id != 'add') { // suppress error when accessing the add page
-        Theatre.findById(req.params.id, function(err, foundTheatre) {
-            if (err) {
-                middleware.displayGenericError(req, err);
-                res.redirect('back');
+router.get('/:id/edit', middleware.checkManager, function(req, res) {
+    Theatre.findById(req.params.id, function(err, foundTheatre) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundTheatre) {
+                Logo.find({}, function(err,logos) {
+                    if (err){
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        res.render('theatref/edittheatre.ejs', {theatre: foundTheatre, helper : helper, logos : logos});
+                    }
+                });
             } else {
-                if (foundTheatre) {
-                    res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
-                } else {
-                    res.render("notfound.ejs");
-                }
+                middleware.displayDeletedTheatreError(req, err);
+                res.redirect('back');
             }
-        });
-    }
+        }
+    });
+});
+
+router.put('/:id', middleware.checkManager, function(req,res) {
+    req.body.theatre.addedby = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    
+    Logo.findById(req.body.iconid, function(err, foundLogo) {
+        if(err){
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            req.body.theatre.icon = {
+                id: req.body.iconid,
+                image: foundLogo.image
+            };
+            // blank priority = high number
+            if (!req.body.theatre.priority) {
+                req.body.theatre.priority = 9999;
+            }
+            Theatre.findByIdAndUpdate(req.params.id, req.body.theatre, function(err, updatedTheatre) {
+                if(err){
+                    middleware.displayGenericError(req, err);
+                    res.redirect('back');
+                } else {
+                    if (updatedTheatre) {
+                        middleware.displaySuccessMovie(req, 'Edited ' + req.body.theatre.theatrename + ' page.');
+                        res.redirect('/theatres/' + req.params.id);
+                    } else {
+                        middleware.displayDeletedMovieError(req, err);
+                        res.redirect('back');
+                    }
+                }
+            });
+        }
+    });
+});
+
+router.delete('/:id', middleware.checkManager, function(req, res) {
+    Theatre.findByIdAndDelete(req.params.id, function(err) {
+        if(err){
+            middleware.displayGenericError(req, err);
+            res.redirect('/theatres');
+        } else {
+            middleware.displaySuccessMovie(req, 'Removed a theatre.');
+            res.redirect('/theatres');
+        }
+    });
 });
 
 module.exports = router;

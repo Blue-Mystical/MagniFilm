@@ -37,7 +37,7 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
                 }
                 const queryOptions = {
                     page: pagenumber,
-                    sort: { date: 1 },
+                    sort: { airdate: -1 },
                     limit: helper.queryLimit(),
                     collation: {
                       locale: 'en',
@@ -83,7 +83,7 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
                 }
                 const queryOptions = {
                     page: pagenumber,
-                    sort: { date: 1 },
+                    sort: { airdate: -1 },
                     limit: helper.queryLimit(),
                     collation: {
                       locale: 'en',
@@ -129,7 +129,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                 }
                 const queryOptions = {
                     page: pagenumber,
-                    sort: { date: 1 },
+                    sort: { reviewdate: -1 },
                     limit: helper.queryLimit(),
                     collation: {
                       locale: 'en',

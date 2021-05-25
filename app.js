@@ -16,6 +16,7 @@ var movieRoutes      = require('./routes/movie'),
     homeRoutes       = require('./routes/home'),
     reviewRoutes     = require('./routes/review'),
     theatreRoutes    = require('./routes/theatre'),
+    searchRoutes     = require('./routes/search'),
     userRoutes       = require('./routes/user');
 
 app.use(sass({
@@ -60,6 +61,7 @@ app.use('/movies/:id/reviews', reviewRoutes);
 app.use('/theatres', theatreRoutes);
 app.use('/', userRoutes);
 app.use('/', homeRoutes);
+app.use('/search', searchRoutes);
 
 // --
 

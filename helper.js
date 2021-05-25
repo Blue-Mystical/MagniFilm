@@ -95,6 +95,10 @@ helperFunctions.clearArray = function(array) {
     return array;
 }
 
+helperFunctions.compareLogoID = function(id1, id2) {
+    return id1.equals(id2);
+}
+
 helperFunctions.queryLimit = function() {
     return 18;
 }

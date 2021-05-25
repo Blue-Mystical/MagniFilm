@@ -88,6 +88,12 @@ midwareFunctions.displayDeletedMovieError = function(req, err) {
     req.flash('popupmessage', 'Cannot perform the action. The movie may have been deleted.');
 }
 
+midwareFunctions.displayDeletedTheatreError = function(req, err) {
+    console.log(err);
+    req.flash('popup', 'Error');
+    req.flash('popupmessage', 'Cannot perform the action. The theatre may have been deleted.');
+}
+
 midwareFunctions.displayAccessDenied = function(req, message) {
     req.flash('popup', 'Access denied');
     req.flash('popupmessage', message);

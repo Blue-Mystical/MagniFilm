@@ -1,0 +1,37 @@
+<%- include('../partials/header.ejs') %>
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+  <h1 class="display-4 fw-bold text-center text-white">Editing <%= theatre.theatrename %></h1>
+  <form action='/theatres/<%= theatre._id %>?_method=PUT' method="POST" class="text-white">
+    <div class="form-group mb-3">
+      <label class="form-label">Theatre name</label>
+      <input type="text" class="form-control" name="theatre[theatrename]" placeholder="<%= theatre.theatrename %>" value="<%= theatre.theatrename %>" required>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Description</label>
+      <input type="text" class="form-control" name="theatre[desc]" placeholder="<%= theatre.desc %>" value=<%= theatre.desc %> required>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Location</label>
+      <input type="text" class="form-control" name="theatre[location]" placeholder="<%= theatre.location %>" value=<%= theatre.location %> required>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Priority</label>
+      <input type="number" class="form-control" name="theatre[priority]" placeholder="<%= theatre.priority %>" value=<%= theatre.priority %>>
+    </div>
+    <div class="form-group mb-3">
+      <label class="form-label">Theatre Logo</label>
+      <div class="row">
+        <div class="col-sm-12">
+          <select class="form-select" aria-label="Logo" name="iconid" required>
+            <% logos.forEach(function(logo) { %>
+              <option value="<%= logo._id %>" <% if(helper.compareLogoID(logo._id, theatre.icon.id)) {%> selected <% } %> ><%= logo.name %></option>
+            <% }); %> 
+          </select>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+</div>
+<%- include('../partials/footer.ejs') %>
