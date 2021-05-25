@@ -177,7 +177,6 @@ router.post('/', middleware.checkExistingReview, function(req, res) {
                         var newaverage = newsumrating / newreviewcount;
                         foundMovie.update({ $set: { avgrating: newaverage, reviewcount: newreviewcount, sumrating : newsumrating }}).exec();
 
-                        // Add review history for the user (todo) and redirect
                         User.findById(req.user._id, function(err, foundUser) {
                             if (err) {
                                 middleware.displayGenericError(req, err);

@@ -21,6 +21,7 @@ var express = require('express'),
     },
     upload = multer({storage: storage, fileFilter: imageFilter}),
     // END
+    Movie = require('../models/movie'),
     Logo = require('../models/logo'),
     Theatre = require('../models/theatre');
 
@@ -186,6 +187,119 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
         } else {
             middleware.displaySuccessMovie(req, 'Removed a theatre.');
             res.redirect('/theatres');
+        }
+    });
+});
+
+router.get('/:id/addmovie', middleware.checkManager, function(req,res) {
+    var pagenumber = 1;
+    if (req.query.page && !isNaN(req.query.page)) {
+        pagenumber = req.query.page;
+    } // querys: page, mode, sort, value, genre
+
+    const queryOptions = {
+        page: pagenumber,
+        sort: {airdate : -1},
+        limit: helper.queryLimit(),
+        collation: {
+          locale: 'en',
+        },
+    };
+    var searchQuery;
+    if (req.query.value)  {
+        searchQuery = {
+            moviename: {$regex : req.query.value, $options: "i"}, // case-insensitive search
+        };
+    } else {
+        searchQuery = {};
+    }
+
+    Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            Theatre.findById(req.params.id, function(err, foundTheatre) {
+                if (err) {
+                    middleware.displayGenericError(req, err);
+                    res.redirect('back');
+                } else {
+                    if (foundTheatre) {
+                        var movielist = movieDoc.docs;
+                        movieDoc.docs = [];
+                        res.render('theatref/addmovie.ejs', {helper : helper, doc : movieDoc, 
+                        movielist : movielist, search : req.query, theatre : foundTheatre});
+                    } else {
+                        res.render("notfound.ejs");
+                    }
+                }
+            });
+        }
+    });
+});
+
+router.post('/:id/addmovie', function(req,res) {
+    Theatre.findById(req.params.id, function(err, foundTheatre) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundTheatre) {
+
+                Movie.findById(req.body.movieid, function(err, foundMovie) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        var movie = {
+                            id : foundMovie._id,
+                            image : foundMovie.image
+                        };
+
+                        middleware.displaySuccessMovie(req, 'Added a movie for a theater!');
+                        foundTheatre.movielist.push(movie);
+                        foundTheatre.save();
+                        res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
+                    }
+                });
+            } else {
+                res.render("notfound.ejs");
+            }
+        }
+    });
+});
+
+router.delete('/:id/addmovie', function(req,res) {
+    Theatre.findById(req.params.id, function(err, foundTheatre) {
+        if (err) {
+            middleware.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundTheatre) {
+
+                Movie.findById(req.body.movieid, function(err, foundMovie) {
+                    if (err) {
+                        middleware.displayGenericError(req, err);
+                        res.redirect('back');
+                    } else {
+                        middleware.displaySuccessMovie(req, 'Removed movie times!');
+
+                        foundTheatre.movielist.forEach(function(movietime) {
+                            console.log(movietime);
+                            console.log(movietime.id);
+                            console.log(foundMovie._id);
+                            if (movietime.id.equals(foundMovie._id)) {
+                                foundTheatre.movielist.pull(movietime);
+                            }
+                        });
+
+                        foundTheatre.save();
+                        res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
+                    }
+                });
+            } else {
+                res.render("notfound.ejs");
+            }
         }
     });
 });

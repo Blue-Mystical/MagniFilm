@@ -2,11 +2,7 @@ var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
     Movie = require('../models/movie'),
-    helper = require('../helper'),
-    User = require('../models/user'),
-    Logo = require('../models/logo'),
-    Theatre = require('../models/theatre'),
-    Review = require('../models/review');
+    helper = require('../helper');
 
 router.get('/', function(req,res) {
     var pagenumber = 1;
@@ -16,7 +12,7 @@ router.get('/', function(req,res) {
     var sortOptions;
     var sortMode = -1;
     if (req.query.mode && !isNaN(req.query.mode)) {
-        if (req.query.mode = 1) sortMode = 1;
+        if (req.query.mode = 2) sortMode = 1;
     }
     if (req.query.sort == 'like') {
         sortOptions = { likecount: sortMode }
@@ -39,7 +35,7 @@ router.get('/', function(req,res) {
         },
     };
     var searchQuery;
-    if (req.query.value && req.query.genre && !req.query.genre == 'none') {
+    if (req.query.value && req.query.genre && !(req.query.genre == 'none')) {
         searchQuery = {
             moviename: {$regex : req.query.value, $options: "i"}, // case-insensitive search
             genre: req.query.genre

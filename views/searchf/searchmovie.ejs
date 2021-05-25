@@ -8,7 +8,8 @@
             <form class="input-group" action="/search" method="GET">
                 <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
                     <div class="form-outline d-flex pb-2 mx-2">
-                        <input type="search" id="form1" name=value class="form-control form-control-sm" placeholder='search'>
+                        <input type="search" id="form1" name=value class="form-control form-control-sm"
+                        placeholder='search' value='<% if (search.value) { %><%= search.value %><% } %>'>
                         <button type="submit" class="btn btn-primary btn-sm">
                           <i class="fas fa-search"></i>
                         </button>
@@ -17,36 +18,36 @@
                         <div class="row">
                           <div class="col-4 ms-2 pe-1">
                             <select class="form-select" aria-label="sort" name="sort" required>
-                              <option value="airdate">Sort By</option>
-                              <option value="airdate">Air date</option>
-                              <option value="name">Title</option>
-                              <option value="like">Like</option>
-                              <option value="rating">Avg. Rating</option>
-                              <option value="length">Movie Length</option>
+                              <option value="airdate" <% if (!search.sort) { %> selected <% } %> >Sort By</option>
+                              <option value="airdate" <% if (search.sort == 'airdate') { %> selected <% } %> >Air date</option>
+                              <option value="name" <% if (search.sort == 'name') { %> selected <% } %> >Title</option>
+                              <option value="like" <% if (search.sort == 'like') { %> selected <% } %> >Like</option>
+                              <option value="rating" <% if (search.sort == 'rating') { %> selected <% } %> >Avg. Rating</option>
+                              <option value="length" <% if (search.sort == 'length') { %> selected <% } %> >Movie Length</option>
                             </select>
                           </div>
                           <div class="col-3 ms-2 px-0">
                             <select class="form-select" aria-label="mode" name="mode" required>
-                              <option value=1>Descending</option>
-                              <option value=1>Ascending</option>
+                              <option value=1 <% if (search.mode == 1) { %> selected <% } %> >Descending</option>
+                              <option value=2 <% if (search.mode == 2) { %> selected <% } %> >Ascending</option>
                             </select>
                           </div>
                           <div class="col-4">
                             <select class="form-select" aria-label="genre" name="genre" required>
-                              <option value="none">Genre</option>
-                              <option value="action">Action</option>
-                              <option value="adventure">Adventure</option>
-                              <option value="animation">Animation</option>
-                              <option value="comedy">Comedy</option>
-                              <option value="drama">Drama</option>
-                              <option value="fantasy">Fantasy</option>
-                              <option value="horror">Horror</option>
-                              <option value="musical">Musical</option>
-                              <option value="mystery">Mystery</option>
-                              <option value="romance">Romance</option>
-                              <option value="scifi">Sci-fi</option>
-                              <option value="thriller">Thriller</option>
-                              <option value="western">Western</option>
+                              <option value="none" <% if (!search.genre) { %> selected <% } %> >Genre (All)</option>
+                              <option value="action" <% if (search.genre == 'action') { %> selected <% } %> >Action</option>
+                              <option value="adventure" <% if (search.genre == 'adventure') { %> selected <% } %> >Adventure</option>
+                              <option value="animation" <% if (search.genre == 'animation') { %> selected <% } %> >Animation</option>
+                              <option value="comedy" <% if (search.genre == 'comedy') { %> selected <% } %> >Comedy</option>
+                              <option value="drama" <% if (search.genre == 'drama') { %> selected <% } %> >Drama</option>
+                              <option value="fantasy" <% if (search.genre == 'fantasy') { %> selected <% } %> >Fantasy</option>
+                              <option value="horror" <% if (search.genre == 'horror') { %> selected <% } %> >Horror</option>
+                              <option value="musical" <% if (search.genre == 'musical') { %> selected <% } %> >Musical</option>
+                              <option value="mystery" <% if (search.genre == 'mystery') { %> selected <% } %> >Mystery</option>
+                              <option value="romance" <% if (search.genre == 'romance') { %> selected <% } %> >Romance</option>
+                              <option value="scifi" <% if (search.genre == 'scifi') { %> selected <% } %> >Sci-fi</option>
+                              <option value="thriller" <% if (search.genre == 'thriller') { %> selected <% } %> >Thriller</option>
+                              <option value="western" <% if (search.genre == 'western') { %> selected <% } %> >Western</option>
                             </select>
                           </div>
                         </div>
