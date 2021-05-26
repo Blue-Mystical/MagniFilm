@@ -3,6 +3,7 @@
 <div class="container py-4 mt-4 bg-secondary rounded-3">
     <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
         <h1 class="display-5 fw-bold text-center py-1">Search Movies</h1>
+        <hr class='dark-long mb-2'>
 
         <div class='row'>
             <form class="input-group" action="/search" method="GET">
@@ -17,7 +18,7 @@
                     <div class="form-group mb-2">
                         <div class="row">
                           <div class="col-4 ms-2 pe-1">
-                            <select class="form-select" aria-label="sort" name="sort" required>
+                            <select class="form-select" aria-label="sort" name="sort">
                               <option value="airdate" <% if (!search.sort) { %> selected <% } %> >Sort By</option>
                               <option value="airdate" <% if (search.sort == 'airdate') { %> selected <% } %> >Air date</option>
                               <option value="name" <% if (search.sort == 'name') { %> selected <% } %> >Title</option>
@@ -27,13 +28,13 @@
                             </select>
                           </div>
                           <div class="col-3 ms-2 px-0">
-                            <select class="form-select" aria-label="mode" name="mode" required>
-                              <option value=1 <% if (search.mode == 1) { %> selected <% } %> >Descending</option>
-                              <option value=2 <% if (search.mode == 2) { %> selected <% } %> >Ascending</option>
+                            <select class="form-select" aria-label="mode" name="mode">
+                              <option value=2>Descending</option>
+                              <option value=1 <% if (search.mode === 1) { %> selected <% } %> >Ascending</option>
                             </select>
                           </div>
                           <div class="col-4">
-                            <select class="form-select" aria-label="genre" name="genre" required>
+                            <select class="form-select" aria-label="genre" name="genre">
                               <option value="none" <% if (!search.genre) { %> selected <% } %> >Genre (All)</option>
                               <option value="action" <% if (search.genre == 'action') { %> selected <% } %> >Action</option>
                               <option value="adventure" <% if (search.genre == 'adventure') { %> selected <% } %> >Adventure</option>
@@ -56,25 +57,7 @@
             </form>
         </div>
         
-        <% if (doc && doc.totalDocs > 0) { %> 
-            <h5 class="h-5 fw-light text-center py-1">
-                <% if (doc.hasPrevPage) { %> 
-                    <a href='?page=<%= doc.prevPage %>'>
-                        <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
-                    </a>
-                <% } else { %> 
-                    <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
-                <% } %> 
-                Page <%= doc.page %> of <%= doc.totalPages %> 
-                <% if (doc.hasNextPage) { %> 
-                    <a href='?page=<%= doc.nextPage %>'>
-                        <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
-                    </a>
-                <% } else { %> 
-                    <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
-                <% } %> 
-            </h5>
-        <% } %>
+        <%- include('../partials/pagebar.ejs') %>
 
         <table class="table table-striped bg-light">
             <tbody>

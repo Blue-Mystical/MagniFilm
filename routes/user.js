@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
+    plugin = require('../plugin'),
     User = require('../models/user'),
     Review = require('../models/review'),
     Movie = require('../models/movie'),
@@ -11,7 +12,7 @@ var express = require('express'),
 router.get('/user', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundUser) {
@@ -26,7 +27,7 @@ router.get('/user', middleware.isLoggedIn, function(req,res) {
 router.get('/user/history', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundUser) {
@@ -52,7 +53,7 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
                     _id: { "$in": matchingArray } 
                 }, queryOptions, function (err, movieDoc) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         var movielist = movieDoc.docs;
@@ -72,7 +73,7 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
 router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundUser) {
@@ -98,7 +99,7 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
                     _id: { "$in": matchingArray } 
                 }, queryOptions, function (err, movieDoc) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         var movielist = movieDoc.docs;
@@ -118,7 +119,7 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
 router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundUser) {
@@ -144,7 +145,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                     _id: { "$in": matchingArray } 
                 }, queryOptions, function (err, reviewDoc) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         var reviewlist = reviewDoc.docs;
@@ -152,7 +153,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                         reviewlist.forEach(review => {
                             Movie.findById(review.formovie.id, function(err, foundMovie) {
                                 if (err) {
-                                    middleware.displayGenericError(req, err);
+                                    plugin.displayGenericError(req, err);
                                     res.redirect('/movies');
                                 } else {
                                     if (foundMovie) {
@@ -200,7 +201,7 @@ router.post('/register', function(req, res) {
             return res.render('register');
         } 
         passport.authenticate('local')(req, res, function() {
-            middleware.displaySuccessRegister(req);
+            plugin.displaySuccessRegister(req);
             res.redirect('/');
         });
     });
@@ -221,7 +222,7 @@ router.post('/login', passport.authenticate('local', {
 
 router.get('/logout', function(req, res){
     req.logout();
-    middleware.displaySuccessLogout(req);
+    plugin.displaySuccessLogout(req);
     res.redirect('/movies');
 });
 

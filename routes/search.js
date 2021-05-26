@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
+    plugin = require('../plugin'),
     Movie = require('../models/movie'),
     helper = require('../helper');
 
@@ -11,9 +12,9 @@ router.get('/', function(req,res) {
     } // querys: page, mode, sort, value, genre
     var sortOptions;
     var sortMode = -1;
-    if (req.query.mode && !isNaN(req.query.mode)) {
-        if (req.query.mode = 2) sortMode = 1;
-    }
+    if (req.query.mode == 1)
+        sortMode = 1;
+
     if (req.query.sort == 'like') {
         sortOptions = { likecount: sortMode }
     } else if (req.query.sort == 'rating') {
@@ -52,15 +53,25 @@ router.get('/', function(req,res) {
         searchQuery = {};
     }
 
+    var extraQueries = plugin.buildQuery(req.query);
+    // Object.entries(req.query).forEach(entry => {
+    //     const [key, value] = entry;
+    //     if (key !== 'page') {
+    //         var querytoadd = '&' + key + '=' + value;
+    //         extraQueries = extraQueries.concat(querytoadd);
+    //     }
+    // });
+    //console.log('Resulting query = ' + extraQueries);
+    
     Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             var movielist = movieDoc.docs;
             movieDoc.docs = [];
             res.render('searchf/searchmovie.ejs', {helper : helper, doc : movieDoc, 
-             movielist : movielist, search : req.query});
+             movielist : movielist, search : req.query, extraqueries: extraQueries});
         }
     });
 });

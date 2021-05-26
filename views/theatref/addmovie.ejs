@@ -3,6 +3,7 @@
 <div class="container py-4 mt-4 bg-secondary rounded-3">
     <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
         <h1 class="display-5 fw-bold text-center py-1">Adding movie time</h1>
+        <hr class='dark-long mb-2'>
 
         <div class='row'>
             <form class="input-group" action="/theatres/<%= theatre._id %>/addmovie" method="GET">
@@ -17,25 +18,7 @@
             </form>
         </div>
         
-        <% if (doc && doc.totalDocs > 0) { %> 
-            <h5 class="h-5 fw-light text-center py-1">
-                <% if (doc.hasPrevPage) { %> 
-                    <a href='?page=<%= doc.prevPage %>'>
-                        <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
-                    </a>
-                <% } else { %> 
-                    <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
-                <% } %> 
-                Page <%= doc.page %> of <%= doc.totalPages %> 
-                <% if (doc.hasNextPage) { %> 
-                    <a href='?page=<%= doc.nextPage %>'>
-                        <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
-                    </a>
-                <% } else { %> 
-                    <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
-                <% } %> 
-            </h5>
-        <% } %>
+        <%- include('../partials/pagebar.ejs') %>
 
         <table class="table table-striped bg-light">
             <tbody>

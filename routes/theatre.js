@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
+    plugin = require('../plugin'),
     helper = require('../helper'),
     // The entire uploading system
     multer = require('multer'),
@@ -29,7 +30,7 @@ var express = require('express'),
 router.get('/', function(req,res) {
     Theatre.find({}, function(err,Theatreall) {
         if (err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             res.render('theatref/theatres.ejs', {theatrelist : Theatreall, helper : helper})
@@ -40,12 +41,13 @@ router.get('/', function(req,res) {
 
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
-        Theatre.findById(req.params.id, function(err, foundTheatre) {
+        Theatre.findById(req.params.id).populate('movielist').exec(function(err, foundTheatre) {
             if (err) {
-                middleware.displayGenericError(req, err);
+                plugin.displayGenericError(req, err);
                 res.redirect('back');
             } else {
                 if (foundTheatre) {
+                    console.log(foundTheatre);
                     res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
                 } else {
                     res.render("notfound.ejs");
@@ -58,7 +60,7 @@ router.get('/:id', function(req,res) {
 router.get('/add', middleware.checkManager, function(req,res) {
     Logo.find({}, function(err,logos) {
         if (err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             res.render('theatref/addtheatre.ejs', {logos : logos});
@@ -74,7 +76,7 @@ router.post('/', middleware.checkManager, function(req,res) {
     
     Logo.findById(req.body.iconid, function(err, foundLogo) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             req.body.theatre.icon = {
@@ -87,7 +89,7 @@ router.post('/', middleware.checkManager, function(req,res) {
             }
             Theatre.create(req.body.theatre, function(err, newTheatre) {
                 if(err){
-                    middleware.displayGenericError(req, err);
+                    plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
                     console.log(newTheatre);
@@ -111,7 +113,7 @@ router.post('/logo', middleware.checkManager, upload.single('image'), function(r
     }
     Logo.create(req.body.logo, function(err, newLogo) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             res.redirect('/theatres');
@@ -122,20 +124,20 @@ router.post('/logo', middleware.checkManager, upload.single('image'), function(r
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
     Theatre.findById(req.params.id, function(err, foundTheatre) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundTheatre) {
                 Logo.find({}, function(err,logos) {
                     if (err){
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         res.render('theatref/edittheatre.ejs', {theatre: foundTheatre, helper : helper, logos : logos});
                     }
                 });
             } else {
-                middleware.displayDeletedTheatreError(req, err);
+                plugin.displayDeletedTheatreError(req, err);
                 res.redirect('back');
             }
         }
@@ -150,7 +152,7 @@ router.put('/:id', middleware.checkManager, function(req,res) {
     
     Logo.findById(req.body.iconid, function(err, foundLogo) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             req.body.theatre.icon = {
@@ -163,14 +165,14 @@ router.put('/:id', middleware.checkManager, function(req,res) {
             }
             Theatre.findByIdAndUpdate(req.params.id, req.body.theatre, function(err, updatedTheatre) {
                 if(err){
-                    middleware.displayGenericError(req, err);
+                    plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
                     if (updatedTheatre) {
-                        middleware.displaySuccessMovie(req, 'Edited ' + req.body.theatre.theatrename + ' page.');
+                        plugin.displaySuccessMovie(req, 'Edited ' + req.body.theatre.theatrename + ' page.');
                         res.redirect('/theatres/' + req.params.id);
                     } else {
-                        middleware.displayDeletedMovieError(req, err);
+                        plugin.displayDeletedMovieError(req, err);
                         res.redirect('back');
                     }
                 }
@@ -182,10 +184,10 @@ router.put('/:id', middleware.checkManager, function(req,res) {
 router.delete('/:id', middleware.checkManager, function(req, res) {
     Theatre.findByIdAndDelete(req.params.id, function(err) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('/theatres');
         } else {
-            middleware.displaySuccessMovie(req, 'Removed a theatre.');
+            plugin.displaySuccessMovie(req, 'Removed a theatre.');
             res.redirect('/theatres');
         }
     });
@@ -214,21 +216,30 @@ router.get('/:id/addmovie', middleware.checkManager, function(req,res) {
         searchQuery = {};
     }
 
+    var extraQueries = '';
+    Object.entries(req.query).forEach(entry => {
+        const [key, value] = entry;
+        if (key !== 'page') {
+            var querytoadd = '&' + key + '=' + value;
+            extraQueries = extraQueries.concat(querytoadd);
+        }
+    });
+
     Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             Theatre.findById(req.params.id, function(err, foundTheatre) {
                 if (err) {
-                    middleware.displayGenericError(req, err);
+                    plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
                     if (foundTheatre) {
                         var movielist = movieDoc.docs;
                         movieDoc.docs = [];
                         res.render('theatref/addmovie.ejs', {helper : helper, doc : movieDoc, 
-                        movielist : movielist, search : req.query, theatre : foundTheatre});
+                        movielist : movielist, search : req.query, theatre : foundTheatre, extraqueries: extraQueries});
                     } else {
                         res.render("notfound.ejs");
                     }
@@ -241,23 +252,19 @@ router.get('/:id/addmovie', middleware.checkManager, function(req,res) {
 router.post('/:id/addmovie', function(req,res) {
     Theatre.findById(req.params.id, function(err, foundTheatre) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundTheatre) {
 
                 Movie.findById(req.body.movieid, function(err, foundMovie) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
-                        var movie = {
-                            id : foundMovie._id,
-                            image : foundMovie.image
-                        };
-
-                        middleware.displaySuccessMovie(req, 'Added a movie for a theater!');
-                        foundTheatre.movielist.push(movie);
+                        var movieid = foundMovie._id;
+                        plugin.displaySuccessMovie(req, 'Added a movie for a theater!');
+                        foundTheatre.movielist.push(movieid);
                         foundTheatre.save();
                         res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
                     }
@@ -272,24 +279,21 @@ router.post('/:id/addmovie', function(req,res) {
 router.delete('/:id/addmovie', function(req,res) {
     Theatre.findById(req.params.id, function(err, foundTheatre) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundTheatre) {
 
                 Movie.findById(req.body.movieid, function(err, foundMovie) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
-                        middleware.displaySuccessMovie(req, 'Removed movie times!');
+                        plugin.displaySuccessMovie(req, 'Removed movie times!');
 
-                        foundTheatre.movielist.forEach(function(movietime) {
-                            console.log(movietime);
-                            console.log(movietime.id);
-                            console.log(foundMovie._id);
-                            if (movietime.id.equals(foundMovie._id)) {
-                                foundTheatre.movielist.pull(movietime);
+                        foundTheatre.movielist.forEach(function(movieid) {
+                            if (movieid.equals(foundMovie._id)) {
+                                foundTheatre.movielist.pull(movieid);
                             }
                         });
 

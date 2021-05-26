@@ -100,7 +100,7 @@ helperFunctions.compareLogoID = function(id1, id2) {
 }
 
 helperFunctions.queryLimit = function() {
-    return 18;
+    return 3;
 }
 
 module.exports = helperFunctions;

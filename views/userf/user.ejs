@@ -10,6 +10,7 @@
                 <a class="btn btn-light btn-lg btn-outline-secondary d-flex justify-content-center mx-5 mb-2" href='/user/liked'>Liked Movies</a>
                 <a class="btn btn-light btn-lg btn-outline-secondary d-flex justify-content-center mx-5 mb-4" href='/user/reviews'>Your Reviews</a>
                 <% if (helper.canManage(currentUser)) { %>
+                    <hr class='dark-short mb-4'>
                     <div class="dropdown d-flex flex-column">
                         <button class="btn btn-warning btn-outline-secondary mx-5 dropdown-toggle" role="button" id="adminOptions" data-bs-toggle="dropdown" aria-expanded="false">
                           Admin options
@@ -18,7 +19,7 @@
                         <ul class="dropdown-menu w-100" aria-labelledby="adminOptions">
                           <li><a class="dropdown-item" href="/movies/add">Add new movie</a></li>
                           <li><a class="dropdown-item" href="/theatres/add">Add new theatre</a></li>
-                          <li><a class="dropdown-item" href="/theatres/logo/add">Add theatre logo</a></li>
+                          <li><a class="dropdown-item" href="/theatres/add">Add theatre logo</a></li>
                           <li><a class="dropdown-item" href="/promo/add">Add promotion</a></li>
                         </ul>
                     </div>

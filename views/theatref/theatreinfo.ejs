@@ -40,6 +40,30 @@
       </div>
     <% } %>
     </div>
+    <div>
+      <hr>
+      <h1 class="display-5 fw-bold text-center py-1">Available Movies</h1>
+      <hr>
+      <table class="table table-striped bg-light"><tbody>
+      <% theatre.movielist.forEach(function(movie) { %> 
+        <tr><td>
+          <a href="/movies/<%= movie.id %> " class='text-dark'>
+              <div class='row'>
+                  <div class='col-3 col-md-2'>
+                      <div class='d-flex justify-content-center'>
+                          <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                      </div>
+                  </div>
+                  <div class='col-6 col-md-8'>
+                      <div class='fw-bold fs-2'><%= movie.moviename %></div>
+                  </div>
+              </div>
+          </a>
+
+      </td></tr>
+      <% }); %> 
+    </tbody></table>
+    </div>
 </div>
 
 <%- include('../partials/footer.ejs') %>

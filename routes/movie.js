@@ -3,6 +3,7 @@ const { request } = require('http');
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
+    plugin = require('../plugin'),
     User = require('../models/user'),
     helper = require('../helper'),
     // The entire uploading system
@@ -53,7 +54,7 @@ router.get('/', function(req,res) {
         airdate: dateRange
         }, function(err,Movall) {
         if (err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             res.render('movief/movies.ejs', {movielist : Movall, helper : helper})
@@ -66,7 +67,7 @@ router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
         Movie.findById(req.params.id, function(err, foundMovie) {
             if(err){
-                middleware.displayGenericError(req, err);
+                plugin.displayGenericError(req, err);
                 res.redirect('back');
             } else {
                 if (foundMovie) {
@@ -100,7 +101,7 @@ router.get('/:id', function(req,res) {
 router.get('/:id/trailer', function(req,res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundMovie) {
@@ -127,10 +128,10 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
     
     Movie.create(req.body.movie, function(err, newMovie) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            middleware.displaySuccessMovie(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
+            plugin.displaySuccessMovie(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
             res.redirect('/movies');
         }
     });
@@ -140,13 +141,13 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundMovie) {
                 res.render('movief/editmovie.ejs', {movie: foundMovie, helper : helper});
             } else {
-                middleware.displayDeletedMovieError(req, err);
+                plugin.displayDeletedMovieError(req, err);
                 res.redirect('back');
             }
         }
@@ -159,14 +160,14 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
     }
     Movie.findByIdAndUpdate(req.params.id, req.body.movie, function(err, updatedMovie) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('/movies');
         } else {
             if (updatedMovie) {
-                middleware.displaySuccessMovie(req, 'Edited ' + req.body.movie.moviename + ' page.');
+                plugin.displaySuccessMovie(req, 'Edited ' + req.body.movie.moviename + ' page.');
                 res.redirect('/movies/' + req.params.id);
             } else {
-                middleware.displayDeletedMovieError(req, err);
+                plugin.displayDeletedMovieError(req, err);
                 res.redirect('back');
             }
         }
@@ -177,10 +178,10 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
 router.delete('/:id', middleware.checkManager, function(req, res) {
     Movie.findByIdAndDelete(req.params.id, function(err) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('/movies');
         } else {
-            middleware.displaySuccessMovie(req, 'Removed a movie.');
+            plugin.displaySuccessMovie(req, 'Removed a movie.');
             res.redirect('/movies');
         }
     });
@@ -191,7 +192,7 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
     if (req.body.action === 'like') {
         User.findById(req.user._id, function(err, foundUser) {
             if (err) {
-                middleware.displayGenericError(req, err);
+                plugin.displayGenericError(req, err);
                 res.redirect('/movies');
             } else {
                 // foundUser.likedMovie.forEach(function(likedid) {
@@ -205,21 +206,21 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                 foundUser.save();
                 Movie.findById(req.params.id, function(err, foundMovie) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         if (foundMovie) {
                             var newcount = foundMovie.likecount + 1;
                             Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
                                 if (err) {
-                                    middleware.displayGenericError(req, err);
+                                    plugin.displayGenericError(req, err);
                                     res.redirect('back');
                                 } else {
                                     res.redirect('/movies/' + req.params.id);    
                                 }
                             });
                         } else {
-                            middleware.displayDeletedMovieError(req, err);
+                            plugin.displayDeletedMovieError(req, err);
                             res.redirect('back');
                         }
                     }
@@ -231,12 +232,12 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
     if (req.body.action === 'unlike') {
         User.findById(req.user._id, function(err, foundUser) {
             if (err) {
-                middleware.displayGenericError(req, err);
+                plugin.displayGenericError(req, err);
                 res.redirect('back');
             } else {
                 Movie.findById(req.params.id, function(err, foundMovie) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         if (foundMovie) {
@@ -246,7 +247,7 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                             var newcount = foundMovie.likecount - 1;
                             Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
                                 if (err) {
-                                    middleware.displayGenericError(req, err);
+                                    plugin.displayGenericError(req, err);
                                     res.redirect('back');
                                 } else {
                                 //  console.log("Updated User : ", foundmovie2);
@@ -254,7 +255,7 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                                 }
                             });
                         } else {
-                            middleware.displayDeletedMovieError(req, err);
+                            plugin.displayDeletedMovieError(req, err);
                             res.redirect('back');
                         }
                     }

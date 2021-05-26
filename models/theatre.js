@@ -21,11 +21,8 @@ var theatreSchema = new mongoose.Schema({
         username: String
     },
     movielist: [{
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'movie'
-        },
-        image: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Movie'
     }]
 });
 

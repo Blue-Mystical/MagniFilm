@@ -1,0 +1,20 @@
+<% if (doc && doc.totalDocs > 0) { %> 
+    <hr class='dark-long mb-2'>
+    <h5 class="h-5 fw-light text-center py-1">
+        <% if (doc.hasPrevPage) { %> 
+            <a href='?page=<%= doc.prevPage %><% if(typeof extraqueries !== 'undefined') { %><%= extraqueries %><% } %>'>
+                <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
+            </a>
+        <% } else { %> 
+            <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
+        <% } %> 
+        Page <%= doc.page %> of <%= doc.totalPages %> 
+        <% if (doc.hasNextPage) { %> 
+            <a href='?page=<%= doc.nextPage %><% if(typeof extraqueries !== 'undefined') { %><%= extraqueries %><% } %>'>
+                <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
+            </a>
+        <% } else { %> 
+            <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
+        <% } %> 
+    </h5>
+<% } %>

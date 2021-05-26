@@ -76,47 +76,4 @@ midwareFunctions.checkManager = function(req, res, next){
     }
 }
 
-midwareFunctions.displayGenericError = function(req, err) {
-    console.log(err);
-    req.flash('popup', 'Error');
-    req.flash('popupmessage', 'An error occured');
-}
-
-midwareFunctions.displayDeletedMovieError = function(req, err) {
-    console.log(err);
-    req.flash('popup', 'Error');
-    req.flash('popupmessage', 'Cannot perform the action. The movie may have been deleted.');
-}
-
-midwareFunctions.displayDeletedTheatreError = function(req, err) {
-    console.log(err);
-    req.flash('popup', 'Error');
-    req.flash('popupmessage', 'Cannot perform the action. The theatre may have been deleted.');
-}
-
-midwareFunctions.displayAccessDenied = function(req, message) {
-    req.flash('popup', 'Access denied');
-    req.flash('popupmessage', message);
-}
-
-midwareFunctions.displaySuccessRegister = function(req) {
-    req.flash('popup', 'Success');
-    req.flash('popupmessage', 'Successfully registered a new account. Welcome ' + req.user.username);
-}
-
-midwareFunctions.displaySuccessLogin = function(req) {
-    req.flash('popup', 'Success');
-    req.flash('popupmessage', 'Successfully logged in!');
-}
-
-midwareFunctions.displaySuccessMovie = function(req, message) {
-    req.flash('popup', 'Success');
-    req.flash('popupmessage', message);
-}
-
-midwareFunctions.displaySuccessLogout = function(req) {
-    req.flash('popup', 'Success');
-    req.flash('popupmessage', 'Successfully logged out! Have a save trip.');
-}
-
 module.exports = midwareFunctions; 

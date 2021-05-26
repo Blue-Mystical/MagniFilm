@@ -25,6 +25,25 @@ body {
 	}
 }
 
+hr {
+	border: 0;
+	border-top: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+hr.dark-short {
+	width:85%;
+    margin:0 auto;
+	border: 0;
+	border-top: 2px solid rgba(0, 0, 0, 0.6);
+}
+
+hr.dark-long {
+	width:95%;
+    margin:0 auto;
+	border: 0;
+	border-top: 2px solid rgba(0, 0, 0, 0.6);
+}
+
 nav.navbar.cssnavbar {
 	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.3);
 }

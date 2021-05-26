@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),
+    plugin = require('../plugin'),
     Movie = require('../models/movie'),
     helper = require('../helper'),
     User = require('../models/user'),
@@ -25,7 +26,7 @@ router.get('/list', function(req,res) {
 
     Movie.findById(req.params.id).populate('review').exec(function(err, foundMovie) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundMovie) {
@@ -48,7 +49,7 @@ router.get('/list', function(req,res) {
 router.get('/:reviewid/edit', middleware.checkReviewOwner, function(req,res) {
     Review.findById(req.params.reviewid, function(err, foundReview) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundReview) {
@@ -64,12 +65,12 @@ router.put('/:reviewid', middleware.checkReviewOwner, function(req,res) {
     req.body.review.reviewdate = new Date(); // Update date too
     Review.findByIdAndUpdate(req.params.reviewid, req.body.review, function(err, updatedReview) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             Movie.findById(req.params.id, function(err, foundMovie) {
                 if (err) {
-                    middleware.displayGenericError(req, err);
+                    plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
                     // Modify rating on the movie and add review count
@@ -80,7 +81,7 @@ router.put('/:reviewid', middleware.checkReviewOwner, function(req,res) {
 
                         res.redirect('/movies/' + foundMovie._id + '/reviews/list');
                     } else {
-                        middleware.displayDeletedMovieError(req, err);
+                        plugin.displayDeletedMovieError(req, err);
                         res.redirect('back');
                     }
                 }
@@ -94,18 +95,18 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
     // get review point to deduct first
     Review.findById(req.params.reviewid, function(err, foundReview) {
         if(err){
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             var oldrating = foundReview.rating;
             Review.findByIdAndRemove(req.params.reviewid, function(err) {
                 if(err){
-                    middleware.displayGenericError(req, err);
+                    plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
                     Movie.findById(req.params.id, function(err, foundMovie) {
                         if (err) {
-                            middleware.displayGenericError(req, err);
+                            plugin.displayGenericError(req, err);
                             res.redirect('back');
                         } else {
                             // Modify rating on the movie and reduce review count
@@ -121,7 +122,7 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
             
                                 res.redirect('/movies/' + foundMovie._id + '/reviews/list');
                             } else {
-                                middleware.displayDeletedMovieError(req, err);
+                                plugin.displayDeletedMovieError(req, err);
                                 res.redirect('back');
                             }
                         }
@@ -136,7 +137,7 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
 router.get('/new', middleware.checkExistingReview, function(req,res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
             if (foundMovie) {
@@ -151,7 +152,7 @@ router.get('/new', middleware.checkExistingReview, function(req,res) {
 router.post('/', middleware.checkExistingReview, function(req, res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) {
-            middleware.displayGenericError(req, err);
+            plugin.displayGenericError(req, err);
             res.redirect('/movies' + foundMovie._id + '/reviews/add');
         } else {
             if (foundMovie) {
@@ -159,7 +160,7 @@ router.post('/', middleware.checkExistingReview, function(req, res) {
                 req.body.review.reviewdate = new Date();
                 Review.create(req.body.review, function(err, newreview) {
                     if (err) {
-                        middleware.displayGenericError(req, err);
+                        plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
                         // Add review for both review and movie schemas
@@ -179,7 +180,7 @@ router.post('/', middleware.checkExistingReview, function(req, res) {
 
                         User.findById(req.user._id, function(err, foundUser) {
                             if (err) {
-                                middleware.displayGenericError(req, err);
+                                plugin.displayGenericError(req, err);
                                 res.redirect('back');
                             } else {
                                 var refReview = newreview._id;
@@ -192,7 +193,7 @@ router.post('/', middleware.checkExistingReview, function(req, res) {
                     }
                 });
             } else {
-                middleware.displayDeletedMovieError(req, err);
+                plugin.displayDeletedMovieError(req, err);
                 res.redirect('back');
             }
         }
