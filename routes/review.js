@@ -90,15 +90,22 @@ router.put('/:reviewid', middleware.checkReviewOwner, function(req,res) {
     });
 });
 
-// Delete review
+// Delete review by owner
 router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
-    // get review point to deduct first
-    Review.findById(req.params.reviewid, function(err, foundReview) {
+    deleteReview(req,res);
+});
+// Delete review by manager
+router.delete('/:reviewid/foradmin', middleware.checkManager, function(req,res) {
+    deleteReview(req,res);
+});
+
+function deleteReview(req,res) {
+    Review.findById(req.params.reviewid, function(err, foundReview) { // Only used to fetch the rating of the review
         if(err){
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            var oldrating = foundReview.rating;
+            var subrating = foundReview.rating;
             Review.findByIdAndRemove(req.params.reviewid, function(err) {
                 if(err){
                     plugin.displayGenericError(req, err);
@@ -111,7 +118,7 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
                         } else {
                             // Modify rating on the movie and reduce review count
                             if (foundMovie) {
-                                var newsumrating = foundMovie.sumrating - oldrating;
+                                var newsumrating = foundMovie.sumrating - subrating;
                                 var newreviewcount = foundMovie.reviewcount - 1;
                                 if (foundMovie.reviewcount == 1) {
                                     var newaverage = -1;
@@ -131,7 +138,7 @@ router.delete('/:reviewid', middleware.checkReviewOwner, function(req,res) {
             });
         }
     });
-});
+}
 
 // New review
 router.get('/new', middleware.checkExistingReview, function(req,res) {

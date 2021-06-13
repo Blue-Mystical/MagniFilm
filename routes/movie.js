@@ -28,7 +28,7 @@ var express = require('express'),
 
     Movie = require('../models/movie');
 
-
+// Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
     res.render('movief/addmovie.ejs');
 });
@@ -113,9 +113,12 @@ router.get('/:id/trailer', function(req,res) {
     });
 });
 
+// Add movie
 router.post('/', middleware.checkManager, upload.single('image'), function(req,res) {
     if (req.file) {
         req.body.movie.image = '/uploads/' + req.file.filename;
+    } else {
+        req.body.movie.image = '/assets/blankmovie.png';
     }
     req.body.movie.addedby = {
         id: req.user._id,

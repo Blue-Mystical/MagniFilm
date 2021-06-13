@@ -43,7 +43,7 @@
         </p>
       <p class="lead mb-0"><%= movie.desc %></p>
       <p class="mt-4">
-        <% if (movie.addedby.username) { %> 
+        <% if (movie.addedby.username && currentUser && helper.canManage(currentUser)) { %> 
           Added by: <%= movie.addedby.username %>
         <% } else { %>
           Added by: unknown
@@ -79,7 +79,7 @@
               <form action='/movies/<%= movie._id %> ' style="display: inline;" method="POST">
                 <input type="hidden" name="action" value="unlike">
                 <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
-                  <span style="color: hotpink;"><i class="fas fa-heart mf-auto"></i></span>
+                  <span class="active-like"><i class="fas fa-heart mf-auto"></i></span>
                   <%= movie.likecount %>
                 </button>
               </form>

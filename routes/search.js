@@ -35,33 +35,15 @@ router.get('/', function(req,res) {
           locale: 'en',
         },
     };
-    var searchQuery;
-    if (req.query.value && req.query.genre && !(req.query.genre == 'none')) {
-        searchQuery = {
-            moviename: {$regex : req.query.value, $options: "i"}, // case-insensitive search
-            genre: req.query.genre
-        };
-    } else if (req.query.value) {
-        searchQuery = {
-            moviename: {$regex : req.query.value, $options: "i"}
-        };
-    } else if (req.query.genre && !req.query.genre == 'none')  {
-        searchQuery = {
-            genre: req.query.genre
-        };
-    } else {
-        searchQuery = {};
+    var searchQuery = {};
+    if (!req.query.value == '') {
+        searchQuery.moviename = {$regex : req.query.value, $options: "i"}; // case-insensitive search
+    }
+    if (!(req.query.genre == 'none')) {
+        searchQuery.genre = req.query.genre;
     }
 
     var extraQueries = plugin.buildQuery(req.query);
-    // Object.entries(req.query).forEach(entry => {
-    //     const [key, value] = entry;
-    //     if (key !== 'page') {
-    //         var querytoadd = '&' + key + '=' + value;
-    //         extraQueries = extraQueries.concat(querytoadd);
-    //     }
-    // });
-    //console.log('Resulting query = ' + extraQueries);
     
     Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
         if (err) {

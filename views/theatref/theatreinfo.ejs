@@ -31,7 +31,13 @@
         Location: <%= theatre.location %>
       </p>
      <p class="lead mb-0"><%= theatre.desc %></p>
-     <p class="mt-4">Added by: <%= theatre.addedby.username %></p>
+     <p class="mt-4">
+      <% if (theatre.addedby.username && currentUser && helper.canManage(currentUser)) { %> 
+        Added by: <%= theatre.addedby.username %>
+      <% } else { %>
+        Added by: unknown
+      <% } %>
+    </p>
      <% if (currentUser && helper.canManage(currentUser)) { %> 
       <div class='d-flex flex-row'>
         <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/theatres/<%= theatre._id %>/edit'>EDIT</a> 

@@ -1,6 +1,6 @@
 <%- include('../partials/header.ejs') %>
 
-<!-- Confirm to delete modal -->
+<!-- Confirm to delete modal for reviewer -->
 <div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -60,8 +60,19 @@
                 <% } else { %> 
                     <% movie.review.forEach(function(review) { %>
                         <tr><td>
-                            <div class='px-2 pb-2 fw-bold'><%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %></div>
-                            <div class='px-2 pb fw-light'><%= review.text %></div>
+                          <div class="row">
+                            <div class="col-lg-10 col-md-9 col-8">
+                              <div class='px-2 pb-2 fw-bold'><%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %></div>
+                              <div class='px-2 pb fw-light'><%= review.text %></div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-4">
+                              <% if (currentUser && helper.canManage(currentUser)) { %>
+                                <form action='/movies/<%= movie._id %>/reviews/<%= review._id %>/foradmin?_method=DELETE' method='POST' class='d-flex justify-content-center'>
+                                  <button class="btn btn-danger btn-lg btn-outline-secondary text-white py-1">DELETE</button>
+                                </form>
+                              <% } %> 
+                            </div>
+                          </div>
                         </tr></td>
                     <% }); %>
                 <% } %> 

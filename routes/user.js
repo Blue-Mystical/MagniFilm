@@ -187,7 +187,6 @@ router.post('/register', function(req, res) {
     var newUser = new User({
         username: req.body.username,
         email: req.body.email, 
-        role: 'member'
     });
     var pw = req.body.password;
     var cfpw = req.body.confirmpassword;

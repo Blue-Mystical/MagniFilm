@@ -62,6 +62,19 @@ img.card-img-top.theatre {
 	width:3rem;
 }
 
+span.active-like {
+	color: hotpink;
+}
+span.airtime-unaired {
+	color: black;
+}
+span.airtime-onair {
+	color: #dc3545;
+}
+span.airtime-upcoming {
+	color: #ffc107;
+}
+
 .carousel-item img,
 .carousel-item-active img {
 	width: 50%;

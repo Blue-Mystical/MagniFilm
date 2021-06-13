@@ -26,6 +26,22 @@ var express = require('express'),
     Logo = require('../models/logo'),
     Theatre = require('../models/theatre');
 
+// Moved up due to conflict
+router.get('/add', middleware.checkManager, function(req,res) {
+    Logo.find({}, function(err,logos) {
+        if (err){
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            res.render('theatref/addtheatre.ejs', {logos : logos});
+        }
+    });
+});
+
+router.get('/logo/add', middleware.checkManager, function(req,res) {
+    res.render('theatref/addlogo.ejs');
+});
+
 // Theatre list
 router.get('/', function(req,res) {
     Theatre.find({}, function(err,Theatreall) {
@@ -38,7 +54,6 @@ router.get('/', function(req,res) {
     });
 });
 
-
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
         Theatre.findById(req.params.id).populate('movielist').exec(function(err, foundTheatre) {
@@ -47,7 +62,6 @@ router.get('/:id', function(req,res) {
                 res.redirect('back');
             } else {
                 if (foundTheatre) {
-                    console.log(foundTheatre);
                     res.render('theatref/theatreinfo.ejs', {theatre: foundTheatre, helper : helper});
                 } else {
                     res.render("notfound.ejs");
@@ -55,17 +69,6 @@ router.get('/:id', function(req,res) {
             }
         });
     }
-});
-
-router.get('/add', middleware.checkManager, function(req,res) {
-    Logo.find({}, function(err,logos) {
-        if (err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            res.render('theatref/addtheatre.ejs', {logos : logos});
-        }
-    });
 });
 
 router.post('/', middleware.checkManager, function(req,res) {
@@ -92,16 +95,11 @@ router.post('/', middleware.checkManager, function(req,res) {
                     plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
-                    console.log(newTheatre);
                     res.redirect('/theatres');
                 }
             });
         }
     });
-});
-
-router.get('/logo/add', middleware.checkManager, function(req,res) {
-    res.render('theatref/addlogo.ejs');
 });
 
 router.post('/logo', middleware.checkManager, upload.single('image'), function(req,res) {

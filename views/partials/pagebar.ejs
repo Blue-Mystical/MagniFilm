@@ -1,20 +1,32 @@
 <% if (doc && doc.totalDocs > 0) { %> 
     <hr class='dark-long mb-2'>
-    <h5 class="h-5 fw-light text-center py-1">
+    <h2 class="h-5 fw-light text-center py-1 d-flex justify-content-center">
         <% if (doc.hasPrevPage) { %> 
             <a href='?page=<%= doc.prevPage %><% if(typeof extraqueries !== 'undefined') { %><%= extraqueries %><% } %>'>
-                <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
+                <div class='bg-primary'>
+                    <span style="color: black;"><i class="fas fa-chevron-left pe-2"></i></span>
+                </div>
             </a>
         <% } else { %> 
-            <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
+            <div class='bg-primary'>
+                <span style="color: white;"><i class="fas fa-chevron-left pe-2"></i></span>
+            </div>
+            
         <% } %> 
-        Page <%= doc.page %> of <%= doc.totalPages %> 
+        <div class='flex-shrink-0'>
+            Page <%= doc.page %> of <%= doc.totalPages %> 
+        </div>
+       
         <% if (doc.hasNextPage) { %> 
             <a href='?page=<%= doc.nextPage %><% if(typeof extraqueries !== 'undefined') { %><%= extraqueries %><% } %>'>
-                <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
+                <div class='bg-primary'>
+                    <span style="color: black;"><i class="fas fa-chevron-right ps-2"></i></span>
+                </div>
             </a>
         <% } else { %> 
-            <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
+            <div class='bg-primary'>
+                <span style="color: white;"><i class="fas fa-chevron-right ps-2"></i></span>
+            </div>
         <% } %> 
-    </h5>
+    </h2>
 <% } %>

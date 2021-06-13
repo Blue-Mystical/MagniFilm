@@ -6,6 +6,10 @@
 
         <div class="row">
             <div class="col-lg-6 px-0 mt-3 mb-5 mb-lg-3">
+                <h3 class="display-6 fw-bold text-center py-1">
+                    <% if(typeof user.joineddate !== 'undefined') { %>Join date: <%= helper.getLongDate(user.joineddate) %> <% } %>
+                </h3>
+                <hr class='dark-short mb-4'>
                 <a class="btn btn-light btn-lg btn-outline-secondary d-flex justify-content-center mx-5 mb-2" href='/user/history'>History</a>
                 <a class="btn btn-light btn-lg btn-outline-secondary d-flex justify-content-center mx-5 mb-2" href='/user/liked'>Liked Movies</a>
                 <a class="btn btn-light btn-lg btn-outline-secondary d-flex justify-content-center mx-5 mb-4" href='/user/reviews'>Your Reviews</a>
