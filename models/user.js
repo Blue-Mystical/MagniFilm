@@ -7,11 +7,15 @@ var userSchema = new mongoose.Schema({
     email: String,
     password: String,
     role: { type: String, default: 'member' }, // available: member, admin, manager
-    avatar: String,
+    avatar: { type: String, default: '/assets/unknownavatar.png' },
     joineddate: { type: Date, default: Date.now },
     likedMovie: [{
            type: mongoose.Schema.Types.ObjectId,
            ref: 'movie'
+    }],
+    likedNews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'news'
     }],
     reviewHistory: [{
         type: mongoose.Schema.Types.ObjectId,

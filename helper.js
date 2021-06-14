@@ -12,7 +12,7 @@ helperFunctions.getLongDate = function(date) {
     return date.getDate() + " " + monthFull[date.getMonth()] + " " + date.getFullYear();
 };
 
-helperFunctions.changeDateFormat = function(date) {
+helperFunctions.changeDateFormat = function(date) { // Make it readable for the page
 
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -39,6 +39,11 @@ helperFunctions.CapAndJoin = function(array) {
 
 helperFunctions.findLiked = function(array, movieid) {
     const result = array.includes(movieid);
+    return result; 
+};
+
+helperFunctions.findLikedNews = function(array, newsid) {
+    const result = array.includes(newsid);
     return result; 
 };
 
@@ -100,7 +105,7 @@ helperFunctions.compareLogoID = function(id1, id2) {
 }
 
 helperFunctions.queryLimit = function() {
-    return 3;
+    return 18;
 }
 
 module.exports = helperFunctions;

@@ -4,7 +4,7 @@ var express = require('express'),
     plugin = require('../plugin'),
     helper = require('../helper'),
     Movie = require('../models/movie'),
-    Promotion = require('../models/promotion');
+    News = require('../models/news');
 
 router.get('/', function(req,res) {
 
@@ -23,12 +23,12 @@ router.get('/', function(req,res) {
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            Promotion.find({}, function(err,promolist) {
+            News.find({}, function(err,newslist) {
                 if (err){
                     plugin.displayGenericError(req, err);
                     res.redirect('back');
                 } else {
-                    res.render('home.ejs', {movielist : Movall, helper : helper, promolist : promolist})
+                    res.render('home.ejs', {title : 'Home', movielist : Movall, helper : helper, newslist : newslist})
                 }
             });
         }

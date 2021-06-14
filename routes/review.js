@@ -31,13 +31,13 @@ router.get('/list', function(req,res) {
         } else {
             if (foundMovie) {
                 if(req.isAuthenticated()){
-                    foundMovie.review.forEach(invreview => {
-                        if (invreview.user.id.equals(req.user._id) ) {     
+                    foundMovie.review.forEach(function(invreview) {
+                        if (invreview.user.id.equals(req.user._id) ) {
                             foundReviewId = invreview._id;
                         }
                     });
                 }
-                res.render("reviewf/reviews.ejs", {movie: foundMovie, helper : helper, reviewid : foundReviewId});
+                res.render("reviewf/reviews.ejs", {title : 'Reviews for ' + foundMovie.moviename, movie: foundMovie, helper : helper, reviewid : foundReviewId});
             } else {
                 res.render("notfound.ejs");
             }
@@ -53,7 +53,7 @@ router.get('/:reviewid/edit', middleware.checkReviewOwner, function(req,res) {
             res.redirect('back');
         } else {
             if (foundReview) {
-                res.render("reviewf/editreview.ejs", {review: foundReview, movie_id: req.params.id, helper : helper});
+                res.render("reviewf/editreview.ejs", {title : 'Editing your own review', review: foundReview, movie_id: req.params.id, helper : helper});
             } else {
                 res.render("notfound.ejs");
             }
@@ -148,7 +148,7 @@ router.get('/new', middleware.checkExistingReview, function(req,res) {
             res.redirect('back');
         } else {
             if (foundMovie) {
-                res.render('reviewf/newreview.ejs', {movie: foundMovie, helper : helper});
+                res.render('reviewf/newreview.ejs', {title : 'Reviewing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
             } else {
                 res.render("notfound.ejs");
             }

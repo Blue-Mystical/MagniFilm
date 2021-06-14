@@ -36,10 +36,10 @@ router.get('/', function(req,res) {
         },
     };
     var searchQuery = {};
-    if (!req.query.value == '') {
+    if (req.query.value) {
         searchQuery.moviename = {$regex : req.query.value, $options: "i"}; // case-insensitive search
     }
-    if (!(req.query.genre == 'none')) {
+    if (req.query.genre && req.query.genre !== 'none') {
         searchQuery.genre = req.query.genre;
     }
 
@@ -52,7 +52,7 @@ router.get('/', function(req,res) {
         } else {
             var movielist = movieDoc.docs;
             movieDoc.docs = [];
-            res.render('searchf/searchmovie.ejs', {helper : helper, doc : movieDoc, 
+            res.render('searchf/searchmovie.ejs', {title : 'Search', helper : helper, doc : movieDoc, 
              movielist : movielist, search : req.query, extraqueries: extraQueries});
         }
     });

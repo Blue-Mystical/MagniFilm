@@ -30,7 +30,9 @@ var express = require('express'),
 
 // Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
-    res.render('movief/addmovie.ejs');
+    var currentDate = new Date();
+    currentDate = Date.parse(currentDate);
+    res.render('movief/addmovie.ejs', {title : 'Adding Movie', helper : helper, currentDate : currentDate});
 });
 
 // Movie List
@@ -57,7 +59,7 @@ router.get('/', function(req,res) {
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            res.render('movief/movies.ejs', {movielist : Movall, helper : helper})
+            res.render('movief/movies.ejs', {title : 'Movies', movielist : Movall, helper : helper})
         }
     });
 });
@@ -75,7 +77,7 @@ router.get('/:id', function(req,res) {
                     if( req.isAuthenticated() ){ 
                         var currentDate = new Date();
                         var foundflag = false;
-                        req.user.movieHistory.forEach(movieelement => {                
+                        req.user.movieHistory.forEach(function(movieelement) {                
                             if ( movieelement.id.equals(foundMovie._id) ) {
                                 movieelement.date = currentDate;
                                 foundflag = true;
@@ -88,7 +90,7 @@ router.get('/:id', function(req,res) {
                         req.user.save();
                     }
 
-                    res.render("movief/movieinfo.ejs", {movie: foundMovie, helper : helper});
+                    res.render("movief/movieinfo.ejs", {title : foundMovie.moviename, movie: foundMovie, helper : helper});
                 } else {
                     res.render("notfound.ejs");
                 }
@@ -105,7 +107,7 @@ router.get('/:id/trailer', function(req,res) {
             res.redirect('back');
         } else {
             if (foundMovie) {
-                res.render('movief/trailer.ejs', {movie: foundMovie, helper : helper});
+                res.render('movief/trailer.ejs', {title : foundMovie.moviename + ' Trailer', movie: foundMovie, helper : helper});
             } else {
                 res.render("notfound.ejs");
             }
@@ -148,7 +150,7 @@ router.get('/:id/edit', middleware.checkManager, function(req, res) {
             res.redirect('back');
         } else {
             if (foundMovie) {
-                res.render('movief/editmovie.ejs', {movie: foundMovie, helper : helper});
+                res.render('movief/editmovie.ejs', {title : 'Editing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
             } else {
                 plugin.displayDeletedMovieError(req, err);
                 res.redirect('back');
@@ -198,11 +200,6 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                 plugin.displayGenericError(req, err);
                 res.redirect('/movies');
             } else {
-                // foundUser.likedMovie.forEach(function(likedid) {
-                //     if (req.params.id == likedid) {
-                //         console.log('already liked');
-                //     }
-                // });
 
                 var refMovie = req.params.id;
                 foundUser.likedMovie.push(refMovie);
@@ -245,7 +242,7 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                     } else {
                         if (foundMovie) {
                             var refMovie = req.params.id;
-                            foundUser.likedMovie.pull(refMovie); // DELETE
+                            foundUser.likedMovie.pull(refMovie);
                             foundUser.save();
                             var newcount = foundMovie.likecount - 1;
                             Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
@@ -253,7 +250,6 @@ router.post('/:id', middleware.isLoggedIn, function(req,res) {
                                     plugin.displayGenericError(req, err);
                                     res.redirect('back');
                                 } else {
-                                //  console.log("Updated User : ", foundmovie2);
                                     res.redirect('/movies/' + req.params.id);    
                                 }
                             });

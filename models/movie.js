@@ -9,10 +9,10 @@ var movieSchema = new mongoose.Schema({
     desc: String,
     trailer: String,
     length: Number,
-    reviewcount: Number, // sum / count = avg
-    sumrating: Number,
-    avgrating: Number,
-    likecount: Number,
+    reviewcount: { type: Number, default: 0 }, // sum / count = avg
+    sumrating: { type: Number, default: 0 },
+    avgrating: { type: Number, default: -1 },
+    likecount: { type: Number, default: 0 },
     movierating: String, // G, R, PG etc. 
 
     likedby: [{

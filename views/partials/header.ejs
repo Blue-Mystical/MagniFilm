@@ -23,7 +23,13 @@
     <link rel="stylesheet" href="../../../stylesheet/main.css">
     <link rel="stylesheet" href="../../../../stylesheet/main.css">
     
-    <title>MagniFilm</title>
+    <title>
+      <% if (typeof title !== 'undefined') { %> 
+        <%= title %> - MagniFilm
+      <% } else { %>
+        MagniFilm
+      <% } %> 
+    </title>
 </head>
 <body style="padding-top: 4em;">
 
@@ -75,7 +81,12 @@
         <% } else { %>
           <li class="nav-item btn btn-secondary dropdown btn-sm mx-1 my-1 rounded-3">
             <a class="nav-link text-white dropdown-toggle" id="userDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Logged as <%= currentUser.username %> 
+              <% if (currentUser.avatar !== undefined) { %>
+                <img class='small-avatar' src="<%= currentUser.avatar %>" alt="AAAAAAAA" height="17px">
+              <% } else { %> 
+                  <img class='small-avatar' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="17px">
+              <% } %> 
+              <%= currentUser.username %> 
             </a>
             <ul class="dropdown-menu" aria-labelledby="userDropDown">
               <li><a class="dropdown-item" href="/user">User page</a></li>

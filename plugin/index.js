@@ -21,6 +21,12 @@ plugins.displayDeletedTheatreError = function(req, err) {
     req.flash('popupmessage', 'Cannot perform the action. The theatre may have been deleted.');
 }
 
+plugins.displayDeletedNewsError = function(req, err) {
+    console.log(err);
+    req.flash('popup', 'Error');
+    req.flash('popupmessage', 'Cannot perform the action. The news may have been deleted.');
+}
+
 plugins.displayAccessDenied = function(req, message) {
     req.flash('popup', 'Access denied');
     req.flash('popupmessage', message);
@@ -31,9 +37,9 @@ plugins.displaySuccessRegister = function(req) {
     req.flash('popupmessage', 'Successfully registered a new account. Welcome ' + req.user.username);
 }
 
-plugins.displaySuccessLogin = function(req) {
+plugins.displaySuccessLogin = function(req, username) {
     req.flash('popup', 'Success');
-    req.flash('popupmessage', 'Successfully logged in!');
+    req.flash('popupmessage', 'Successfully logged in as ' + username + '.');
 }
 
 plugins.displaySuccessMovie = function(req, message) {

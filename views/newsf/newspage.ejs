@@ -1,0 +1,75 @@
+<%- include('../partials/header.ejs') %>
+
+<!-- Confirm to delete modal -->
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmLabel">DANGER</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+          Are you sure to delete this news? This cannot be undone!
+        </div>
+      <div class="modal-footer">
+        <form action='/news/<%= news._id %>?_method=DELETE' method='POST' class=''>
+          <button type="submit" class="btn btn-danger text-white">Yes</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-4 p-md-3 mb-0 mx-2 text-white rounded bg-dark">
+      <div class="col-lg-6 px-4 order-2 order-lg-1">
+        <h1 class="display-4 fst-italic text-center"><%= news.title %></h1>
+        <h3 class="my-2">Date: <%= helper.getLongDate(news.newsdate) %></h3>
+        <h3 class="my-2 fw-bold"><%= news.caption %></h3>
+
+        <p class="lead mb-0">WIP The contents belongs here.</p>
+
+        <!-- Edit and delete -->
+        <% if (currentUser && helper.canManage(currentUser)) { %> 
+          <div class='d-flex flex-row'>
+            <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/news/<%= news._id %>/edit'>EDIT</a> 
+            <button class="btn btn-danger btn-lg btn-outline-secondary text-white py-1" data-bs-toggle="modal" data-bs-target="#deleteConfirm">DELETE</button> 
+          </div>
+        <% } %>
+
+        <div class='d-flex flex-row'>
+          <p class="lead px-2 py-1 rounded border border-dark text-dark">Magnifilm</p>
+        </div>
+          
+      </div>
+
+      <div class="col-lg-6 px-0 d-flex justify-content-center mt-3 mb-1 mb-lg-3 order-1 order-lg-2">
+          <img src="<%= news.image %>" alt="AAAAAAAA" height="600px">
+      </div>  
+  </div>
+  <div class="row p-2 text-white rounded bg-primary fixed-bottom">
+      <div class="col-12 px-4">
+
+            <% if(currentUser && helper.findLikedNews(currentUser.likedNews, news._id)) {%>
+              <form action='/news/<%= news._id %> ' style="display: inline;" method="POST">
+                <input type="hidden" name="action" value="unlike">
+                <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
+                  <span class="active-like"><i class="fas fa-heart mf-auto"></i></span>
+                  <%= news.likecount %>
+                </button>
+              </form>
+            <% } else { %>
+              <form action='/news/<%= news._id %> ' style="display: inline;" method="POST">
+                <input type="hidden" name="action" value="like">
+                <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
+                  <i class="far fa-heart mf-auto"></i>
+                  <%= news.likecount %>
+                </button>
+              </form>
+            <% } %>
+        
+      </div>
+    
+</div>
+
+<%- include('../partials/footer.ejs') %>

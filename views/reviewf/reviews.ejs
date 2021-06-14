@@ -62,7 +62,14 @@
                         <tr><td>
                           <div class="row">
                             <div class="col-lg-10 col-md-9 col-8">
-                              <div class='px-2 pb-2 fw-bold'><%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %></div>
+                              <div class='px-2 pb-2 fw-bold'>
+                                <% if (review.user.avatar !== undefined) { %>
+                                  <img class='small-avatar' src="<%= currentUser.avatar %>" alt="AAAAAAAA" height="30px">
+                                <% } else { %> 
+                                    <img class='small-avatar' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="30px">
+                                <% } %> 
+                                <%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %>
+                              </div>
                               <div class='px-2 pb fw-light'><%= review.text %></div>
                             </div>
                             <div class="col-lg-2 col-md-3 col-4">

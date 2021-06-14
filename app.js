@@ -6,6 +6,7 @@ var express          = require('express'),
     mongoose         = require('mongoose'),
     passport         = require('passport'),
     LocalStrategy    = require('passport-local'),
+    RememberStrategy = require('passport-remember-me'),
     flash            = require('express-flash'),
     sass             = require('node-sass-middleware'),
     methodOverride   = require('method-override'),
@@ -17,6 +18,7 @@ var movieRoutes      = require('./routes/movie'),
     reviewRoutes     = require('./routes/review'),
     theatreRoutes    = require('./routes/theatre'),
     searchRoutes     = require('./routes/search'),
+    newsRoutes     = require('./routes/news'),
     userRoutes       = require('./routes/user');
 
 app.use(sass({
@@ -37,7 +39,7 @@ app.use(express.static('./public'));
 app.use(flash());
 
 app.use(require('express-session')({
-    secret: 'a secret.',
+    secret: 'eeeewwwweeee secret.',
     resave: false,
     saveUninitialized: false
 }));
@@ -62,6 +64,7 @@ app.use('/theatres', theatreRoutes);
 app.use('/', userRoutes);
 app.use('/', homeRoutes);
 app.use('/search', searchRoutes);
+app.use('/news', newsRoutes);
 
 // --
 

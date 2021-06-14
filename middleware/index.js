@@ -1,5 +1,6 @@
 var Review = require('../models/review');
 var Movie = require('../models/movie');
+var plugin = require('../plugin');
 
 var requireLoginMessage = 'A login required to do that action.';
 
@@ -24,13 +25,13 @@ midwareFunctions.checkReviewOwner = function(req, res, next){
     if(req.isAuthenticated()){
         Review.findById(req.params.reviewid, function(err, foundReview){
             if(err){
-                midwareFunctions.displayGenericError(req);
+                plugin.displayGenericError(req);
                 res.redirect('back');
             } else {
                 if(foundReview.user.id.equals(req.user._id)) {
                     next();
                 } else {
-                    midwareFunctions.displayAccessDenied(req, 'You cannot edit the other user\'s review.');
+                    plugin.displayAccessDenied(req, 'You cannot edit the other user\'s review.');
                     res.redirect('back');
                 }
             }
@@ -45,11 +46,11 @@ midwareFunctions.checkExistingReview = function(req, res, next){ // Used to prev
     if(req.isAuthenticated()){
         Review.findOne({'user.id' : req.user._id, 'formovie.id' : req.params.id}, function(err, foundReview){
             if(err){
-                midwareFunctions.displayGenericError(req);
+                plugin.displayGenericError(req);
                 res.redirect('back');
             } else {
                 if (foundReview) {
-                    midwareFunctions.displayAccessDenied(req, 'You cannot have more than one review for each movie.');
+                    plugin.displayAccessDenied(req, 'You cannot have more than one review for each movie.');
                     res.redirect('back');
                 } else {
                     next();
@@ -67,7 +68,7 @@ midwareFunctions.checkManager = function(req, res, next){
         if (req.user.role === 'admin' || req.user.role === 'manager') {
             next();
         } else {
-            midwareFunctions.displayAccessDenied(req, 'You do not have permission to do that.');
+            plugin.displayAccessDenied(req, 'You do not have permission to do that.');
             res.redirect('back');
         }
     } else {

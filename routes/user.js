@@ -6,6 +6,25 @@ var express = require('express'),
     Review = require('../models/review'),
     Movie = require('../models/movie'),
     helper = require('../helper'),
+    // The entire uploading system
+    multer = require('multer'),
+    path = require('path'),
+    storage = multer.diskStorage({
+        destination: function(req, file, callback) {
+            callback(null, './public/avatars');
+        },
+        filename: function(req, file, callback) {
+            callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        }
+    }),
+    imageFilter = function (req, file, callback) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            return callback(new Error('Only JPG, JPEG, PNG and GIF image files are allowed.'), false);
+        }
+        callback(null, true);
+    },
+    upload = multer({storage: storage, fileFilter: imageFilter}),
+    // END
     passport = require('passport');
 
 // User pages
@@ -16,7 +35,7 @@ router.get('/user', middleware.isLoggedIn, function(req,res) {
             res.redirect('back');
         } else {
             if (foundUser) {
-                res.render('userf/user.ejs', {user: foundUser, helper : helper});
+                res.render('userf/user.ejs', {title : 'Your Profile', user: foundUser, helper : helper});
             } else {
                 res.render("notfound.ejs");
             }
@@ -45,7 +64,7 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
                     },
                 };
                 var matchingArray = [];
-                foundUser.movieHistory.forEach(movie => {
+                foundUser.movieHistory.forEach(function(movie) {
                     matchingArray.push(movie.id)
                 });
 
@@ -58,7 +77,7 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
                     } else {
                         var movielist = movieDoc.docs;
                         movieDoc.docs = [];
-                        res.render('userf/userquery.ejs', {user: foundUser, helper : helper, doc : movieDoc, 
+                        res.render('userf/userquery.ejs', {title : 'Movie History', user: foundUser, helper : helper, doc : movieDoc, 
                          movielist : movielist, title : 'Your visited movies', noresult : 'No movies found'});
                     }
                 });
@@ -91,7 +110,7 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
                     },
                 };
                 var matchingArray = [];
-                foundUser.likedMovie.forEach(movie => {
+                foundUser.likedMovie.forEach(function(movie) {
                     matchingArray.push(movie)
                 });
 
@@ -104,7 +123,7 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
                     } else {
                         var movielist = movieDoc.docs;
                         movieDoc.docs = [];
-                        res.render('userf/userquery.ejs', {user: foundUser, helper : helper, doc : movieDoc, 
+                        res.render('userf/userquery.ejs', {title : 'Liked Movies', user: foundUser, helper : helper, doc : movieDoc, 
                          movielist : movielist, title : 'Your liked movies', noresult : 'No movies found'});
                     }
                 });
@@ -137,7 +156,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                     },
                 };
                 var matchingArray = [];
-                foundUser.reviewHistory.forEach(review => {
+                foundUser.reviewHistory.forEach(function(review) {
                     matchingArray.push(review)
                 });
 
@@ -150,7 +169,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                     } else {
                         var reviewlist = reviewDoc.docs;
                         reviewlist.docs = [];
-                        reviewlist.forEach(review => {
+                        reviewlist.forEach(function(review) {
                             Movie.findById(review.formovie.id, function(err, foundMovie) {
                                 if (err) {
                                     plugin.displayGenericError(req, err);
@@ -166,7 +185,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                                 }
                             });
                         });
-                        res.render('userf/userreview.ejs', {user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
+                        res.render('userf/userreview.ejs', {title : 'Your Reviews', user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
                         title : 'Your reviews', noresult : 'No reviews found'});
                     }
                 });
@@ -178,9 +197,35 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
     });
 });
 
+router.put('/user/avatar', upload.single('image'), function(req, res) {
+    req.body.user = {
+        avatar : undefined
+    };
+    if (req.file) {
+        req.body.user.avatar = '/avatars/' + req.file.filename;
+    } else {
+        req.body.user.avatar = '/assets/unknownavatar.png';
+    }
+
+    User.findByIdAndUpdate(req.user._id, req.body.user, function(err, updatedUser) {
+        if(err){
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (updatedUser) {
+                plugin.displaySuccessMovie(req, 'Changed avatar.');
+                res.redirect('/user/');
+            } else {
+                plugin.displayGenericError(req, err);
+                res.redirect('back');
+            }
+        }
+    });
+});
+
 // Register
 router.get('/register', function(req,res) {
-    res.render('register.ejs');
+    res.render('register.ejs', {title : 'Register to MagniFilm'});
 });
 
 router.post('/register', function(req, res) {
@@ -192,12 +237,12 @@ router.post('/register', function(req, res) {
     var cfpw = req.body.confirmpassword;
     if (pw != cfpw) {
         req.flash('error', 'Password and confirm password do not match.')
-        return res.render('register');
+        return res.render('register', {title : 'Register to MagniFilm'});
     }
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
             req.flash('error', 'Cannot register. Username maybe already exists')
-            return res.render('register');
+            return res.render('register', {title : 'Register to MagniFilm'});
         } 
         passport.authenticate('local')(req, res, function() {
             plugin.displaySuccessRegister(req);
@@ -208,16 +253,37 @@ router.post('/register', function(req, res) {
 
 // Login
 router.get('/login', function(req,res) {
-    res.render('login.ejs');
+    res.render('login.ejs', {title : 'Login to MagniFilm'});
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true,
-}), function(req, res) {
-    console.log('run');
-}); 
+// router.post('/login', passport.authenticate('local', {
+//     successRedirect: '/',
+//     failureRedirect: '/login',
+//     failureFlash: true,
+// }), function(req, res) {
+//     console.log('runWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
+// }); 
+
+router.post('/login', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            plugin.displayGenericError(req, err);
+            return res.redirect('back');
+        }
+        if (!user) { 
+            req.flash('error', 'Invalid username or password');
+            return res.redirect('/login');
+        }
+        req.logIn(user, function(err) {
+            if (err) { 
+                plugin.displayGenericError(req, err);
+                return res.redirect('back');
+            }
+            plugin.displaySuccessLogin(req, user.username);
+            return res.redirect('/');
+        });
+    })(req, res, next);
+});
 
 router.get('/logout', function(req, res){
     req.logout();
