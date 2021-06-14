@@ -30,46 +30,39 @@
                             </p>
                         </tr></td>
                     <% } else { %> 
-                        <% newslist.forEach(function(news) { %>
-                        <tr><td>
-                            <a href="/news/<%= news._id %> " class='text-dark'>
-                                <div class='row'>
-                                    <div class='col-3 col-md-2'>
-                                        <div class='d-flex justify-content-center'>
-                                            <img src="<%= news.image %>" alt="AAAAAAAA" height="120px">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='col-6 col-md-8'>
-                                        <div class='fw-bold fs-2'><%= news.title %></div>
-                                        <div><%= helper.getShortDate(news.newsdate) %></div>
-                                    
-                                        <div class="d-grid gap-2 d-flex justify-content-start">
-                                            <p class="fw-light">
-                                            <% if(!currentUser) {%>
-                                                <i class="far fa-heart mf-auto me-2"></i><%= news.likecount %>
-                                            <% } else { %>
-                                                
-                                                <% if (helper.findLiked(currentUser.likedNews, news._id))  { %>
-                                                    <span class="active-like"><i class="fas fa-heart mf-auto me-2 "></i></span><%= news.likecount %>
-                                                <% } else { %> 
+                        <div class='row'>
+                            <% newslist.forEach(function(news) { %>
+                                <div class='col-12 col-md-6 col-lg-4 bg-dark'>
+                                    <a href="/news/<%= news._id %>" class='text-dark'>
+                                        <div class='news-container h-100'>
+                                            <img src="<%= news.image %>" alt="AAAAAAAA" class="ratiotest">
+                                            <div class='inside-image'>
+                                                <div class='fw-bold fs-2'><%= news.title %></div>
+                                                <div class='d-grid gap-2 d-flex justify-content-end'><%= helper.getShortDate(news.newsdate) %></div>
+                                            
+                                                <div class="d-grid gap-2 d-flex justify-content-end">
+                                                <p class="fw-light">
+                                                <% if(!currentUser) { %>
                                                     <i class="far fa-heart mf-auto me-2"></i><%= news.likecount %>
+                                                <% } else { %>
+                                                    <% if (helper.findLiked(currentUser.likedNews, news._id)) { %>
+                                                        <span class="active-like"><i class="fas fa-heart mf-auto me-2"></i></span><%= news.likecount %>
+                                                    <% } else { %> 
+                                                        <i class="far fa-heart mf-auto me-2"></i><%= news.likecount %>
+                                                    <% } %>
                                                 <% } %>
-                                            <% } %>
-                                            </p>
-                                    
-                                            <p class="fw-light">
-                                                <i class="fas fa-eye"></i>
-                                                <%= news.viewcount %>
-                                            </p>
+                                                </p>       
+                                                <p class="fw-light">
+                                                    <i class="fas fa-eye"></i>
+                                                    <%= news.viewcount %>
+                                                </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    
-                                    </div>
-
+                                    </a>
                                 </div>
-                            </a>
-                        </tr></td>
-                        <% }); %> 
+                            <% }); %> 
+                        </div> 
                     <% } %> 
                 <% } %> 
             </tbody>

@@ -73,21 +73,20 @@ router.get('/:id', function(req,res) {
         News.findById(req.params.id, function(err, foundNews) {
             if(err){
                 plugin.displayGenericError(req, err);
-                res.redirect('back');
+                return res.redirect('back');
+            } 
+            if (foundNews) {
+
+                var newcount = foundNews.viewcount + 1;
+                News.findByIdAndUpdate(req.params.id, {viewcount : newcount}, function(err, foundNews2) {
+                    if (err) {
+                        plugin.displayGenericError(req, err);
+                        res.redirect('back');
+                    }
+                });
+                res.render("newsf/newspage.ejs", {title : foundNews.title, news: foundNews, helper : helper});
             } else {
-                if (foundNews) {
-                    // count view
-                    var newcount = foundNews.viewcount + 1;
-                    News.findByIdAndUpdate(req.params.id, {viewcount : newcount}, function(err, foundNews2) {
-                        if (err) {
-                            plugin.displayGenericError(req, err);
-                            res.redirect('back');
-                        }
-                    });
-                    res.render("newsf/newspage.ejs", {title : foundNews.title, news: foundNews, helper : helper});
-                } else {
-                    res.render("notfound.ejs");
-                }
+                res.render("notfound.ejs");
             }
         });
     }
