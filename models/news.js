@@ -15,7 +15,8 @@ var newsSchema = new mongoose.Schema({
     viewcount: { type: Number, default: 0 },
     likecount: { type: Number, default: 0 },
     newstype: String, // promo or news
-    featured: Boolean
+    featured: { type: Boolean, default: false },
+    haspage: { type: Boolean, default: true }
 });
 
 newsSchema.plugin(mongoosepaginate);

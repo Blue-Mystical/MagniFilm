@@ -197,6 +197,103 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
     });
 });
 
+router.get('/user/manage', middleware.checkManager, function(req,res) {
+    var pagenumber = 1;
+    if (req.query.page && !isNaN(req.query.page)) {
+        pagenumber = req.query.page;
+    } // querys: page, mode, sort, value, genre
+    var sortOptions;
+    var sortMode = 1;
+
+    sortOptions = { name: sortMode }
+
+    const queryOptions = {
+        page: pagenumber,
+        sort: sortOptions,
+        limit: helper.queryLimit(),
+        collation: {
+          locale: 'en',
+        },
+    };
+    var searchQuery = {};
+    if (req.query.value) {
+        searchQuery.username = {$regex : req.query.value, $options: "i"}; // case-insensitive search
+    }
+    if (req.query.role && req.query.role !== 'none') {
+        searchQuery.role = req.query.role;
+    }
+
+    var extraQueries = plugin.buildQuery(req.query);
+    
+    User.paginate(searchQuery, queryOptions, function (err, userDoc) {
+        if (err) {
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            var userlist = userDoc.docs;
+            userDoc.docs = [];
+            res.render('userf/managelist.ejs', {title : 'Manage Users', helper : helper, doc : userDoc, 
+             userlist : userlist, search : req.query, extraqueries: extraQueries});
+        }
+    });
+});
+
+// Edit user
+router.get('/user/manage/:userid', middleware.checkAdmin, function(req, res) {
+    User.findById(req.params.userid, function(err, foundUser) {
+        if (err) {
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundUser) {
+                res.render('userf/manageuser.ejs', {title : 'Manage ' + foundUser.username, user: foundUser, helper : helper});
+            } else {
+                plugin.displayGenericError(req, err);
+                res.redirect('back');
+            }
+        }
+    });
+});
+router.put('/user/manage/:userid', middleware.checkAdmin, function(req, res) {
+    if (req.user._id.equals(req.params.userid)) {
+        plugin.displayAccessDenied(req, 'You cannot change your own role.');
+        return res.redirect('back');
+    }
+    User.findByIdAndUpdate(req.params.userid, req.body.user, function(err, updatedUser) {
+        if(err){
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (updatedUser) {
+                plugin.displaySuccessMessage(req, 'Edited ' + updatedUser.username + '\'s role.');
+                res.redirect('/user/manage/');
+            } else {
+                plugin.displayGenericError(req, err);
+                res.redirect('back');
+            }
+        }
+    });
+});
+router.delete('/user/manage/:userid', middleware.checkManager, function(req, res) {
+    if (req.user._id.equals(req.params.userid)) {
+        plugin.displayAccessDenied(req, 'You cannot delete your own account.');
+        return res.redirect('back');
+    }
+    if (req.params.userid === 'admin') {
+        plugin.displayAccessDenied(req, 'You cannot delete an another admin until changed to an other role.');
+        return res.redirect('back');
+    }
+    User.findByIdAndDelete(req.params.userid, function(err) {
+        if(err){
+            plugin.displayGenericError(req, err);
+            res.redirect('/user/manage/');
+        } else {
+            plugin.displaySuccessMessage(req, 'Successfully removed an account. F.');
+            res.redirect('/user/manage/');
+        }
+    });
+});
+
 router.put('/user/avatar', upload.single('image'), function(req, res) {
     req.body.user = {
         avatar : undefined
@@ -213,7 +310,7 @@ router.put('/user/avatar', upload.single('image'), function(req, res) {
             res.redirect('back');
         } else {
             if (updatedUser) {
-                plugin.displaySuccessMovie(req, 'Changed avatar.');
+                plugin.displaySuccessMessage(req, 'Changed avatar.');
                 res.redirect('/user/');
             } else {
                 plugin.displayGenericError(req, err);
@@ -255,14 +352,6 @@ router.post('/register', function(req, res) {
 router.get('/login', function(req,res) {
     res.render('login.ejs', {title : 'Login to MagniFilm'});
 });
-
-// router.post('/login', passport.authenticate('local', {
-//     successRedirect: '/',
-//     failureRedirect: '/login',
-//     failureFlash: true,
-// }), function(req, res) {
-//     console.log('runWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
-// }); 
 
 router.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {

@@ -1,23 +1,27 @@
 <%- include('../partials/header.ejs') %>
 <div class="container py-4 mt-4 bg-secondary rounded-3">
   <h1 class="display-4 fw-bold text-center text-white">Adding news</h1>
-  <form action='/news' method="POST" enctype="multipart/form-data" class="text-white">
+  <form action='/news/<%= news._id %>?_method=PUT' method="POST" enctype="multipart/form-data" class="text-white">
     <div class="form-group mb-3">
       <label class="form-label">Title</label>
-      <input type="text" class="form-control" name="news[title]" placeholder="Title" required>
+      <input type="text" class="form-control" name="news[title]" placeholder="<%= news.title %>" value='<%= news.title %>' required>
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Caption</label>
-        <input type="text" class="form-control" name="news[caption]" placeholder="Caption">
+        <input type="text" class="form-control" name="news[caption]" placeholder="<%= news.caption %>" value='<%= news.caption %>'>
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Thumbnail</label>
+      <div class='row bg-dark mx-1 my-2 border border-white'>
+        <img src='<%= news.image %>' class="img-responsive col-6 offset-3 col-md-4 offset-md-4">
+      </div>
       <input type="file" class="form-control" name="image" accept="image/*">
     </div>
     <div class="form-group mb-3">
       <label class="form-label">Featuring on the carousel</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="true" id="check1" name="news[featured]">
+        <input class="form-check-input" type="checkbox" value="true" id="check1" name="news[featured]" 
+        <% if (news.featured === true) { %> checked <% } %> >
         <label class="form-check-label" for="check1">
           Enabled
         </label>
@@ -26,7 +30,8 @@
     <div class="form-group mb-3">
       <label class="form-label">Has its page and appears in the page list</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="true" id="check2" name="news[haspage]">
+        <input class="form-check-input" type="checkbox" value="true" id="check2" name="news[haspage]"
+        <% if (news.haspage === true) { %> checked <% } %> >
         <label class="form-check-label" for="check2">
           Enabled
         </label>
@@ -38,8 +43,8 @@
       <div class="row">
         <div class="col-sm-12">
           <select class="form-select" aria-label="Rating" name="news[newstype]" required>
-            <option value="news">News</option>
-            <option value="promo">Promotion</option>
+            <option value="news" <% if(news.newstype=='news') {%> selected <% } %> >News</option>
+            <option value="promo" <% if(news.newstype=='promo') {%> selected <% } %>>Promotion</option>
           </select>
         </div>
       </div>
@@ -47,15 +52,11 @@
 
     <div class="form-group mb-3">
       <label class="form-label">Contents</label>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 1"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 2"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 3"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 4"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 5"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 6"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 7"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 8"></textarea>
-      <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content 9"></textarea>
+
+      <% news.contents.forEach(function(contentElem) { %>
+        <textarea class="form-control my-1" rows="5" name="invcontent" placeholder="Content <%= contentElem.order %>"><%= contentElem.content %></textarea>
+      <% }); %>
+
     </div>
     
 

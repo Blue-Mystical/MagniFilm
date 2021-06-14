@@ -26,6 +26,19 @@ var express = require('express'),
     Logo = require('../models/logo'),
     Theatre = require('../models/theatre');
 
+
+// Theatre list
+router.get('/', function(req,res) {
+    Theatre.find({}, function(err,Theatreall) {
+        if (err){
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            res.render('theatref/theatres.ejs', {title : 'Theatres', theatrelist : Theatreall, helper : helper})
+        }
+    });
+});
+
 // Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
     Logo.find({}, function(err,logos) {
@@ -40,18 +53,6 @@ router.get('/add', middleware.checkManager, function(req,res) {
 
 router.get('/logo/add', middleware.checkManager, function(req,res) {
     res.render('theatref/addlogo.ejs' , {title : 'Adding New Theatre Logo'});
-});
-
-// Theatre list
-router.get('/', function(req,res) {
-    Theatre.find({}, function(err,Theatreall) {
-        if (err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            res.render('theatref/theatres.ejs', {title : 'Theatres', theatrelist : Theatreall, helper : helper})
-        }
-    });
 });
 
 router.get('/:id', function(req,res) {
@@ -167,7 +168,7 @@ router.put('/:id', middleware.checkManager, function(req,res) {
                     res.redirect('back');
                 } else {
                     if (updatedTheatre) {
-                        plugin.displaySuccessMovie(req, 'Edited ' + req.body.theatre.theatrename + ' page.');
+                        plugin.displaySuccessMessage(req, 'Edited ' + req.body.theatre.theatrename + ' page.');
                         res.redirect('/theatres/' + req.params.id);
                     } else {
                         plugin.displayDeletedMovieError(req, err);
@@ -185,7 +186,7 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
             plugin.displayGenericError(req, err);
             res.redirect('/theatres');
         } else {
-            plugin.displaySuccessMovie(req, 'Removed a theatre.');
+            plugin.displaySuccessMessage(req, 'Removed a theatre.');
             res.redirect('/theatres');
         }
     });
@@ -261,7 +262,7 @@ router.post('/:id/addmovie', function(req,res) {
                         res.redirect('back');
                     } else {
                         var movieid = foundMovie._id;
-                        plugin.displaySuccessMovie(req, 'Added a movie for a theater!');
+                        plugin.displaySuccessMessage(req, 'Added a movie for a theater!');
                         foundTheatre.movielist.push(movieid);
                         foundTheatre.save();
                         res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
@@ -287,7 +288,7 @@ router.delete('/:id/addmovie', function(req,res) {
                         plugin.displayGenericError(req, err);
                         res.redirect('back');
                     } else {
-                        plugin.displaySuccessMovie(req, 'Removed movie times!');
+                        plugin.displaySuccessMessage(req, 'Removed movie times!');
 
                         foundTheatre.movielist.forEach(function(movieid) {
                             if (movieid.equals(foundMovie._id)) {

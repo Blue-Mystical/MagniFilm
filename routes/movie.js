@@ -28,13 +28,6 @@ var express = require('express'),
 
     Movie = require('../models/movie');
 
-// Moved up due to conflict
-router.get('/add', middleware.checkManager, function(req,res) {
-    var currentDate = new Date();
-    currentDate = Date.parse(currentDate);
-    res.render('movief/addmovie.ejs', {title : 'Adding Movie', helper : helper, currentDate : currentDate});
-});
-
 // Movie List
 router.get('/', function(req,res) {
     var currentDate = new Date();
@@ -62,6 +55,13 @@ router.get('/', function(req,res) {
             res.render('movief/movies.ejs', {title : 'Movies', movielist : Movall, helper : helper})
         }
     });
+});
+
+// Moved up due to conflict
+router.get('/add', middleware.checkManager, function(req,res) {
+    var currentDate = new Date();
+    currentDate = Date.parse(currentDate);
+    res.render('movief/addmovie.ejs', {title : 'Adding Movie', helper : helper, currentDate : currentDate});
 });
 
 // Movie Page
@@ -136,7 +136,7 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            plugin.displaySuccessMovie(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
+            plugin.displaySuccessMessage(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
             res.redirect('/movies');
         }
     });
@@ -169,7 +169,7 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
             res.redirect('/movies');
         } else {
             if (updatedMovie) {
-                plugin.displaySuccessMovie(req, 'Edited ' + req.body.movie.moviename + ' page.');
+                plugin.displaySuccessMessage(req, 'Edited ' + req.body.movie.moviename + ' page.');
                 res.redirect('/movies/' + req.params.id);
             } else {
                 plugin.displayDeletedMovieError(req, err);
@@ -184,9 +184,9 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
     Movie.findByIdAndDelete(req.params.id, function(err) {
         if(err){
             plugin.displayGenericError(req, err);
-            res.redirect('/movies');
+            res.redirect('back');
         } else {
-            plugin.displaySuccessMovie(req, 'Removed a movie.');
+            plugin.displaySuccessMessage(req, 'Removed a movie.');
             res.redirect('/movies');
         }
     });

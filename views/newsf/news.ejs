@@ -22,25 +22,50 @@
 
         <table class="table table-striped bg-light">
             <tbody>
-                <% if (movielist) { %> 
-                    <% if (movielist.length == 0) { %> 
+                <% if (newslist) { %> 
+                    <% if (newslist.length == 0) { %> 
                         <tr><td>
                             <p class="fw-bold mx-4 my-2 text-center">
                                 There are no result.
                             </p>
                         </tr></td>
                     <% } else { %> 
-                        <% movielist.forEach(function(movie) { %>
+                        <% newslist.forEach(function(news) { %>
                         <tr><td>
-                            <a href="/movies/<%= movie._id %> " class='text-dark'>
+                            <a href="/news/<%= news._id %> " class='text-dark'>
                                 <div class='row'>
                                     <div class='col-3 col-md-2'>
                                         <div class='d-flex justify-content-center'>
-                                            <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                                            <img src="<%= news.image %>" alt="AAAAAAAA" height="120px">
                                         </div>
                                     </div>
-                                    <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
-                                    <%- include('../partials/movieinfobar2.ejs', {movie : movie}) %>
+                                    
+                                    <div class='col-6 col-md-8'>
+                                        <div class='fw-bold fs-2'><%= news.title %></div>
+                                        <div><%= helper.getShortDate(news.newsdate) %></div>
+                                    
+                                        <div class="d-grid gap-2 d-flex justify-content-start">
+                                            <p class="fw-light">
+                                            <% if(!currentUser) {%>
+                                                <i class="far fa-heart mf-auto me-2"></i><%= news.likecount %>
+                                            <% } else { %>
+                                                
+                                                <% if (helper.findLiked(currentUser.likedNews, news._id))  { %>
+                                                    <span class="active-like"><i class="fas fa-heart mf-auto me-2 "></i></span><%= news.likecount %>
+                                                <% } else { %> 
+                                                    <i class="far fa-heart mf-auto me-2"></i><%= news.likecount %>
+                                                <% } %>
+                                            <% } %>
+                                            </p>
+                                    
+                                            <p class="fw-light">
+                                                <i class="fas fa-eye"></i>
+                                                <%= news.viewcount %>
+                                            </p>
+                                        </div>
+                                    
+                                    </div>
+
                                 </div>
                             </a>
                         </tr></td>

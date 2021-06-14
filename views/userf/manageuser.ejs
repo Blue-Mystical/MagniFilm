@@ -1,0 +1,46 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmLabel">DANGER</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+          Are you sure to delete that user!? This CANNOT be undone!
+        </div>
+      <div class="modal-footer">
+        <form action='/user/manage/<%= user._id %>?_method=DELETE' method='POST' class=''>
+          <button type="submit" class="btn btn-danger text-white">Yes</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4 mt-4 bg-secondary rounded-3">
+  <h1 class="display-4 fw-bold text-center text-white">Managing <%= user.username %> </h1>
+  <form action='/user/manage/<%= user._id %>?_method=PUT' method="POST" class="text-white">
+
+    <div class="form-group mb-3">
+      <label for="role" class="form-label">Role</label>
+      <div class="row">
+        <div class="col-sm-12">
+          <select class="form-select" aria-label="Role" name="user[role]" required>
+            <option value="member" <% if(user.role=='member') {%> selected <% } %> >Member</option>
+            <option value="manager" <% if(user.role=='manager') {%> selected <% } %> >Manager</option>
+            <option value="admin" <% if(user.role=='admin') {%> selected <% } %> >Admin</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+
+  <button class="btn btn-danger btn-lg btn-outline-secondary text-white mt-2" data-bs-toggle="modal" data-bs-target="#deleteConfirm">DELETE</button> 
+</div>
+<%- include('../partials/footer.ejs') %>

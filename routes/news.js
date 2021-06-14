@@ -26,32 +26,14 @@ var express = require('express'),
     // END
     helper = require('../helper');
 
-// Moved up due to conflict
-router.get('/add', middleware.checkManager, function(req,res) {
-    res.render('newsf/addnews.ejs', {title : 'Adding News'});
-});
-
 router.get('/', function(req,res) {
     var pagenumber = 1;
     if (req.query.page && !isNaN(req.query.page)) {
         pagenumber = req.query.page;
     } // querys: page, mode, sort, value, genre
     var sortOptions;
-    var sortMode = -1;
-    if (req.query.mode == 1)
-        sortMode = 1;
-
-    if (req.query.sort == 'like') {
-        sortOptions = { likecount: sortMode }
-    } else if (req.query.sort == 'rating') {
-        sortOptions = { avgrating: sortMode }
-    } else if (req.query.sort == 'name') {
-        sortOptions = { moviename: sortMode }
-    } else if (req.query.sort == 'length') {
-        sortOptions = { length: sortMode }
-    } else {
-        sortOptions = { airdate: sortMode }
-    }
+    sortMode = -1;
+    sortOptions = { newsdate: sortMode }
 
     const queryOptions = {
         page: pagenumber,
@@ -63,25 +45,27 @@ router.get('/', function(req,res) {
     };
     var searchQuery = {};
     if (req.query.value) {
-        searchQuery.moviename = {$regex : req.query.value, $options: "i"}; // case-insensitive search
-    }
-    if (req.query.genre && req.query.genre !== 'none') {
-        searchQuery.genre = req.query.genre;
+        searchQuery.title = {$regex : req.query.value, $options: "i"}; // case-insensitive search
     }
 
     var extraQueries = plugin.buildQuery(req.query);
     
-    Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
+    News.paginate(searchQuery, queryOptions, function (err, newsDoc) {
         if (err) {
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            var movielist = movieDoc.docs;
-            movieDoc.docs = [];
-            res.render('newsf/news.ejs', {title : 'News', helper : helper, doc : movieDoc, 
-             movielist : movielist, search : req.query, extraqueries: extraQueries});
+            var newslist = newsDoc.docs;
+            newsDoc.docs = [];
+            res.render('newsf/news.ejs', {title : 'News', helper : helper, doc : newsDoc, 
+            newslist : newslist, search : req.query, extraqueries: extraQueries});
         }
     });
+});
+
+// Moved up due to conflict
+router.get('/add', middleware.checkManager, function(req,res) {
+    res.render('newsf/addnews.ejs', {title : 'Adding News'});
 });
 
 router.get('/:id', function(req,res) {
@@ -92,7 +76,14 @@ router.get('/:id', function(req,res) {
                 res.redirect('back');
             } else {
                 if (foundNews) {
-                    // Add to history of user or change date
+                    // count view
+                    var newcount = foundNews.viewcount + 1;
+                    News.findByIdAndUpdate(req.params.id, {viewcount : newcount}, function(err, foundNews2) {
+                        if (err) {
+                            plugin.displayGenericError(req, err);
+                            res.redirect('back');
+                        }
+                    });
                     res.render("newsf/newspage.ejs", {title : foundNews.title, news: foundNews, helper : helper});
                 } else {
                     res.render("notfound.ejs");
@@ -114,8 +105,6 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
     req.body.news.likecount = 0;
     req.body.news.contents = [];
 
-    console.log(req.body.invcontent);
-
     var newContent = {};
     var index = 1;
     req.body.invcontent.forEach(function(contentElem){
@@ -125,17 +114,64 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
             order: index
         };
         req.body.news.contents.push(newContent);
-        console.log(newContent);
         index++;
     });
-    console.log(req.body.news);
     
     News.create(req.body.news, function(err, newNews) {
         if(err){
             plugin.displayGenericError(req, err);
             res.redirect('back');
         } else {
-            plugin.displaySuccessMovie(req, req.body.news.title + ' has successfully been created.');
+            plugin.displaySuccessMessage(req, req.body.news.title + ' has successfully been created.');
+            res.redirect('/news');
+        }
+    });
+});
+
+// Edit news
+router.get('/:id/edit', middleware.checkManager, function(req, res) {
+    News.findById(req.params.id, function(err, foundNews) {
+        if (err) {
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            if (foundNews) {
+                res.render('newsf/editnews.ejs', {title : 'Editing ' + foundNews.title, news: foundNews, helper : helper});
+            } else {
+                plugin.displayDeletedNewsError(req, err);
+                res.redirect('back');
+            }
+        }
+    });
+});
+
+router.put('/:id', middleware.checkManager, upload.single('image'), function(req, res) {
+    if (req.file) {
+        req.body.news.image = '/uploads/' + req.file.filename;
+    }
+    News.findByIdAndUpdate(req.params.id, req.body.news, function(err, updatedNews) {
+        if(err){
+            plugin.displayGenericError(req, err);
+            res.redirect('/news');
+        } else {
+            if (updatedNews) {
+                plugin.displaySuccessMessage(req, 'Edited ' + req.body.news.title + ' page.');
+                res.redirect('/news/' + req.params.id);
+            } else {
+                plugin.displayDeletedNewsError(req, err);
+                res.redirect('back');
+            }
+        }
+    });
+});
+
+router.delete('/:id', middleware.checkManager, function(req, res) {
+    News.findByIdAndDelete(req.params.id, function(err) {
+        if(err){
+            plugin.displayGenericError(req, err);
+            res.redirect('back');
+        } else {
+            plugin.displaySuccessMessage(req, 'Removed a news.');
             res.redirect('/news');
         }
     });

@@ -155,11 +155,16 @@ samples.newslist = [
         image: 'https://wallpaper.dog/large/20475179.jpg',
         newsdate: new Date(2021, 5, 10, 12, 30, 45),
         contents: [
-            {
+            {   
                 ctype: 'text', // avaiable types: text, image
                 content: 'Lx.',
                 order: 1
             },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: 'Dogeeeeeeeeeeeeeeeeee',
+                order: 2
+            }
         ],
         viewcount: 0,
         likecount: 0,

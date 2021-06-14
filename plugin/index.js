@@ -42,7 +42,7 @@ plugins.displaySuccessLogin = function(req, username) {
     req.flash('popupmessage', 'Successfully logged in as ' + username + '.');
 }
 
-plugins.displaySuccessMovie = function(req, message) {
+plugins.displaySuccessMessage = function(req, message) {
     req.flash('popup', 'Success');
     req.flash('popupmessage', message);
 }

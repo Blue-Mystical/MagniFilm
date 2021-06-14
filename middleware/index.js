@@ -77,4 +77,18 @@ midwareFunctions.checkManager = function(req, res, next){
     }
 }
 
+midwareFunctions.checkAdmin = function(req, res, next){
+    if(req.isAuthenticated()){
+        if (req.user.role === 'admin') {
+            next();
+        } else {
+            plugin.displayAccessDenied(req, 'You do not have permission to do that. You are not an admin.');
+            res.redirect('back');
+        }
+    } else {
+        req.flash('loginrequired', requireLoginMessage);
+        res.redirect('/login');
+    }
+}
+
 module.exports = midwareFunctions; 
