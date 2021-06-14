@@ -22,54 +22,53 @@
 </div>
 
 <div class="row p-4 p-md-3 mb-0 mx-2 text-white rounded bg-dark">
-    <div class="col-lg-8 col-12 offset-0 offset-lg-2 px-4">
-      <div class='d-flex justify-content-center pb-3'>
-        <img src="<%= theatre.icon.image %>" alt="AAAAAAAA" height="60px">
-        <h1 class="display-4 fst-italic ps-3"><%= theatre.theatrename %></h1>
-      </div>
-      <p class="my-0">
-        Location: <%= theatre.location %>
-      </p>
-     <p class="lead mb-0"><%= theatre.desc %></p>
-     <p class="mt-4">
-      <% if (theatre.addedby.username && currentUser && helper.canManage(currentUser)) { %> 
-        Added by: <%= theatre.addedby.username %>
-      <% } else { %>
-        Added by: unknown
-      <% } %>
-    </p>
-     <% if (currentUser && helper.canManage(currentUser)) { %> 
-      <div class='d-flex flex-row'>
-        <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/theatres/<%= theatre._id %>/edit'>EDIT</a> 
-        <button class="btn btn-danger btn-lg btn-outline-secondary text-white me-2 py-1" data-bs-toggle="modal" data-bs-target="#deleteConfirm">DELETE</button> 
-        <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/theatres/<%= theatre._id %>/addmovie'>ADD MOVIE</a> 
-      </div>
-    <% } %>
+  <div class="col-lg-8 col-12 offset-0 offset-lg-2 px-4">
+    <div class='d-flex justify-content-center pb-3'>
+      <img src="<%= theatre.icon.image %>" alt="AAAAAAAA" height="60px">
+      <h1 class="display-4 fst-italic ps-3"><%= theatre.theatrename %></h1>
     </div>
-    <div>
-      <hr>
+    <p class="my-0">
+      Location: <%= theatre.location %>
+    </p>
+   <p class="lead mb-0"><%= theatre.desc %></p>
+   <p class="mt-4">
+    <% if (theatre.addedby.username && currentUser && helper.canManage(currentUser)) { %> 
+      Added by: <%= theatre.addedby.username %>
+    <% } else { %>
+      Added by: unknown
+    <% } %>
+  </p>
+   <% if (currentUser && helper.canManage(currentUser)) { %> 
+    <div class='d-flex flex-row'>
+      <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/theatres/<%= theatre._id %>/edit'>EDIT</a> 
+      <button class="btn btn-danger btn-lg btn-outline-secondary text-white me-2 py-1" data-bs-toggle="modal" data-bs-target="#deleteConfirm">DELETE</button> 
+      <a class="btn btn-light btn-lg btn-outline-secondary me-2 py-1" href='/theatres/<%= theatre._id %>/addmovie'>ADD MOVIE</a> 
+    </div>
+  <% } %>
+  </div>
+  <div>
+    <hr>
       <h1 class="display-5 fw-bold text-center py-1">Available Movies</h1>
-      <hr>
-      <table class="table table-striped bg-light"><tbody>
-      <% theatre.movielist.forEach(function(movie) { %> 
-        <tr><td>
-          <a href="/movies/<%= movie.id %> " class='text-dark'>
-              <div class='row'>
-                  <div class='col-3 col-md-2'>
-                      <div class='d-flex justify-content-center'>
-                          <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
-                      </div>
-                  </div>
-                  <div class='col-6 col-md-8'>
-                      <div class='fw-bold fs-2'><%= movie.moviename %></div>
+    <hr>
+    <table class="table table-striped bg-light"><tbody>
+    <% theatre.movielist.forEach(function(movie) { %> 
+      <tr><td>
+        <a href="/movies/<%= movie.id %> " class='text-dark'>
+          <div class='row'>
+              <div class='col-3 col-md-2'>
+                  <div class='d-flex justify-content-center'>
+                    <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
                   </div>
               </div>
-          </a>
-
-      </td></tr>
-      <% }); %> 
-    </tbody></table>
-    </div>
+              <div class='col-6 col-md-8'>
+                <div class='fw-bold fs-2'><%= movie.moviename %></div>
+              </div>
+          </div>
+        </a>
+    </td></tr>
+    <% }); %> 
+  </tbody></table>
+  </div>
 </div>
 
 <%- include('../partials/footer.ejs') %>

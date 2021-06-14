@@ -3,10 +3,11 @@ var Movie = require('../models/movie');
 
 var plugins = {};
 
-plugins.displayGenericError = function(req, err) {
+plugins.returnGenericError = function(req, res, err) {
     console.log(err);
     req.flash('popup', 'Error');
     req.flash('popupmessage', 'An error occured');
+    res.redirect('back');
 }
 
 plugins.displayDeletedMovieError = function(req, err) {
@@ -35,6 +36,11 @@ plugins.displayAccessDenied = function(req, message) {
 plugins.displaySuccessRegister = function(req) {
     req.flash('popup', 'Success');
     req.flash('popupmessage', 'Successfully registered a new account. Welcome ' + req.user.username);
+}
+
+plugins.loginRequired = function(req, res) {
+    req.flash('loginrequired', 'A login required to do that action.');
+    res.redirect('/login');
 }
 
 plugins.displaySuccessLogin = function(req, username) {

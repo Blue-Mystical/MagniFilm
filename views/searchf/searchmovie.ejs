@@ -1,94 +1,94 @@
 <%- include('../partials/header.ejs') %>
 
 <div class="container py-4 mt-4 bg-secondary rounded-3">
-    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
-        <h1 class="display-5 fw-bold text-center py-1">Search Movies</h1>
-        <hr class='dark-long mb-2'>
+  <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
+    <h1 class="display-5 fw-bold text-center py-1">Search Movies</h1>
+    <hr class='dark-long mb-2'>
 
-        <div class='row'>
-            <form class="input-group" action="/search" method="GET">
-                <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
-                    <div class="form-outline d-flex pb-2 mx-2">
-                        <input type="search" id="form1" name=value class="form-control form-control-sm"
-                        placeholder='search' value='<% if (search.value) { %><%= search.value %><% } %>'>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                          <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                    <div class="form-group mb-2">
-                        <div class="row">
-                          <div class="col-4 ms-2 pe-1">
-                            <select class="form-select" aria-label="sort" name="sort">
-                              <option value="airdate" <% if (!search.sort) { %> selected <% } %> >Sort By</option>
-                              <option value="airdate" <% if (search.sort == 'airdate') { %> selected <% } %> >Air date</option>
-                              <option value="name" <% if (search.sort == 'name') { %> selected <% } %> >Title</option>
-                              <option value="like" <% if (search.sort == 'like') { %> selected <% } %> >Like</option>
-                              <option value="rating" <% if (search.sort == 'rating') { %> selected <% } %> >Avg. Rating</option>
-                              <option value="length" <% if (search.sort == 'length') { %> selected <% } %> >Movie Length</option>
-                            </select>
-                          </div>
-                          <div class="col-3 ms-2 px-0">
-                            <select class="form-select" aria-label="mode" name="mode">
-                              <option value=2>Descending</option>
-                              <option value=1 <% if (search.mode === 1) { %> selected <% } %> >Ascending</option>
-                            </select>
-                          </div>
-                          <div class="col-4">
-                            <select class="form-select" aria-label="genre" name="genre">
-                              <option value="none" <% if (!search.genre) { %> selected <% } %> >Genre (All)</option>
-                              <option value="action" <% if (search.genre == 'action') { %> selected <% } %> >Action</option>
-                              <option value="adventure" <% if (search.genre == 'adventure') { %> selected <% } %> >Adventure</option>
-                              <option value="animation" <% if (search.genre == 'animation') { %> selected <% } %> >Animation</option>
-                              <option value="comedy" <% if (search.genre == 'comedy') { %> selected <% } %> >Comedy</option>
-                              <option value="drama" <% if (search.genre == 'drama') { %> selected <% } %> >Drama</option>
-                              <option value="fantasy" <% if (search.genre == 'fantasy') { %> selected <% } %> >Fantasy</option>
-                              <option value="horror" <% if (search.genre == 'horror') { %> selected <% } %> >Horror</option>
-                              <option value="musical" <% if (search.genre == 'musical') { %> selected <% } %> >Musical</option>
-                              <option value="mystery" <% if (search.genre == 'mystery') { %> selected <% } %> >Mystery</option>
-                              <option value="romance" <% if (search.genre == 'romance') { %> selected <% } %> >Romance</option>
-                              <option value="scifi" <% if (search.genre == 'scifi') { %> selected <% } %> >Sci-fi</option>
-                              <option value="thriller" <% if (search.genre == 'thriller') { %> selected <% } %> >Thriller</option>
-                              <option value="western" <% if (search.genre == 'western') { %> selected <% } %> >Western</option>
-                            </select>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <div class='row'>
+      <form class="input-group" action="/search" method="GET">
+        <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
+          <div class="form-outline d-flex pb-2 mx-2">
+            <input type="search" id="form1" name=value class="form-control form-control-sm"
+            placeholder='search' value='<% if (search.value) { %><%= search.value %><% } %>'>
+            <button type="submit" class="btn btn-primary btn-sm">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="form-group mb-2">
+            <div class="row">
+              <div class="col-4 ms-2 pe-1">
+                <select class="form-select" aria-label="sort" name="sort">
+                  <option value="airdate" <% if (!search.sort) { %> selected <% } %> >Sort By</option>
+                  <option value="airdate" <% if (search.sort == 'airdate') { %> selected <% } %> >Air date</option>
+                  <option value="name" <% if (search.sort == 'name') { %> selected <% } %> >Title</option>
+                  <option value="like" <% if (search.sort == 'like') { %> selected <% } %> >Like</option>
+                  <option value="rating" <% if (search.sort == 'rating') { %> selected <% } %> >Avg. Rating</option>
+                  <option value="length" <% if (search.sort == 'length') { %> selected <% } %> >Movie Length</option>
+                </select>
+              </div>
+              <div class="col-3 ms-2 px-0">
+                <select class="form-select" aria-label="mode" name="mode">
+                  <option value=2>Descending</option>
+                  <option value=1 <% if (search.mode === 1) { %> selected <% } %> >Ascending</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <select class="form-select" aria-label="genre" name="genre">
+                  <option value="none" <% if (!search.genre) { %> selected <% } %> >Genre (All)</option>
+                  <option value="action" <% if (search.genre == 'action') { %> selected <% } %> >Action</option>
+                  <option value="adventure" <% if (search.genre == 'adventure') { %> selected <% } %> >Adventure</option>
+                  <option value="animation" <% if (search.genre == 'animation') { %> selected <% } %> >Animation</option>
+                  <option value="comedy" <% if (search.genre == 'comedy') { %> selected <% } %> >Comedy</option>
+                  <option value="drama" <% if (search.genre == 'drama') { %> selected <% } %> >Drama</option>
+                  <option value="fantasy" <% if (search.genre == 'fantasy') { %> selected <% } %> >Fantasy</option>
+                  <option value="horror" <% if (search.genre == 'horror') { %> selected <% } %> >Horror</option>
+                  <option value="musical" <% if (search.genre == 'musical') { %> selected <% } %> >Musical</option>
+                  <option value="mystery" <% if (search.genre == 'mystery') { %> selected <% } %> >Mystery</option>
+                  <option value="romance" <% if (search.genre == 'romance') { %> selected <% } %> >Romance</option>
+                  <option value="scifi" <% if (search.genre == 'scifi') { %> selected <% } %> >Sci-fi</option>
+                  <option value="thriller" <% if (search.genre == 'thriller') { %> selected <% } %> >Thriller</option>
+                  <option value="western" <% if (search.genre == 'western') { %> selected <% } %> >Western</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <%- include('../partials/pagebar.ejs') %>
-
-        <table class="table table-striped bg-light">
-            <tbody>
-                <% if (movielist) { %> 
-                    <% if (movielist.length == 0) { %> 
-                        <tr><td>
-                            <p class="fw-bold mx-4 my-2 text-center">
-                                There are no result.
-                            </p>
-                        </tr></td>
-                    <% } else { %> 
-                        <% movielist.forEach(function(movie) { %>
-                        <tr><td>
-                            <a href="/movies/<%= movie._id %> " class='text-dark'>
-                                <div class='row'>
-                                    <div class='col-3 col-md-2'>
-                                        <div class='d-flex justify-content-center'>
-                                            <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
-                                        </div>
-                                    </div>
-                                    <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
-                                    <%- include('../partials/movieinfobar2.ejs', {movie : movie}) %>
-                                </div>
-                            </a>
-                        </tr></td>
-                        <% }); %> 
-                    <% } %> 
-                <% } %> 
-            </tbody>
-        </table>
+      </form>
     </div>
+        
+    <%- include('../partials/pagebar.ejs') %>
+
+    <table class="table table-striped bg-light">
+      <tbody>
+        <% if (movielist) { %> 
+          <% if (movielist.length == 0) { %> 
+            <tr><td>
+              <p class="fw-bold mx-4 my-2 text-center">
+                There are no result.
+              </p>
+            </tr></td>
+          <% } else { %> 
+            <% movielist.forEach(function(movie) { %>
+              <tr><td>
+                <a href="/movies/<%= movie._id %> " class='text-dark'>
+                  <div class='row'>
+                    <div class='col-3 col-md-2'>
+                      <div class='d-flex justify-content-center'>
+                        <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                      </div>
+                    </div>
+                    <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
+                    <%- include('../partials/movieinfobar2.ejs', {movie : movie}) %>
+                  </div>
+                </a>
+              </tr></td>
+            <% }); %> 
+          <% } %> 
+        <% } %> 
+      </tbody>
+    </table>
+  </div>
 
 </div>
 

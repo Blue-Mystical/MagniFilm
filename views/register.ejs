@@ -1,46 +1,46 @@
 <%- include('partials/header.ejs') %>
-  <div class="container">
-    <div class="row">
-        <div class="col-xxl-4 offset-xxl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
-            <div class="login-form bg-dark text-white mt-4 p-4 rounded-3">
-                <form action="/register" method="POST" class="row g-3">
-                    <h4>Register</h4>
+<div class="container">
+  <div class="row">
+      <div class="col-xxl-4 offset-xxl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+          <div class="login-form bg-dark text-white mt-4 p-4 rounded-3">
+              <form action="/register" method="POST" class="row g-3">
+                  <h4>Register</h4>
 
-                    <% if(messages.error){ %>
-                      <div class='col-12'>
-                        <p class="py-1 px-2 rounded border bg-danger text-white"><%= messages.error %></p>
-                      </div>
-                    <% } %>
-
-                    <div class="col-12">
-                      <label class="form-label">Username</label>
-                      <input type="text" pattern="[A-Z][a-z]{0-9}" class="form-control" name="username" 
-                      placeholder="Between 4-32 characters and numbers" minlength=4 max=32 required>
+                  <% if(messages.error){ %>
+                    <div class='col-12'>
+                      <p class="py-1 px-2 rounded border bg-danger text-white"><%= messages.error %></p>
                     </div>
-                    <div class="col-12">
-                      <label class="form-label">Email</label>
-                      <input type="email" class="form-control" name="email" placeholder="Your Email" required>
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label">Password</label>
-                      <input type="password" class="form-control" name="password" placeholder="Password must have 8 characters or over"
-                      minlength=8 max=100 required>
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label">Confirm Password</label>
-                      <input type="password" class="form-control" name="confirmpassword" placeholder="Confirmation"
-                      minlength=8 max=100 required>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary float-end" value='register'>Submit</button>
-                    </div>
-                </form>
-                <hr class="mt-4">
-                <div class="col-12">
-                    <p class="text-center mb-0">Already have an account? <a href="/login">Sign in here</a></p>
-                </div>
-            </div>
+                  <% } %>
+                  
+                  <div class="col-12">
+                    <label class="form-label">Username</label>
+                    <input type="text" pattern="[A-Z][a-z]{0-9}" class="form-control" name="username" 
+                    placeholder="Between 4-32 characters and numbers" minlength=4 max=32 required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password must have 8 characters or over"
+                    minlength=8 max=100 required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" name="confirmpassword" placeholder="Confirmation"
+                    minlength=8 max=100 required>
+                  </div>
+                  <div class="col-12">
+                      <button type="submit" class="btn btn-primary float-end" value='register'>Submit</button>
+                  </div>
+              </form>
+              <hr class="mt-4">
+              <div class="col-12">
+                  <p class="text-center mb-0">Already have an account? <a href="/login">Sign in here</a></p>
+              </div>
           </div>
-      </div>
-  </div>
+        </div>
+    </div>
+</div>
 <%- include('partials/footer.ejs') %>

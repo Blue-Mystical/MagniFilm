@@ -1,65 +1,64 @@
 <%- include('../partials/header.ejs') %>
 
 <div class="container py-4 mt-4 bg-secondary rounded-3">
-    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
-        <h1 class="display-5 fw-bold text-center py-1">Adding movie time</h1>
-        <hr class='dark-long mb-2'>
+  <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
+    <h1 class="display-5 fw-bold text-center py-1">Adding movie time</h1>
+    <hr class='dark-long mb-2'>
 
-        <div class='row'>
-            <form class="input-group" action="/theatres/<%= theatre._id %>/addmovie" method="GET">
-                <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
-                    <div class="form-outline d-flex pb-2 mx-2">
-                        <input type="search" id="form1" name=value class="form-control form-control-sm" placeholder='search'>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                          <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
+    <div class='row'>
+      <form class="input-group" action="/theatres/<%= theatre._id %>/addmovie" method="GET">
+        <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
+          <div class="form-outline d-flex pb-2 mx-2">
+            <input type="search" id="form1" name=value class="form-control form-control-sm" placeholder='search'>
+            <button type="submit" class="btn btn-primary btn-sm">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
         </div>
-        
-        <%- include('../partials/pagebar.ejs') %>
-
-        <table class="table table-striped bg-light">
-            <tbody>
-                <% if (movielist) { %> 
-                    <% if (movielist.length == 0) { %> 
-                        <tr><td>
-                            <p class="fw-bold mx-4 my-2 text-center">
-                                There are no result.
-                            </p>
-                        </tr></td>
-                    <% } else { %> 
-                        <% movielist.forEach(function(movie) { %>
-                        <tr><td>
-
-                            <div class='row text-dark'>
-                                <div class='col-3 col-md-2'>
-                                    <div class='d-flex justify-content-center'>
-                                        <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
-                                    </div>
-                                </div>
-                                <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
-                                <div class='col-3 col-md-2'>
-                                    <form action="/theatres/<%= theatre._id %>/addmovie" method="POST" class='pb-2'>
-                                        <input type="hidden" name="movieid" value="<%= movie._id %>">
-                                        <button type="submit" class="btn btn-warning text-black w-100">ADD</button>
-                                    </form>
-                                    <form action="/theatres/<%= theatre._id %>/addmovie?_method=DELETE" method="POST" class=''>
-                                        <input type="hidden" name="movieid" value="<%= movie._id %>">
-                                        <button type="submit" class="btn btn-danger text-white w-100">REMOVE</button>
-                                    </form>
-                                </div> 
-                            </div>
-
-                        </tr></td>
-                        <% }); %> 
-                    <% } %> 
-                <% } %> 
-            </tbody>
-        </table>
+      </form>
     </div>
+        
+    <%- include('../partials/pagebar.ejs') %>
 
+    <table class="table table-striped bg-light">
+      <tbody>
+        <% if (movielist) { %> 
+          <% if (movielist.length == 0) { %> 
+            <tr><td>
+              <p class="fw-bold mx-4 my-2 text-center">
+                There are no result.
+              </p>
+            </tr></td>
+          <% } else { %> 
+            <% movielist.forEach(function(movie) { %>
+              <tr><td>
+
+                <div class='row text-dark'>
+                  <div class='col-3 col-md-2'>
+                    <div class='d-flex justify-content-center'>
+                      <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                    </div>
+                  </div>
+                  <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
+                  <div class='col-3 col-md-2'>
+                    <form action="/theatres/<%= theatre._id %>/addmovie" method="POST" class='pb-2'>
+                      <input type="hidden" name="movieid" value="<%= movie._id %>">
+                      <button type="submit" class="btn btn-warning text-black w-100">ADD</button>
+                    </form>
+                    <form action="/theatres/<%= theatre._id %>/addmovie?_method=DELETE" method="POST" class=''>
+                      <input type="hidden" name="movieid" value="<%= movie._id %>">
+                      <button type="submit" class="btn btn-danger text-white w-100">REMOVE</button>
+                    </form>
+                  </div> 
+                </div>
+
+              </tr></td>
+            <% }); %> 
+          <% } %> 
+        <% } %> 
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <%- include('../partials/footer.ejs') %>

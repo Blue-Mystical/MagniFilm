@@ -6,7 +6,6 @@ var express          = require('express'),
     mongoose         = require('mongoose'),
     passport         = require('passport'),
     LocalStrategy    = require('passport-local'),
-    RememberStrategy = require('passport-remember-me'),
     flash            = require('express-flash'),
     sass             = require('node-sass-middleware'),
     methodOverride   = require('method-override'),
@@ -39,7 +38,7 @@ app.use(express.static('./public'));
 app.use(flash());
 
 app.use(require('express-session')({
-    secret: 'eeeewwwweeee secret.',
+    secret: 'it\'s a secret to everyone.',
     resave: false,
     saveUninitialized: false
 }));
@@ -56,7 +55,7 @@ app.use(function(req,res,next) {
     next();
 });
 
-// --
+// -- Insert routes here
 
 app.use('/movies', movieRoutes);
 app.use('/movies/:id/reviews', reviewRoutes);

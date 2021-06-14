@@ -34,14 +34,5 @@ var movieSchema = new mongoose.Schema({
     }]
 });
 
-movieSchema.pre('findOneAndDelete', function(next) { // Cascade delete review, and history for both review and movie on users
-    console.log('a remove');
-
-    // pull all reviews of the movie (including review history)
-
-
-    next();
-});
-
 movieSchema.plugin(mongoosepaginate);
 module.exports = mongoose.model('Movie', movieSchema);

@@ -19,19 +19,11 @@ router.get('/', function(req,res) {
     Movie.find({ 
         airdate: dateRange
         }).sort({avgrating: -1}).exec(function(err,Movall) {
-        if (err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            News.find({}, function(err,newslist) {
-                if (err){
-                    plugin.displayGenericError(req, err);
-                    res.redirect('back');
-                } else {
-                    res.render('home.ejs', {title : 'Home', movielist : Movall, helper : helper, newslist : newslist})
-                }
-            });
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        News.find({}, function(err,newslist) {
+            if (err) return plugin.returnGenericError(req, res, err);
+            res.render('home.ejs', {title : 'Home', movielist : Movall, helper : helper, newslist : newslist})
+        });
     });
 });
 

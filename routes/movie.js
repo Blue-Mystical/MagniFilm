@@ -47,13 +47,9 @@ router.get('/', function(req,res) {
     }
     Movie.find({ 
         airdate: dateRange
-        }, function(err,Movall) {
-        if (err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            res.render('movief/movies.ejs', {title : 'Movies', movielist : Movall, helper : helper})
-        }
+        }, function(err, Movall) {
+        if (err) return plugin.returnGenericError(req, res, err);
+        res.render('movief/movies.ejs', {title : 'Movies', movielist : Movall, helper : helper})
     });
 });
 
@@ -68,32 +64,27 @@ router.get('/add', middleware.checkManager, function(req,res) {
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
         Movie.findById(req.params.id, function(err, foundMovie) {
-            if(err){
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            } else {
-                if (foundMovie) {
-                    // Add to history of user or change date
-                    if( req.isAuthenticated() ){ 
-                        var currentDate = new Date();
-                        var foundflag = false;
-                        req.user.movieHistory.forEach(function(movieelement) {                
-                            if ( movieelement.id.equals(foundMovie._id) ) {
-                                movieelement.date = currentDate;
-                                foundflag = true;
-                            }     
-                        });  
-                        if (foundflag === false) {
-                            var newElement = {id: foundMovie._id, date: currentDate};
-                            req.user.movieHistory.push(newElement);
-                        }
-                        req.user.save();
+            if(err) return plugin.returnGenericError(req, res, err);
+            if (foundMovie) {
+                // Add to history of user or change date
+                if( req.isAuthenticated() ){ 
+                    var currentDate = new Date();
+                    var foundflag = false;
+                    req.user.movieHistory.forEach(function(movieelement) {                
+                        if ( movieelement.id.equals(foundMovie._id) ) {
+                            movieelement.date = currentDate;
+                            foundflag = true;
+                        }     
+                    });  
+                    if (foundflag === false) {
+                        var newElement = {id: foundMovie._id, date: currentDate};
+                        req.user.movieHistory.push(newElement);
                     }
-
-                    res.render("movief/movieinfo.ejs", {title : foundMovie.moviename, movie: foundMovie, helper : helper});
-                } else {
-                    res.render("notfound.ejs");
+                    req.user.save();
                 }
+                res.render("movief/movieinfo.ejs", {title : foundMovie.moviename, movie: foundMovie, helper : helper});
+            } else {
+                res.render("notfound.ejs");
             }
         });
     }
@@ -102,15 +93,11 @@ router.get('/:id', function(req,res) {
 // Trailer Page
 router.get('/:id/trailer', function(req,res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundMovie) {
+            res.render('movief/trailer.ejs', {title : foundMovie.moviename + ' Trailer', movie: foundMovie, helper : helper});
         } else {
-            if (foundMovie) {
-                res.render('movief/trailer.ejs', {title : foundMovie.moviename + ' Trailer', movie: foundMovie, helper : helper});
-            } else {
-                res.render("notfound.ejs");
-            }
+            res.render("notfound.ejs");
         }
     });
 });
@@ -132,29 +119,21 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
     req.body.movie.likecount = 0;
     
     Movie.create(req.body.movie, function(err, newMovie) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            plugin.displaySuccessMessage(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
-            res.redirect('/movies');
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, 'A movie ' + req.body.movie.moviename + ' has successfully been created.');
+        res.redirect('/movies');
     });
 });
 
 // Edit movie
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
     Movie.findById(req.params.id, function(err, foundMovie) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundMovie) {
+            res.render('movief/editmovie.ejs', {title : 'Editing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
         } else {
-            if (foundMovie) {
-                res.render('movief/editmovie.ejs', {title : 'Editing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
-            } else {
-                plugin.displayDeletedMovieError(req, err);
-                res.redirect('back');
-            }
+            plugin.displayDeletedMovieError(req, err);
+            res.redirect('back');
         }
     });
 });
@@ -164,17 +143,13 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
         req.body.movie.image = '/uploads/' + req.file.filename;
     }
     Movie.findByIdAndUpdate(req.params.id, req.body.movie, function(err, updatedMovie) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('/movies');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (updatedMovie) {
+            plugin.displaySuccessMessage(req, 'Edited ' + req.body.movie.moviename + ' page.');
+            res.redirect('/movies/' + req.params.id);
         } else {
-            if (updatedMovie) {
-                plugin.displaySuccessMessage(req, 'Edited ' + req.body.movie.moviename + ' page.');
-                res.redirect('/movies/' + req.params.id);
-            } else {
-                plugin.displayDeletedMovieError(req, err);
-                res.redirect('back');
-            }
+            plugin.displayDeletedMovieError(req, err);
+            res.redirect('back');
         }
     });
 });
@@ -182,13 +157,9 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
 // Delete movie
 router.delete('/:id', middleware.checkManager, function(req, res) {
     Movie.findByIdAndDelete(req.params.id, function(err) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            plugin.displaySuccessMessage(req, 'Removed a movie.');
-            res.redirect('/movies');
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, 'Removed a movie.');
+        res.redirect('/movies');
     });
 });
 
@@ -196,70 +167,45 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
 router.post('/:id', middleware.isLoggedIn, function(req,res) {
     if (req.body.action === 'like') {
         User.findById(req.user._id, function(err, foundUser) {
-            if (err) {
-                plugin.displayGenericError(req, err);
-                res.redirect('/movies');
-            } else {
-
-                var refMovie = req.params.id;
-                foundUser.likedMovie.push(refMovie);
-                foundUser.save();
-                Movie.findById(req.params.id, function(err, foundMovie) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        if (foundMovie) {
-                            var newcount = foundMovie.likecount + 1;
-                            Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
-                                if (err) {
-                                    plugin.displayGenericError(req, err);
-                                    res.redirect('back');
-                                } else {
-                                    res.redirect('/movies/' + req.params.id);    
-                                }
-                            });
-                        } else {
-                            plugin.displayDeletedMovieError(req, err);
-                            res.redirect('back');
-                        }
-                    }
-                });
-            }
+            if (err) return plugin.returnGenericError(req, res, err);
+            var refMovie = req.params.id;
+            foundUser.likedMovie.push(refMovie);
+            foundUser.save();
+            Movie.findById(req.params.id, function(err, foundMovie) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                if (foundMovie) {
+                    var newcount = foundMovie.likecount + 1;
+                    Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
+                        if (err) return plugin.returnGenericError(req, res, err);
+                        res.redirect('/movies/' + req.params.id);    
+                    });
+                } else {
+                    plugin.displayDeletedMovieError(req, err);
+                    res.redirect('back');
+                }
+            });
         });
     }
 
     if (req.body.action === 'unlike') {
         User.findById(req.user._id, function(err, foundUser) {
-            if (err) {
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            } else {
-                Movie.findById(req.params.id, function(err, foundMovie) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        if (foundMovie) {
-                            var refMovie = req.params.id;
-                            foundUser.likedMovie.pull(refMovie);
-                            foundUser.save();
-                            var newcount = foundMovie.likecount - 1;
-                            Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
-                                if (err) {
-                                    plugin.displayGenericError(req, err);
-                                    res.redirect('back');
-                                } else {
-                                    res.redirect('/movies/' + req.params.id);    
-                                }
-                            });
-                        } else {
-                            plugin.displayDeletedMovieError(req, err);
-                            res.redirect('back');
-                        }
-                    }
-                });
-            }
+            if (err) return plugin.returnGenericError(req, res, err);
+            Movie.findById(req.params.id, function(err, foundMovie) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                if (foundMovie) {
+                    var refMovie = req.params.id;
+                    foundUser.likedMovie.pull(refMovie);
+                    foundUser.save();
+                    var newcount = foundMovie.likecount - 1;
+                    Movie.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundmovie2) {
+                        if (err) return plugin.returnGenericError(req, res, err);
+                        res.redirect('/movies/' + req.params.id);    
+                    });
+                } else {
+                    plugin.displayDeletedMovieError(req, err);
+                    res.redirect('back');
+                }
+            });
         });
     }
 });

@@ -1,40 +1,38 @@
 <%- include('../partials/header.ejs') %>
 
 <div class="container py-4 mt-4 bg-secondary rounded-3">
-    <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
-        <h1 class="display-5 fw-bold text-center py-1"><%= title %></h1>
-        <%- include('../partials/pagebar.ejs') %>
+  <div class="form-group mb-3 bg-primary border border-secondary rounded-3">
+    <h1 class="display-5 fw-bold text-center py-1"><%= title %></h1>
+    <%- include('../partials/pagebar.ejs') %>
 
-        <table class="table table-striped bg-light">
-            <tbody>
-                
-                <% if (movielist.length == 0) { %> 
-                    <tr><td>
-                        <p class="fw-bold mx-4 my-2 text-center">
-                            <%= noresult %>
-                        </p>
-                    </tr></td>
-                <% } else { %> 
-                    <% movielist.forEach(function(movie) { %>
-                    <tr><td>
-                        <a href="/movies/<%= movie._id %> " class='text-dark'>
-                            <div class='row'>
-                                <div class='col-3 col-md-2'>
-                                    <div class='d-flex justify-content-center'>
-                                        <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
-                                    </div>
-                                </div>
-                                <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
-                                <%- include('../partials/movieinfobar2.ejs', {movie : movie}) %>
-                            </div>
-                        </a>
-                    </tr></td>
-                    <% }); %> 
-                <% } %> 
-            </tbody>
-        </table>
-    </div>
-
+    <table class="table table-striped bg-light">
+      <tbody>      
+        <% if (movielist.length == 0) { %> 
+          <tr><td>
+            <p class="fw-bold mx-4 my-2 text-center">
+              <%= noresult %>
+            </p>
+          </tr></td>
+        <% } else { %> 
+          <% movielist.forEach(function(movie) { %>
+            <tr><td>
+              <a href="/movies/<%= movie._id %> " class='text-dark'>
+                <div class='row'>
+                  <div class='col-3 col-md-2'>
+                    <div class='d-flex justify-content-center'>
+                      <img src="<%= movie.image %>" alt="AAAAAAAA" height="120px">
+                    </div>
+                  </div>
+                  <%- include('../partials/movieinfobar.ejs', {movie : movie}) %>
+                  <%- include('../partials/movieinfobar2.ejs', {movie : movie}) %>
+                </div>
+              </a>
+            </tr></td>
+          <% }); %> 
+        <% } %> 
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <%- include('../partials/footer.ejs') %>

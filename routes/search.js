@@ -46,15 +46,11 @@ router.get('/', function(req,res) {
     var extraQueries = plugin.buildQuery(req.query);
     
     Movie.paginate(searchQuery, queryOptions, function (err, movieDoc) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            var movielist = movieDoc.docs;
-            movieDoc.docs = [];
-            res.render('searchf/searchmovie.ejs', {title : 'Search', helper : helper, doc : movieDoc, 
-             movielist : movielist, search : req.query, extraqueries: extraQueries});
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        var movielist = movieDoc.docs;
+        movieDoc.docs = [];
+        res.render('searchf/searchmovie.ejs', {title : 'Search', helper : helper, doc : movieDoc, 
+         movielist : movielist, search : req.query, extraqueries: extraQueries});
     });
 });
 

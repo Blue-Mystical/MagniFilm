@@ -30,169 +30,131 @@ var express = require('express'),
 // User pages
 router.get('/user', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundUser) {
+            res.render('userf/user.ejs', {title : 'Your Profile', user: foundUser, helper : helper});
         } else {
-            if (foundUser) {
-                res.render('userf/user.ejs', {title : 'Your Profile', user: foundUser, helper : helper});
-            } else {
-                res.render("notfound.ejs");
-            }
+            res.render("notfound.ejs");
         }
     });
 });
 
 router.get('/user/history', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            if (foundUser) {
-
-                var pagenumber = 1;
-                if (req.query.page && !isNaN(req.query.page)) {
-                    pagenumber = req.query.page;
-                }
-                const queryOptions = {
-                    page: pagenumber,
-                    sort: { airdate: -1 },
-                    limit: helper.queryLimit(),
-                    collation: {
-                      locale: 'en',
-                    },
-                };
-                var matchingArray = [];
-                foundUser.movieHistory.forEach(function(movie) {
-                    matchingArray.push(movie.id)
-                });
-
-                Movie.paginate({ 
-                    _id: { "$in": matchingArray } 
-                }, queryOptions, function (err, movieDoc) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        var movielist = movieDoc.docs;
-                        movieDoc.docs = [];
-                        res.render('userf/userquery.ejs', {title : 'Movie History', user: foundUser, helper : helper, doc : movieDoc, 
-                         movielist : movielist, title : 'Your visited movies', noresult : 'No movies found'});
-                    }
-                });
- 
-            } else {
-                res.render("notfound.ejs");
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundUser) {
+            var pagenumber = 1;
+            if (req.query.page && !isNaN(req.query.page)) {
+                pagenumber = req.query.page;
             }
+            const queryOptions = {
+                page: pagenumber,
+                sort: { airdate: -1 },
+                limit: helper.queryLimit(),
+                collation: {
+                  locale: 'en',
+                },
+            };
+            var matchingArray = [];
+            foundUser.movieHistory.forEach(function(movie) {
+                matchingArray.push(movie.id)
+            });
+            Movie.paginate({ 
+                _id: { "$in": matchingArray } 
+            }, queryOptions, function (err, movieDoc) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                var movielist = movieDoc.docs;
+                movieDoc.docs = [];
+                res.render('userf/userquery.ejs', {title : 'Movie History', user: foundUser, helper : helper, doc : movieDoc, 
+                 movielist : movielist, title : 'Your visited movies', noresult : 'No movies found'});
+            });
+
+        } else {
+            res.render("notfound.ejs");
         }
     });
 });
 
 router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            if (foundUser) {
-
-                var pagenumber = 1;
-                if (req.query.page && !isNaN(req.query.page)) {
-                    pagenumber = req.query.page;
-                }
-                const queryOptions = {
-                    page: pagenumber,
-                    sort: { airdate: -1 },
-                    limit: helper.queryLimit(),
-                    collation: {
-                      locale: 'en',
-                    },
-                };
-                var matchingArray = [];
-                foundUser.likedMovie.forEach(function(movie) {
-                    matchingArray.push(movie)
-                });
-
-                Movie.paginate({ 
-                    _id: { "$in": matchingArray } 
-                }, queryOptions, function (err, movieDoc) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        var movielist = movieDoc.docs;
-                        movieDoc.docs = [];
-                        res.render('userf/userquery.ejs', {title : 'Liked Movies', user: foundUser, helper : helper, doc : movieDoc, 
-                         movielist : movielist, title : 'Your liked movies', noresult : 'No movies found'});
-                    }
-                });
- 
-            } else {
-                res.render("notfound.ejs");
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundUser) {
+            var pagenumber = 1;
+            if (req.query.page && !isNaN(req.query.page)) {
+                pagenumber = req.query.page;
             }
+            const queryOptions = {
+                page: pagenumber,
+                sort: { airdate: -1 },
+                limit: helper.queryLimit(),
+                collation: {
+                  locale: 'en',
+                },
+            };
+            var matchingArray = [];
+            foundUser.likedMovie.forEach(function(movie) {
+                matchingArray.push(movie)
+            });
+            Movie.paginate({ 
+                _id: { "$in": matchingArray } 
+            }, queryOptions, function (err, movieDoc) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                var movielist = movieDoc.docs;
+                movieDoc.docs = [];
+                res.render('userf/userquery.ejs', {title : 'Liked Movies', user: foundUser, helper : helper, doc : movieDoc, 
+                 movielist : movielist, title : 'Your liked movies', noresult : 'No movies found'});
+            });
+
+        } else {
+            res.render("notfound.ejs");
         }
     });
 });
 
 router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
     User.findById(req.user._id, function(err, foundUser) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            if (foundUser) {
-
-                var pagenumber = 1;
-                if (req.query.page && !isNaN(req.query.page)) {
-                    pagenumber = req.query.page;
-                }
-                const queryOptions = {
-                    page: pagenumber,
-                    sort: { reviewdate: -1 },
-                    limit: helper.queryLimit(),
-                    collation: {
-                      locale: 'en',
-                    },
-                };
-                var matchingArray = [];
-                foundUser.reviewHistory.forEach(function(review) {
-                    matchingArray.push(review)
-                });
-
-                Review.paginate({ 
-                    _id: { "$in": matchingArray } 
-                }, queryOptions, function (err, reviewDoc) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        var reviewlist = reviewDoc.docs;
-                        reviewlist.docs = [];
-                        reviewlist.forEach(function(review) {
-                            Movie.findById(review.formovie.id, function(err, foundMovie) {
-                                if (err) {
-                                    plugin.displayGenericError(req, err);
-                                    res.redirect('/movies');
-                                } else {
-                                    if (foundMovie) {
-                                        review.formovie.moviename = foundMovie.moviename;
-                                        review.save();
-                                    } else {
-                                        review.formovie.moviename = '[DELETED MOVIE]';
-                                        review.save();
-                                    }
-                                }
-                            });
-                        });
-                        res.render('userf/userreview.ejs', {title : 'Your Reviews', user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
-                        title : 'Your reviews', noresult : 'No reviews found'});
-                    }
-                });
- 
-            } else {
-                res.render("notfound.ejs");
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundUser) {
+            var pagenumber = 1;
+            if (req.query.page && !isNaN(req.query.page)) {
+                pagenumber = req.query.page;
             }
+            const queryOptions = {
+                page: pagenumber,
+                sort: { reviewdate: -1 },
+                limit: helper.queryLimit(),
+                collation: {
+                  locale: 'en',
+                },
+            };
+            var matchingArray = [];
+            foundUser.reviewHistory.forEach(function(review) {
+                matchingArray.push(review)
+            });
+            Review.paginate({ 
+                _id: { "$in": matchingArray } 
+            }, queryOptions, function (err, reviewDoc) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                var reviewlist = reviewDoc.docs;
+                reviewlist.docs = [];
+                reviewlist.forEach(function(review) {
+                    Movie.findById(review.formovie.id, function(err, foundMovie) {
+                        if (err) return plugin.returnGenericError(req, res, err);
+                        if (foundMovie) {
+                            review.formovie.moviename = foundMovie.moviename;
+                            review.save();
+                        } else {
+                            review.formovie.moviename = '[DELETED MOVIE]';
+                            review.save();
+                        }
+                    });
+                });
+                res.render('userf/userreview.ejs', {title : 'Your Reviews', user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
+                 title : 'Your reviews', noresult : 'No reviews found'});
+            });
+
+        } else {
+            res.render("notfound.ejs");
         }
     });
 });
@@ -226,31 +188,22 @@ router.get('/user/manage', middleware.checkManager, function(req,res) {
     var extraQueries = plugin.buildQuery(req.query);
     
     User.paginate(searchQuery, queryOptions, function (err, userDoc) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            var userlist = userDoc.docs;
-            userDoc.docs = [];
-            res.render('userf/managelist.ejs', {title : 'Manage Users', helper : helper, doc : userDoc, 
-             userlist : userlist, search : req.query, extraqueries: extraQueries});
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        var userlist = userDoc.docs;
+        userDoc.docs = [];
+        res.render('userf/managelist.ejs', {title : 'Manage Users', helper : helper, doc : userDoc, 
+         userlist : userlist, search : req.query, extraqueries: extraQueries});
     });
 });
 
 // Edit user
 router.get('/user/manage/:userid', middleware.checkAdmin, function(req, res) {
     User.findById(req.params.userid, function(err, foundUser) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundUser) {
+            res.render('userf/manageuser.ejs', {title : 'Manage ' + foundUser.username, user: foundUser, helper : helper});
         } else {
-            if (foundUser) {
-                res.render('userf/manageuser.ejs', {title : 'Manage ' + foundUser.username, user: foundUser, helper : helper});
-            } else {
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            }
+            return plugin.returnGenericError(req, res, err);
         }
     });
 });
@@ -260,17 +213,12 @@ router.put('/user/manage/:userid', middleware.checkAdmin, function(req, res) {
         return res.redirect('back');
     }
     User.findByIdAndUpdate(req.params.userid, req.body.user, function(err, updatedUser) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (updatedUser) {
+            plugin.displaySuccessMessage(req, 'Edited ' + updatedUser.username + '\'s role.');
+            res.redirect('/user/manage/');
         } else {
-            if (updatedUser) {
-                plugin.displaySuccessMessage(req, 'Edited ' + updatedUser.username + '\'s role.');
-                res.redirect('/user/manage/');
-            } else {
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            }
+            return plugin.returnGenericError(req, res, err);
         }
     });
 });
@@ -284,13 +232,9 @@ router.delete('/user/manage/:userid', middleware.checkManager, function(req, res
         return res.redirect('back');
     }
     User.findByIdAndDelete(req.params.userid, function(err) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('/user/manage/');
-        } else {
-            plugin.displaySuccessMessage(req, 'Successfully removed an account. F.');
-            res.redirect('/user/manage/');
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, 'Successfully removed an account. F.');
+        res.redirect('/user/manage/');
     });
 });
 
@@ -305,17 +249,12 @@ router.put('/user/avatar', upload.single('image'), function(req, res) {
     }
 
     User.findByIdAndUpdate(req.user._id, req.body.user, function(err, updatedUser) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) plugin.returnGenericError(req, res, err);
+        if (updatedUser) {
+            plugin.displaySuccessMessage(req, 'Changed avatar.');
+            res.redirect('/user/');
         } else {
-            if (updatedUser) {
-                plugin.displaySuccessMessage(req, 'Changed avatar.');
-                res.redirect('/user/');
-            } else {
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            }
+            plugin.returnGenericError(req, res, err);
         }
     });
 });
@@ -355,19 +294,13 @@ router.get('/login', function(req,res) {
 
 router.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            return res.redirect('back');
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
         if (!user) { 
             req.flash('error', 'Invalid username or password');
             return res.redirect('/login');
         }
         req.logIn(user, function(err) {
-            if (err) { 
-                plugin.displayGenericError(req, err);
-                return res.redirect('back');
-            }
+            if (err) return plugin.returnGenericError(req, res, err);
             plugin.displaySuccessLogin(req, user.username);
             return res.redirect('/');
         });

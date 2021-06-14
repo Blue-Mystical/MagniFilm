@@ -51,15 +51,11 @@ router.get('/', function(req,res) {
     var extraQueries = plugin.buildQuery(req.query);
     
     News.paginate(searchQuery, queryOptions, function (err, newsDoc) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            var newslist = newsDoc.docs;
-            newsDoc.docs = [];
-            res.render('newsf/news.ejs', {title : 'News', helper : helper, doc : newsDoc, 
-            newslist : newslist, search : req.query, extraqueries: extraQueries});
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        var newslist = newsDoc.docs;
+        newsDoc.docs = [];
+        res.render('newsf/news.ejs', {title : 'News', helper : helper, doc : newsDoc, 
+        newslist : newslist, search : req.query, extraqueries: extraQueries});
     });
 });
 
@@ -71,18 +67,11 @@ router.get('/add', middleware.checkManager, function(req,res) {
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
         News.findById(req.params.id, function(err, foundNews) {
-            if(err){
-                plugin.displayGenericError(req, err);
-                return res.redirect('back');
-            } 
+            if (err) return plugin.returnGenericError(req, res, err);
             if (foundNews) {
-
                 var newcount = foundNews.viewcount + 1;
                 News.findByIdAndUpdate(req.params.id, {viewcount : newcount}, function(err, foundNews2) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    }
+                    if (err) return plugin.returnGenericError(req, res, err);
                 });
                 res.render("newsf/newspage.ejs", {title : foundNews.title, news: foundNews, helper : helper});
             } else {
@@ -117,29 +106,21 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
     });
     
     News.create(req.body.news, function(err, newNews) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            plugin.displaySuccessMessage(req, req.body.news.title + ' has successfully been created.');
-            res.redirect('/news');
-        }
+        if(err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, req.body.news.title + ' has successfully been created.');
+        res.redirect('/news');
     });
 });
 
 // Edit news
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
     News.findById(req.params.id, function(err, foundNews) {
-        if (err) {
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (foundNews) {
+            res.render('newsf/editnews.ejs', {title : 'Editing ' + foundNews.title, news: foundNews, helper : helper});
         } else {
-            if (foundNews) {
-                res.render('newsf/editnews.ejs', {title : 'Editing ' + foundNews.title, news: foundNews, helper : helper});
-            } else {
-                plugin.displayDeletedNewsError(req, err);
-                res.redirect('back');
-            }
+            plugin.displayDeletedNewsError(req, err);
+            res.redirect('back');
         }
     });
 });
@@ -149,30 +130,22 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
         req.body.news.image = '/uploads/' + req.file.filename;
     }
     News.findByIdAndUpdate(req.params.id, req.body.news, function(err, updatedNews) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('/news');
+        if (err) return plugin.returnGenericError(req, res, err);
+        if (updatedNews) {
+            plugin.displaySuccessMessage(req, 'Edited ' + req.body.news.title + ' page.');
+            res.redirect('/news/' + req.params.id);
         } else {
-            if (updatedNews) {
-                plugin.displaySuccessMessage(req, 'Edited ' + req.body.news.title + ' page.');
-                res.redirect('/news/' + req.params.id);
-            } else {
-                plugin.displayDeletedNewsError(req, err);
-                res.redirect('back');
-            }
+            plugin.displayDeletedNewsError(req, err);
+            res.redirect('back');
         }
     });
 });
 
 router.delete('/:id', middleware.checkManager, function(req, res) {
     News.findByIdAndDelete(req.params.id, function(err) {
-        if(err){
-            plugin.displayGenericError(req, err);
-            res.redirect('back');
-        } else {
-            plugin.displaySuccessMessage(req, 'Removed a news.');
-            res.redirect('/news');
-        }
+        if (err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, 'Removed a news.');
+        res.redirect('/news');
     });
 });
 
@@ -180,70 +153,45 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
 router.post('/:id', middleware.isLoggedIn, function(req,res) {
     if (req.body.action === 'like') {
         User.findById(req.user._id, function(err, foundUser) {
-            if (err) {
-                plugin.displayGenericError(req, err);
-                res.redirect('/news');
-            } else {
-
-                var refNews = req.params.id;
-                foundUser.likedNews.push(refNews);
-                foundUser.save();
-                News.findById(req.params.id, function(err, foundNews) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        if (foundNews) {
-                            var newcount = foundNews.likecount + 1;
-                            News.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundNews2) {
-                                if (err) {
-                                    plugin.displayGenericError(req, err);
-                                    res.redirect('back');
-                                } else {
-                                    res.redirect('/news/' + req.params.id);    
-                                }
-                            });
-                        } else {
-                            plugin.displayDeletedNewsError(req, err);
-                            res.redirect('back');
-                        }
-                    }
-                });
-            }
+            if (err) return plugin.returnGenericError(req, res, err);
+            var refNews = req.params.id;
+            foundUser.likedNews.push(refNews);
+            foundUser.save();
+            News.findById(req.params.id, function(err, foundNews) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                if (foundNews) {
+                    var newcount = foundNews.likecount + 1;
+                    News.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundNews2) {
+                        if (err) return plugin.returnGenericError(req, res, err);
+                        res.redirect('/news/' + req.params.id);    
+                    });
+                } else {
+                    plugin.displayDeletedNewsError(req, err);
+                    res.redirect('back');
+                }
+            });
         });
     }
 
     if (req.body.action === 'unlike') {
         User.findById(req.user._id, function(err, foundUser) {
-            if (err) {
-                plugin.displayGenericError(req, err);
-                res.redirect('back');
-            } else {
-                News.findById(req.params.id, function(err, foundNews) {
-                    if (err) {
-                        plugin.displayGenericError(req, err);
-                        res.redirect('back');
-                    } else {
-                        if (foundNews) {
-                            var refNews = req.params.id;
-                            foundUser.likedNews.pull(refNews);
-                            foundUser.save();
-                            var newcount = foundNews.likecount - 1;
-                            News.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundNews2) {
-                                if (err) {
-                                    plugin.displayGenericError(req, err);
-                                    res.redirect('back');
-                                } else {
-                                    res.redirect('/news/' + req.params.id);    
-                                }
-                            });
-                        } else {
-                            plugin.displayDeletedNewsError(req, err);
-                            res.redirect('back');
-                        }
-                    }
-                });
-            }
+            if (err) return plugin.returnGenericError(req, res, err);
+            News.findById(req.params.id, function(err, foundNews) {
+                if (err) return plugin.returnGenericError(req, res, err);
+                if (foundNews) {
+                    var refNews = req.params.id;
+                    foundUser.likedNews.pull(refNews);
+                    foundUser.save();
+                    var newcount = foundNews.likecount - 1;
+                    News.findByIdAndUpdate(req.params.id, {likecount : newcount}, function(err, foundNews2) {
+                        if (err) return plugin.returnGenericError(req, res, err);
+                        res.redirect('/news/' + req.params.id);    
+                    });
+                } else {
+                    plugin.displayDeletedNewsError(req, err);
+                    res.redirect('back');
+                }
+            });
         });
     }
 });
