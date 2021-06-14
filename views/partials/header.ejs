@@ -82,9 +82,9 @@
           <li class="nav-item btn btn-secondary dropdown btn-sm mx-1 my-1 rounded-3">
             <a class="nav-link text-white dropdown-toggle" id="userDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <% if (currentUser.avatar !== undefined) { %>
-                <img class='small-avatar' src="<%= currentUser.avatar %>" alt="AAAAAAAA" height="17px">
+                <img class='small-avatar rounded-circle' src="<%= currentUser.avatar %>" alt="AAAAAAAA" height="17px">
               <% } else { %> 
-                  <img class='small-avatar' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="17px">
+                <img class='small-avatar rounded-circle' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="17px">
               <% } %> 
               <%= currentUser.username %> 
             </a>

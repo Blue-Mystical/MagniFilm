@@ -58,7 +58,7 @@ plugins.displaySuccessLogout = function(req) {
     req.flash('popupmessage', 'Successfully logged out! Have a save trip.');
 }
 
-plugins.buildQuery = function(queryObject) {
+plugins.buildQuery = function(queryObject) { // make url query as string
     var extraQueries = '';
     Object.entries(queryObject).forEach(entry => {
         const [key, value] = entry;

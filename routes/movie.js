@@ -1,5 +1,3 @@
-const { request } = require('http');
-
 var express = require('express'),
     router = express.Router({mergeParams: true}),
     middleware = require('../middleware'),

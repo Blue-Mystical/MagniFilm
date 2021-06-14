@@ -48,7 +48,11 @@
                 <div class='row'>
                   <div class='col-3 col-md-2'>
                     <div class='d-flex justify-content-center'>
-                      <img src="<%= user.avatar %>" alt="AAAAAAAA" height="120px">
+                      <% if (user.avatar !== undefined) { %>
+                        <img class='medium-avatar rounded-circle' src="<%= user.avatar %>" alt="AAAAAAAA" height="120px">
+                      <% } else { %> 
+                        <img class='medium-avatar rounded-circle' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="120px">
+                      <% } %> 
                     </div>     
                   </div>
 
