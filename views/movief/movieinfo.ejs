@@ -42,15 +42,8 @@
           <% } %> 
         </p>
       <p class="lead mb-0"><%= movie.desc %></p>
-      <p class="mt-4">
-        <% if (movie.addedby.username && currentUser && helper.canManage(currentUser)) { %> 
-          Added by: <%= movie.addedby.username %>
-        <% } else { %>
-          Added by: unknown
-        <% } %>
-      </p>
 
-        <div class="d-flex flex-row <%= helper.getRatingColor(movie.movierating, 't') %>">
+        <div class="d-flex flex-row mt-4 <%= helper.getRatingColor(movie.movierating, 't') %>">
           <p class="lead px-2 py-1 rounded border <%= helper.getRatingColor(movie.movierating, 'b') %>"><%= helper.capRating(movie.movierating) %></p>
         </div>
 
@@ -80,7 +73,7 @@
                 <input type="hidden" name="action" value="unlike">
                 <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
                   <span class="active-like"><i class="fas fa-heart mf-auto"></i></span>
-                  <%= movie.likecount %>
+                  <%= helper.separateComma(movie.likecount) %>
                 </button>
               </form>
             <% } else { %>
@@ -88,7 +81,7 @@
                 <input type="hidden" name="action" value="like">
                 <button type="submit" class="btn btn-lg bg-white btn-outline-secondary">
                   <i class="far fa-heart mf-auto"></i>
-                  <%= movie.likecount %>
+                  <%= helper.separateComma(movie.likecount) %>
                 </button>
               </form>
             <% } %>

@@ -29,32 +29,36 @@ var express = require('express'),
 
 // Theatre list
 router.get('/', function(req,res) {
-    Theatre.find({}, function(err,Theatreall) {
+    helper.navactive = 2;
+    Theatre.find({}).sort({priority: 1}).exec (function(err,Theatreall) {
         if (err) return plugin.returnGenericError(req, res, err);
-        res.render('theatref/theatres.ejs', {title : 'Theatres', theatrelist : Theatreall, helper : helper})
+        res.render('theatref/theatres.ejs', {title : 'Theatres', helper : helper, theatrelist : Theatreall})
     });
 });
 
 // Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
+    helper.navactive = 2;
     Logo.find({}, function(err,logos) {
         if (err) return plugin.returnGenericError(req, res, err);
-        res.render('theatref/addtheatre.ejs', {title : 'Adding New Theatre', logos : logos});
+        res.render('theatref/addtheatre.ejs', {title : 'Adding New Theatre', helper : helper, logos : logos});
     });
 });
 
 router.get('/logo/add', middleware.checkManager, function(req,res) {
-    res.render('theatref/addlogo.ejs' , {title : 'Adding New Theatre Logo'});
+    helper.navactive = 2;
+    res.render('theatref/addlogo.ejs' , {title : 'Adding New Theatre Logo', helper : helper});
 });
 
 router.get('/:id', function(req,res) {
+    helper.navactive = 2;
     if (req.params.id != 'add') { // suppress error when accessing the add page
         Theatre.findById(req.params.id).populate('movielist').exec(function(err, foundTheatre) {
             if (err) return plugin.returnGenericError(req, res, err);
             if (foundTheatre) {
-                res.render('theatref/theatreinfo.ejs', {title : foundTheatre.theatrename, theatre: foundTheatre, helper : helper});
+                res.render('theatref/theatreinfo.ejs', {title : foundTheatre.theatrename, helper : helper, theatre: foundTheatre});
             } else {
-                res.render("notfound.ejs");
+                res.render("notfound.ejs", {helper : helper});
             }
         });
     }
@@ -78,6 +82,7 @@ router.post('/', middleware.checkManager, function(req,res) {
         }
         Theatre.create(req.body.theatre, function(err, newTheatre) {
             if (err) return plugin.returnGenericError(req, res, err);
+            plugin.displaySuccessMessage(req, 'Added ' + req.body.theatre.theatrename + '.');
             res.redirect('/theatres');
         });
     });
@@ -92,17 +97,19 @@ router.post('/logo', middleware.checkManager, upload.single('image'), function(r
     }
     Logo.create(req.body.logo, function(err, newLogo) {
         if(err) return plugin.returnGenericError(req, res, err);
+        plugin.displaySuccessMessage(req, 'New logo has been created.');
         res.redirect('/theatres');
     });
 });
 
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
+    helper.navactive = 2;
     Theatre.findById(req.params.id, function(err, foundTheatre) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundTheatre) {
             Logo.find({}, function(err,logos) {
                 if (err) return plugin.returnGenericError(req, res, err);
-                res.render('theatref/edittheatre.ejs', {title : 'Editing ' + foundTheatre.theatrename, theatre: foundTheatre, helper : helper, logos : logos});
+                res.render('theatref/edittheatre.ejs', {title : 'Editing ' + foundTheatre.theatrename, helper : helper, theatre: foundTheatre, logos : logos});
             });
         } else {
             plugin.displayDeletedTheatreError(req, err);
@@ -149,6 +156,7 @@ router.delete('/:id', middleware.checkManager, function(req, res) {
 });
 
 router.get('/:id/addmovie', middleware.checkManager, function(req,res) {
+    helper.navactive = 2;
     var pagenumber = 1;
     if (req.query.page && !isNaN(req.query.page)) {
         pagenumber = req.query.page;
@@ -190,7 +198,7 @@ router.get('/:id/addmovie', middleware.checkManager, function(req,res) {
                 res.render('theatref/addmovie.ejs', {title : 'Adding Available Movies', helper : helper, doc : movieDoc, 
                 movielist : movielist, search : req.query, theatre : foundTheatre, extraqueries: extraQueries});
             } else {
-                res.render("notfound.ejs");
+                res.render("notfound.ejs", {helper : helper});
             }
         });
     });
@@ -209,7 +217,7 @@ router.post('/:id/addmovie', function(req,res) {
                 res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
             });
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
@@ -230,7 +238,7 @@ router.delete('/:id/addmovie', function(req,res) {
                 res.redirect('/theatres/' + foundTheatre._id + '/addmovie');
             });
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });

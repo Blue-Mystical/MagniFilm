@@ -30,13 +30,16 @@ var express = require('express'),
 router.get('/', function(req,res) {
     var currentDate = new Date();
     currentDate = Date.parse(currentDate);
-    var unairDate = currentDate - 1000 * 60 * 60 * 24 * 30; // assuming 30 days is how much a movie stopped airing
+    var unairDate = currentDate - 1000 * 60 * 60 * 24 * helper.getUnAirDays(); // assuming # days is how much a movie stopped airing
+    helper.movlisttype = 0;
+    helper.navactive = 1;
     var dateRange;
 
     if (req.query.type == 'cs') {
         dateRange = {
             $gt: currentDate,
         };
+        helper.movlisttype = 1;
     } else {
         dateRange = {
             $gte: unairDate,
@@ -47,12 +50,13 @@ router.get('/', function(req,res) {
         airdate: dateRange
         }, function(err, Movall) {
         if (err) return plugin.returnGenericError(req, res, err);
-        res.render('movief/movies.ejs', {title : 'Movies', movielist : Movall, helper : helper})
+        res.render('movief/movies.ejs', {title : 'Movies', helper : helper, movielist : Movall})
     });
 });
 
 // Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
+    helper.navactive = 1;
     var currentDate = new Date();
     currentDate = Date.parse(currentDate);
     res.render('movief/addmovie.ejs', {title : 'Adding Movie', helper : helper, currentDate : currentDate});
@@ -61,6 +65,7 @@ router.get('/add', middleware.checkManager, function(req,res) {
 // Movie Page
 router.get('/:id', function(req,res) {
     if (req.params.id != 'add') { // suppress error when accessing the add page
+        helper.navactive = 1;
         Movie.findById(req.params.id, function(err, foundMovie) {
             if(err) return plugin.returnGenericError(req, res, err);
             if (foundMovie) {
@@ -80,9 +85,9 @@ router.get('/:id', function(req,res) {
                     }
                     req.user.save();
                 }
-                res.render("movief/movieinfo.ejs", {title : foundMovie.moviename, movie: foundMovie, helper : helper});
+                res.render("movief/movieinfo.ejs", {title : foundMovie.moviename, helper : helper, movie: foundMovie});
             } else {
-                res.render("notfound.ejs");
+                res.render("notfound.ejs", {helper : helper});
             }
         });
     }
@@ -90,12 +95,13 @@ router.get('/:id', function(req,res) {
 
 // Trailer Page
 router.get('/:id/trailer', function(req,res) {
+    helper.navactive = 1;
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundMovie) {
-            res.render('movief/trailer.ejs', {title : foundMovie.moviename + ' Trailer', movie: foundMovie, helper : helper});
+            res.render('movief/trailer.ejs', {title : foundMovie.moviename + ' Trailer', helper : helper, movie: foundMovie});
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
@@ -125,10 +131,11 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
 
 // Edit movie
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
+    helper.navactive = 1;
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundMovie) {
-            res.render('movief/editmovie.ejs', {title : 'Editing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
+            res.render('movief/editmovie.ejs', {title : 'Editing ' + foundMovie.moviename, helper : helper, movie: foundMovie});
         } else {
             plugin.displayDeletedMovieError(req, err);
             res.redirect('back');

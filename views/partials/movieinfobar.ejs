@@ -1,6 +1,6 @@
 <div class='col-6 col-md-8'>
-  <div class='fw-bold fs-2'><%= movie.moviename %></div>
-    <div>
+  <div class='fw-bold fs-2 text-white'><%= movie.moviename %></div>
+    <div class='text-white'>
       <% if(helper.getAirDateColor(movie.airdate) == 0) { %> 
         <span class="airtime-unaired"><i class="fas fa-film mf-auto me-1"></span></i>
       <% } else if (helper.getAirDateColor(movie.airdate) == 1) { %> 
@@ -12,20 +12,20 @@
     </div>
 
     <div class="d-grid gap-2 d-flex justify-content-start">
-      <p class="fw-light">
+      <p class="fw-light text-white">
         <% if(!currentUser) {%>
-          <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+          <i class="far fa-heart mf-auto me-2"></i><%= helper.separateComma(movie.likecount) %>
         <% } else { %>
             
           <% if (helper.findLiked(currentUser.likedMovie, movie._id))  { %>
-            <span class="active-like"><i class="fas fa-heart mf-auto me-2 "></i></span><%= movie.likecount %>
+            <span class="active-like"><i class="fas fa-heart mf-auto me-2 "></i></span><%= helper.separateComma(movie.likecount) %>
           <% } else { %> 
-            <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+            <i class="far fa-heart mf-auto me-2"></i><%= helper.separateComma(movie.likecount) %>
           <% } %>
         <% } %>
       </p>
 
-      <p class="fw-light">
+      <p class="fw-light text-white">
         <i class="fas fa-star"></i>
         <% if (movie.avgrating == -1) { %> 
         -/10

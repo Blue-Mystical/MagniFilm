@@ -9,14 +9,14 @@
       <tbody>
         <% if (reviewlist.length == 0) { %> 
           <tr><td>
-            <p class="fw-bold mx-4 my-2 text-center">
+            <p class="fw-bold mx-4 my-2 text-center text-white">
               <%= noresult %>
             </p>
           </tr></td>
         <% } else { %> 
           <% reviewlist.forEach(function(review) { %>
             <tr><td>
-              <a href="/movies/<%= review.formovie.id %> " class='text-dark'>
+              <a href="/movies/<%= review.formovie.id %> " class='text-white'>
                 <div class='row'>
                   <div class='col-12'>
                     <div class='fw-bold fs-3 px-2'><%= review.formovie.moviename %> (Rated <%= review.rating %><i class="fas fa-star"></i> on <%= helper.getShortDate(review.reviewdate) %>)</div> 
@@ -29,6 +29,7 @@
         <% } %>
       </tbody>
     </table>
+    <%- include('../partials/pagebar.ejs') %>
   </div>
 </div>
 

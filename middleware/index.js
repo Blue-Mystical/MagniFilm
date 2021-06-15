@@ -45,7 +45,7 @@ midwareFunctions.checkExistingReview = function(req, res, next){ // Used to prev
             }
         });
     } else {
-        plugin.loginRequired(req.res);
+        plugin.loginRequired(req, res);
     }
 }
 
@@ -58,7 +58,7 @@ midwareFunctions.checkManager = function(req, res, next){
             res.redirect('back');
         }
     } else {
-        plugin.loginRequired(req.res);
+        plugin.loginRequired(req, res);
     }
 }
 
@@ -71,7 +71,7 @@ midwareFunctions.checkAdmin = function(req, res, next){
             res.redirect('back');
         }
     } else {
-        plugin.loginRequired(req.res);
+        plugin.loginRequired(req, res);
     }
 }
 

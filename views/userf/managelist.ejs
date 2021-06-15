@@ -9,7 +9,7 @@
       <form class="input-group" action="/user/manage" method="GET">
         <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
           <div class="form-outline d-flex pb-2 mx-2">
-            <input type="search" id="form1" name=value class="form-control form-control-sm"
+            <input type="search" id="form1" name=value class="form-control form-control-sm search-bar"
              placeholder='search' value='<% if (search.value) { %><%= search.value %><% } %>'>
             <button type="submit" class="btn btn-primary btn-sm">
               <i class="fas fa-search"></i>
@@ -38,7 +38,7 @@
         <% if (userlist) { %> 
           <% if (userlist.length == 0) { %> 
             <tr><td>
-              <p class="fw-bold mx-4 my-2 text-center">
+              <p class="fw-bold mx-4 my-2 text-center text-white">
                 There are no result.
               </p>
             </tr></td>
@@ -46,22 +46,22 @@
             <% userlist.forEach(function(user) { %>
               <tr><td>
                 <div class='row'>
-                  <div class='col-3 col-md-2'>
+                  <div class='col-3 col-md-2 text-white'>
                     <div class='d-flex justify-content-center'>
                       <% if (user.avatar !== undefined) { %>
-                        <img class='medium-avatar rounded-circle' src="<%= user.avatar %>" alt="AAAAAAAA" height="120px">
+                        <img class='medium-avatar rounded-circle img-fit-avatar' src="<%= user.avatar %>" alt="AAAAAAAA" height="120px" width='120px'>
                       <% } else { %> 
-                        <img class='medium-avatar rounded-circle' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="120px">
+                        <img class='medium-avatar rounded-circle img-fit-avatar' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="120px" width='120px'>
                       <% } %> 
                     </div>     
                   </div>
 
-                  <div class='col-6 col-md-8'>
+                  <div class='col-6 col-md-8 text-white'>
                     <div class='fw-bold fs-2'><%= user.username %></div>
                     <p class="fw-light">Role: <%= user.role %></p>
                   </div>
 
-                  <div class='col-3 col-md-2'>
+                  <div class='col-3 col-md-2 text-white'>
                     <% if (currentUser.role === 'admin') { %> 
                       <a href="/user/manage/<%= user._id %>"><button class="btn btn-warning text-black w-100 mb-2">Manage Role</button></a>
                     <% } %>
@@ -74,6 +74,7 @@
         <% } %> 
       </tbody>
     </table>
+    <%- include('../partials/pagebar.ejs') %>
   </div>
 </div>
 

@@ -29,17 +29,19 @@ var express = require('express'),
 
 // User pages
 router.get('/user', middleware.isLoggedIn, function(req,res) {
+    helper.navactive = 0;
     User.findById(req.user._id, function(err, foundUser) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundUser) {
-            res.render('userf/user.ejs', {title : 'Your Profile', user: foundUser, helper : helper});
+            res.render('userf/user.ejs', {title : 'Your Profile', helper : helper, user: foundUser});
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
 
 router.get('/user/history', middleware.isLoggedIn, function(req,res) {
+    helper.navactive = 0;
     User.findById(req.user._id, function(err, foundUser) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundUser) {
@@ -65,17 +67,18 @@ router.get('/user/history', middleware.isLoggedIn, function(req,res) {
                 if (err) return plugin.returnGenericError(req, res, err);
                 var movielist = movieDoc.docs;
                 movieDoc.docs = [];
-                res.render('userf/userquery.ejs', {title : 'Movie History', user: foundUser, helper : helper, doc : movieDoc, 
-                 movielist : movielist, title : 'Your visited movies', noresult : 'No movies found'});
+                res.render('userf/userquery.ejs', {title : 'Your Visited Movies', helper : helper, user: foundUser, doc : movieDoc, 
+                 movielist : movielist, noresult : 'No movies found'});
             });
 
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
 
 router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
+    helper.navactive = 0;
     User.findById(req.user._id, function(err, foundUser) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundUser) {
@@ -101,17 +104,18 @@ router.get('/user/liked', middleware.isLoggedIn, function(req,res) {
                 if (err) return plugin.returnGenericError(req, res, err);
                 var movielist = movieDoc.docs;
                 movieDoc.docs = [];
-                res.render('userf/userquery.ejs', {title : 'Liked Movies', user: foundUser, helper : helper, doc : movieDoc, 
-                 movielist : movielist, title : 'Your liked movies', noresult : 'No movies found'});
+                res.render('userf/userquery.ejs', {title : 'Your Liked Movies', helper : helper, user: foundUser, doc : movieDoc, 
+                 movielist : movielist, noresult : 'No movies found'});
             });
 
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
 
 router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
+    helper.navactive = 0;
     User.findById(req.user._id, function(err, foundUser) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundUser) {
@@ -141,7 +145,7 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                     Movie.findById(review.formovie.id, function(err, foundMovie) {
                         if (err) return plugin.returnGenericError(req, res, err);
                         if (foundMovie) {
-                            review.formovie.moviename = foundMovie.moviename;
+                            review.formovie.moviename = foundMovie.moviename; // Update movie name
                             review.save();
                         } else {
                             review.formovie.moviename = '[DELETED MOVIE]';
@@ -149,17 +153,18 @@ router.get('/user/reviews', middleware.isLoggedIn, function(req,res) {
                         }
                     });
                 });
-                res.render('userf/userreview.ejs', {title : 'Your Reviews', user: foundUser, helper : helper, doc : reviewDoc, reviewlist : reviewlist,
-                 title : 'Your reviews', noresult : 'No reviews found'});
+                res.render('userf/userreview.ejs', {title : 'Your Reviews', helper : helper, user: foundUser, doc : reviewDoc, reviewlist : reviewlist,
+                 noresult : 'No reviews found'});
             });
 
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
 
 router.get('/user/manage', middleware.checkManager, function(req,res) {
+    helper.navactive = 0;
     var pagenumber = 1;
     if (req.query.page && !isNaN(req.query.page)) {
         pagenumber = req.query.page;
@@ -198,10 +203,11 @@ router.get('/user/manage', middleware.checkManager, function(req,res) {
 
 // Edit user
 router.get('/user/manage/:userid', middleware.checkAdmin, function(req, res) {
+    helper.navactive = 0;
     User.findById(req.params.userid, function(err, foundUser) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundUser) {
-            res.render('userf/manageuser.ejs', {title : 'Manage ' + foundUser.username, user: foundUser, helper : helper});
+            res.render('userf/manageuser.ejs', {title : 'Manage ' + foundUser.username, helper : helper, user: foundUser});
         } else {
             return plugin.returnGenericError(req, res, err);
         }
@@ -261,7 +267,8 @@ router.put('/user/avatar', upload.single('image'), function(req, res) {
 
 // Register
 router.get('/register', function(req,res) {
-    res.render('register.ejs', {title : 'Register to MagniFilm'});
+    helper.navactive = 5;
+    res.render('register.ejs', {title : 'Register to MagniFilm', helper : helper});
 });
 
 router.post('/register', function(req, res) {
@@ -273,12 +280,12 @@ router.post('/register', function(req, res) {
     var cfpw = req.body.confirmpassword;
     if (pw != cfpw) {
         req.flash('error', 'Password and confirm password do not match.')
-        return res.render('register', {title : 'Register to MagniFilm'});
+        return res.render('register', {title : 'Register to MagniFilm', helper : helper});
     }
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
             req.flash('error', 'Cannot register. Username maybe already exists')
-            return res.render('register', {title : 'Register to MagniFilm'});
+            return res.render('register', {title : 'Register to MagniFilm', helper : helper});
         } 
         passport.authenticate('local')(req, res, function() {
             plugin.displaySuccessRegister(req);
@@ -289,7 +296,8 @@ router.post('/register', function(req, res) {
 
 // Login
 router.get('/login', function(req,res) {
-    res.render('login.ejs', {title : 'Login to MagniFilm'});
+    helper.navactive = 4;
+    res.render('login.ejs', {title : 'Login to MagniFilm', helper : helper});
 });
 
 router.post('/login', function(req, res, next) {
@@ -308,6 +316,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res){
+    helper.navactive = 0;
     req.logout();
     plugin.displaySuccessLogout(req);
     res.redirect('/movies');

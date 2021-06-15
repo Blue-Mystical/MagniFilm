@@ -9,7 +9,7 @@
       <form class="input-group" action="/theatres/<%= theatre._id %>/addmovie" method="GET">
         <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
           <div class="form-outline d-flex pb-2 mx-2">
-            <input type="search" id="form1" name=value class="form-control form-control-sm" placeholder='search'>
+            <input type="search" id="form1" name=value class="form-control form-control-sm search-bar" placeholder='search'>
             <button type="submit" class="btn btn-primary btn-sm">
               <i class="fas fa-search"></i>
             </button>
@@ -58,6 +58,7 @@
         <% } %> 
       </tbody>
     </table>
+    <%- include('../partials/pagebar.ejs') %>
   </div>
 </div>
 

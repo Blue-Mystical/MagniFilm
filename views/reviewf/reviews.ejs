@@ -53,7 +53,7 @@
             <tbody>
                 <% if (movie.review.length == 0) { %> 
                     <tr><td>
-                        <p class="fw-bold mx-4 my-2 text-center">
+                        <p class="fw-bold mx-4 my-2 text-center text-white">
                             There are no reviews yet.
                         </p>
                     </tr></td>
@@ -61,13 +61,8 @@
                     <% movie.review.forEach(function(review) { %>
                         <tr><td>
                           <div class="row">
-                            <div class="col-lg-10 col-md-9 col-8">
+                            <div class="col-lg-10 col-md-9 col-8 text-white">
                               <div class='px-2 pb-2 fw-bold'>
-                                <% if (review.user.avatar !== undefined) { %>
-                                  <img class='small-avatar rounded-circle' src="<%= currentUser.avatar %>" alt="AAAAAAAA" height="30px">
-                                <% } else { %> 
-                                  <img class='small-avatar rounded-circle' src="/assets/unknownavatar.png" alt="AAAAAAAA" height="30px">
-                                <% } %> 
                                 <%= review.user.username %> - Rated <%= review.rating %><i class="fas fa-star"></i> / <%= helper.getShortDate(review.reviewdate) %>
                               </div>
                               <div class='px-2 pb fw-light'><%= review.text %></div>

@@ -9,8 +9,8 @@ var express = require('express'),
 
 // Review list
 router.get('/list', function(req,res) {
+    helper.navactive = 1;
     var foundReviewId = undefined;
-
     Movie.findById(req.params.id).populate('review').exec(function(err, foundMovie) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundMovie) {
@@ -21,21 +21,22 @@ router.get('/list', function(req,res) {
                     }
                 });
             }
-            res.render("reviewf/reviews.ejs", {title : 'Reviews for ' + foundMovie.moviename, movie: foundMovie, helper : helper, reviewid : foundReviewId});
+            res.render("reviewf/reviews.ejs", {title : 'Reviews for ' + foundMovie.moviename, helper : helper, movie: foundMovie, reviewid : foundReviewId});
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
 
 // Edit review
 router.get('/:reviewid/edit', middleware.checkReviewOwner, function(req,res) {
+    helper.navactive = 1;
     Review.findById(req.params.reviewid, function(err, foundReview) {
         if (err)  return plugin.returnGenericError(req, res, err);
         if (foundReview) {
-            res.render("reviewf/editreview.ejs", {title : 'Editing your own review', review: foundReview, movie_id: req.params.id, helper : helper});
+            res.render("reviewf/editreview.ejs", {title : 'Editing your own review', helper : helper, review: foundReview, movie_id: req.params.id});
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });
@@ -99,12 +100,13 @@ function deleteReview(req,res) {
 
 // New review
 router.get('/new', middleware.checkExistingReview, function(req,res) {
+    helper.navactive = 1;
     Movie.findById(req.params.id, function(err, foundMovie) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundMovie) {
-            res.render('reviewf/newreview.ejs', {title : 'Reviewing ' + foundMovie.moviename, movie: foundMovie, helper : helper});
+            res.render('reviewf/newreview.ejs', {title : 'Reviewing ' + foundMovie.moviename, helper : helper, movie: foundMovie});
         } else {
-            res.render("notfound.ejs");
+            res.render("notfound.ejs", {helper : helper});
         }
     });
 });

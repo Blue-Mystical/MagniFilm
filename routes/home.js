@@ -8,9 +8,10 @@ var express = require('express'),
 
 router.get('/', function(req,res) {
 
+    helper.navactive = 0;
     var currentDate = new Date();
     currentDate = Date.parse(currentDate);
-    var unairDate = currentDate - 1000 * 60 * 60 * 24 * 30; // 30 days
+    var unairDate = currentDate - 1000 * 60 * 60 * 24 * helper.getUnAirDays(); // 30 days
     var upperDate = currentDate + 1000 * 60 * 60 * 24 * 30;
     var dateRange = {
         $gte: unairDate,
@@ -20,9 +21,11 @@ router.get('/', function(req,res) {
         airdate: dateRange
         }).sort({avgrating: -1}).exec(function(err,Movall) {
         if (err) return plugin.returnGenericError(req, res, err);
-        News.find({}, function(err,newslist) {
+        News.find({
+        featured: true
+        }, function(err,newslist) {
             if (err) return plugin.returnGenericError(req, res, err);
-            res.render('home.ejs', {title : 'Home', movielist : Movall, helper : helper, newslist : newslist})
+            res.render('home.ejs', {title : 'Home', helper : helper, movielist : Movall, newslist : newslist})
         });
     });
 });

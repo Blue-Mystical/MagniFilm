@@ -9,7 +9,7 @@
       <form class="input-group" action="/search" method="GET">
         <div class='col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
           <div class="form-outline d-flex pb-2 mx-2">
-            <input type="search" id="form1" name=value class="form-control form-control-sm"
+            <input type="search" id="form1" name=value class="form-control form-control-sm search-bar"
             placeholder='search' value='<% if (search.value) { %><%= search.value %><% } %>'>
             <button type="submit" class="btn btn-primary btn-sm">
               <i class="fas fa-search"></i>
@@ -30,7 +30,7 @@
               <div class="col-3 ms-2 px-0">
                 <select class="form-select" aria-label="mode" name="mode">
                   <option value=2>Descending</option>
-                  <option value=1 <% if (search.mode === 1) { %> selected <% } %> >Ascending</option>
+                  <option value=1 <% if (search.mode === '1') { %> selected <% } %> >Ascending</option>
                 </select>
               </div>
               <div class="col-4">
@@ -88,6 +88,8 @@
         <% } %> 
       </tbody>
     </table>
+
+    <%- include('../partials/pagebar.ejs') %>
   </div>
 
 </div>

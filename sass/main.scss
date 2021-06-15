@@ -9,6 +9,7 @@ $danger: #ff4136;
 
 // header.ejs
 body {
+	font-family: Helvetica, sans-serif;
 	background: linear-gradient(-45deg, $cyan-100, $cyan-100, #fff, $cyan-100);
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
@@ -24,6 +25,17 @@ body {
 	100% {
 		background-position: 0% 50%;
 	}
+
+}
+
+li.text-navbar-active > a.nav-link {
+	color: #ffffff;
+}
+li.text-navbar-active > a.nav-link:link {
+	color: #ffffff;
+}
+li.text-navbar-active > a.nav-link:visited {
+	color: #ffffff;
 }
 
 nav.navbar.cssnavbar {
@@ -48,11 +60,17 @@ hr.dark-long {
 	border-top: 2px solid rgba(0, 0, 0, 0.6);
 }
 
+img.img-fit-avatar {
+	object-fit: cover;
+}
+
+// Movies
+
 span.active-like {
 	color: hotpink;
 }
 span.airtime-unaired {
-	color: black;
+	color: white;
 }
 span.airtime-onair {
 	color: #dc3545;
@@ -61,8 +79,21 @@ span.airtime-upcoming {
 	color: #ffc107;
 }
 
+input.search-bar {
+	border-radius: 20px;
+}
+
 img.card-img-top {
 	object-fit: cover;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: rgb(48, 48, 48);
+}
+.table-striped>tbody>tr:nth-child(even)>td, 
+.table-striped>tbody>tr:nth-child(even)>th {	
+	background-color: rgb(24, 24, 24);
 }
 
 // Remove underlines in a search results
@@ -81,6 +112,12 @@ img.card-img-top.theatre {
 	width:3rem;
 }
 
+img.img-fit.news {
+	object-fit: cover;
+	height: auto;
+	max-width: 30rem;
+}
+
 // News
 div.news-container {
 	position: relative;
@@ -92,6 +129,14 @@ div.inside-image-news {
 	position: absolute;
 	bottom: 8px;
 	right: 16px;
+	text-align: end;
+}
+
+.text-shadow {
+	text-shadow: 4px 4px 2px #000000
+}
+.text-shadow-small {
+	text-shadow: 2px 2px 1px #000000
 }
 
 img.fit-news {
@@ -107,15 +152,16 @@ img.fit-news {
 	max-width: 80rem;
 	object-fit: cover;
 	height: 20rem;
+	object-position: 50% 30%;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-  height: 40px;
-  width: 40px;
+  height: 50px;
+  width: 50px;
   border: white;
-  border-width: 5px;
-  background-size: 100%, 100%;
+  border-radius: 50%;
+  background-size: 80%, 80%;
   background-color:black;
 }
 

@@ -9,14 +9,14 @@
       <tbody>      
         <% if (movielist.length == 0) { %> 
           <tr><td>
-            <p class="fw-bold mx-4 my-2 text-center">
+            <p class="fw-bold mx-4 my-2 text-center text-white">
               <%= noresult %>
             </p>
           </tr></td>
         <% } else { %> 
           <% movielist.forEach(function(movie) { %>
             <tr><td>
-              <a href="/movies/<%= movie._id %> " class='text-dark'>
+              <a href="/movies/<%= movie._id %> " class='text-white'>
                 <div class='row'>
                   <div class='col-3 col-md-2'>
                     <div class='d-flex justify-content-center'>
@@ -32,6 +32,7 @@
         <% } %> 
       </tbody>
     </table>
+    <%- include('../partials/pagebar.ejs') %>
   </div>
 </div>
 

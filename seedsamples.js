@@ -141,6 +141,111 @@ samples.movielist = [
         likecount: 12345
     },
     {
+        moviename: 'Detective Conan The Scarlet Alibi',
+        airdate: '1 April 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/3196/thumb_3196.jpg?280420210500',
+        trailer: 'KW2tU0GIni8',
+        desc: 'It\'s the compilation from the Anime of the story of Akaki Familly.Credit: IMDB',
+        length: 93,
+        genre: ['animation', 'crime'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'pg13',
+        likecount: 0
+    },
+    {
+        moviename: 'The Night Beyond the Tricornered Window',
+        airdate: '1 July 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/3182/thumb_3182.jpg?100520210747',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['romance', 'thriller'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'pg',
+        likecount: 0
+    },
+    {
+        moviename: 'Earwig of the Witch',
+        airdate: '1 July 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/3109/thumb_3109.jpg?180520210940',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['animation', 'fantasy'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'g',
+        likecount: 0
+    },
+    {
+        moviename: 'Fast and Furious 9',
+        airdate: '15 July 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/2842/thumb_2842.jpg?140620211600',
+        desc: 'Lorem ipsum',
+        length: 143,
+        genre: ['action', 'adventure', 'crime'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'g',
+        likecount: 0
+    },
+    {
+        moviename: 'The Suicide Squad',
+        airdate: '29 July 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/3082/thumb_3082.jpg?040220210420',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['action', 'comedy'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'pg13',
+        likecount: 0
+    },
+    {
+        moviename: 'Paw Patrol: The Movie',
+        airdate: '28 August 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/3097/thumb_3097.jpg?200120210441',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['animation'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'g',
+        likecount: 0
+    },
+    {
+        moviename: 'Peter Rabbit 2 The Runaway',
+        airdate: '7 October 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/2754/thumb_2754.jpg?100620210325',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['animation', 'adventure', 'comedy'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'g',
+        likecount: 0
+    },
+    {
+        moviename: 'The Black Widow',
+        airdate: '8 July 2021', 
+        image: 'https://cdn.majorcineplex.com/uploads/movie/2769/thumb_2769.jpg?250520210827',
+        desc: 'Lorem ipsum',
+        length: 0,
+        genre: ['action'],
+        avgrating: -1,
+        reviewcount: 0,
+        sumrating: 0,
+        movierating: 'pg13',
+        likecount: 0
+    },
+    {
         moviename: 'CATS (2019)',
         airdate: '14 July 2019', 
         image: 'https://upload.wikimedia.org/wikipedia/en/c/cf/Cats_2019_poster.jpg',
@@ -157,20 +262,55 @@ samples.movielist = [
 
 samples.newslist = [
     {
-        title: 'Doge hahaha',
-        caption: 'Can\'t find better bg',
-        image: 'https://wallpaper.dog/large/20475179.jpg',
-        newsdate: new Date(2021, 5, 10, 12, 30, 45),
+        title: 'Godzilla vs Kong Available!',
+        caption: 'It will be epic',
+        image: '/seedimages/newsimage1.jpg',
+        newsdate: new Date(2021, 2, 25, 12, 30, 00),
         contents: [
             {
                 ctype: 'text', // avaiable types: text, image
-                content: 'Lx.',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
                 order: 1
             },
             {
                 ctype: 'text', // avaiable types: text, image
-                content: 'Dogeeeeeeeeeeeeeeeeee',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
                 order: 2
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 3
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 4
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 5
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 6
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 7
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 8
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 9
             }
         ],
         viewcount: 0,
@@ -179,20 +319,55 @@ samples.newslist = [
         featured: true
     },
     {
-        title: 'Just a second news',
-        caption: 'Can\'t find better bg too',
-        image: 'https://wallpaper.dog/large/20475179.jpg',
-        newsdate: new Date(2021, 5, 11, 12, 30, 45),
+        title: 'A Quiet Place 2 reached over 100 million dollars milestone',
+        caption: '100M$',
+        image: '/seedimages/newsimage2.jpg',
+        newsdate: new Date(2021, 5, 13, 12, 30, 45),
         contents: [
             {
                 ctype: 'text', // avaiable types: text, image
-                content: 'EEEEEEEEEEEEEEE EEEE.',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
                 order: 1
             },
             {
                 ctype: 'text', // avaiable types: text, image
-                content: 'EEEEEEE',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
                 order: 2
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
+                order: 3
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
+                order: 4
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
+                order: 5
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum interdum ex sit amet pellentesque. Cras quis quam nibh. Praesent id tristique mi. Integer fermentum faucibus pulvinar. Fusce non ligula pretium, egestas mi quis, semper orci. Maecenas quis tempus lectus.',
+                order: 6
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 7
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 8
+            },
+            {
+                ctype: 'text', // avaiable types: text, image
+                content: '',
+                order: 9
             }
         ],
         viewcount: 0,

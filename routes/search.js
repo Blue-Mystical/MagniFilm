@@ -6,6 +6,7 @@ var express = require('express'),
     helper = require('../helper');
 
 router.get('/', function(req,res) {
+    helper.navactive = 0;
     var pagenumber = 1;
     if (req.query.page && !isNaN(req.query.page)) {
         pagenumber = req.query.page;

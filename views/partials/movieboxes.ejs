@@ -1,5 +1,5 @@
 <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-4">
-    <div class="card box-shadow h-100">
+    <div class="card box-shadow bg-dark text-white h-100">
       <a href='/movies/<%= movie._id %>' class="btn btn-outline-primary">
         <img class="card-img-top card-img-top" src="<%= movie.image %>" alt="AAAAAAAA" height="240">
       </a>
@@ -20,13 +20,13 @@
           <div class="d-grid gap-2 d-flex justify-content-center">
             <p class="fw-light">
               <% if(!currentUser) {%>
-                <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+                <i class="far fa-heart mf-auto me-2"></i><%= helper.separateComma(movie.likecount) %>
               <% } else { %>
                 
                 <% if (helper.findLiked(currentUser.likedMovie, movie._id)) { %>
-                    <span class="active-like"><i class="fas fa-heart mf-auto me-2 "></i></span><%= movie.likecount %>
+                    <span class="active-like"><i class="fas fa-heart mf-auto me-2"></i></span><%= helper.separateComma(movie.likecount) %>
                   <% } else { %> 
-                    <i class="far fa-heart mf-auto me-2"></i><%= movie.likecount %>
+                    <i class="far fa-heart mf-auto me-2"></i><%= helper.separateComma(movie.likecount) %>
                   <% } %>
               <% } %>
             </p>

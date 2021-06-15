@@ -27,8 +27,9 @@ var express = require('express'),
     helper = require('../helper');
 
 router.get('/', function(req,res) {
+    helper.navactive = 3;
     var pagenumber = 1;
-    if (req.query.page && !isNaN(req.query.page)) {
+    if (req.query.page && !isNaN(req.query.page)) { 
         pagenumber = req.query.page;
     } // querys: page, mode, sort, value, genre
     var sortOptions;
@@ -61,10 +62,12 @@ router.get('/', function(req,res) {
 
 // Moved up due to conflict
 router.get('/add', middleware.checkManager, function(req,res) {
-    res.render('newsf/addnews.ejs', {title : 'Adding News'});
+    helper.navactive = 3;
+    res.render('newsf/addnews.ejs', {title : 'Adding News', helper: helper});
 });
 
 router.get('/:id', function(req,res) {
+    helper.navactive = 3;
     if (req.params.id != 'add') { // suppress error when accessing the add page
         News.findById(req.params.id, function(err, foundNews) {
             if (err) return plugin.returnGenericError(req, res, err);
@@ -73,9 +76,9 @@ router.get('/:id', function(req,res) {
                 News.findByIdAndUpdate(req.params.id, {viewcount : newcount}, function(err, foundNews2) {
                     if (err) return plugin.returnGenericError(req, res, err);
                 });
-                res.render("newsf/newspage.ejs", {title : foundNews.title, news: foundNews, helper : helper});
+                res.render("newsf/newspage.ejs", {title : foundNews.title, helper : helper, news: foundNews});
             } else {
-                res.render("notfound.ejs");
+                res.render("notfound.ejs", {helper : helper});
             }
         });
     }
@@ -114,10 +117,11 @@ router.post('/', middleware.checkManager, upload.single('image'), function(req,r
 
 // Edit news
 router.get('/:id/edit', middleware.checkManager, function(req, res) {
+    helper.navactive = 3;
     News.findById(req.params.id, function(err, foundNews) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (foundNews) {
-            res.render('newsf/editnews.ejs', {title : 'Editing ' + foundNews.title, news: foundNews, helper : helper});
+            res.render('newsf/editnews.ejs', {title : 'Editing ' + foundNews.title, helper : helper, news: foundNews});
         } else {
             plugin.displayDeletedNewsError(req, err);
             res.redirect('back');
@@ -129,6 +133,21 @@ router.put('/:id', middleware.checkManager, upload.single('image'), function(req
     if (req.file) {
         req.body.news.image = '/uploads/' + req.file.filename;
     }
+    req.body.news.featured = (req.body.news.featured === 'true');
+    req.body.news.contents = [];
+
+    var newContent = {};
+    var index = 1;
+    req.body.invcontent.forEach(function(contentElem){
+        newContent = {
+            ctype: 'text',
+            content: contentElem,
+            order: index
+        };
+        req.body.news.contents.push(newContent);
+        index++;
+    });
+
     News.findByIdAndUpdate(req.params.id, req.body.news, function(err, updatedNews) {
         if (err) return plugin.returnGenericError(req, res, err);
         if (updatedNews) {

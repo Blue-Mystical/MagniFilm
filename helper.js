@@ -4,6 +4,9 @@ const monthFull = ['January', 'February', 'March', 'April', 'May', 'June' ,
 
 var helperFunctions = {};
 
+helperFunctions.movlisttype = undefined;
+helperFunctions.navactive = undefined;
+
 helperFunctions.getShortDate = function(date) {
     return date.getDate() + " " + monthShort[date.getMonth()] + " " + date.getFullYear();
 };
@@ -26,6 +29,10 @@ helperFunctions.changeDateFormat = function(date) { // Make it readable for the 
 
     var formattedDate = [year, month, day].join('-');
     return formattedDate;
+};
+
+helperFunctions.separateComma = function(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 helperFunctions.CapAndJoin = function(array) {
@@ -55,7 +62,7 @@ helperFunctions.getAirDateColor = function(airDate) {
     airDate = Date.parse(airDate);
     var currentDate = new Date();
     currentDate = Date.parse(currentDate);
-    var unairDate = currentDate - 1000 * 60 * 60 * 24 * 30; // 30 days
+    var unairDate = currentDate - 1000 * 60 * 60 * 24 * helperFunctions.getUnAirDays(); // 30 days
     var upperDate = currentDate + 1000 * 60 * 60 * 24 * 30;
 
     if (airDate < unairDate) {
@@ -106,6 +113,10 @@ helperFunctions.compareLogoID = function(id1, id2) {
 
 helperFunctions.queryLimit = function() {
     return 18;
+}
+
+helperFunctions.getUnAirDays = function() {
+    return 60;
 }
 
 module.exports = helperFunctions;
