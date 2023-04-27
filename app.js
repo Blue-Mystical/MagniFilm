@@ -28,7 +28,7 @@ app.use(sass({
     debug: false
 }));
 
-mongoose.connect('mongodb://localhost/MagniFilm');
+mongoose.connect('mongodb://127.0.0.1/MagniFilm');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine','ejs');
 app.use(methodOverride('_method'));
