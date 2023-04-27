@@ -50,6 +50,7 @@ router.get('/', function(req,res) {
         airdate: dateRange
         }, function(err, Movall) {
         if (err) return plugin.returnGenericError(req, res, err);
+        console.log(Movall);
         res.render('movief/movies.ejs', {title : 'Movies', helper : helper, movielist : Movall})
     });
 });

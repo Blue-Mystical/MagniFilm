@@ -116,7 +116,7 @@ helperFunctions.queryLimit = function() {
 }
 
 helperFunctions.getUnAirDays = function() {
-    return 60;
+    return 99999;
 }
 
 module.exports = helperFunctions;

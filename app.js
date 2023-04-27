@@ -48,7 +48,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// seedDB();
+// Seed you database here (turn off with comment)
+seedDB();
 
 app.use(function(req,res,next) {
     res.locals.currentUser = req.user;
